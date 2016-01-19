@@ -16,8 +16,8 @@ public class StaticShader extends ShaderProgram {
 
     private static final int MAX_LIGHTS = 4;
 
-    private static final String VERTEX_FILE = "C:\\Users\\Travis\\Plymordior2\\src\\shaders\\vertexShader";
-    private static final String FRAGMENT_FILE = "C:\\Users\\Travis\\Plymordior2\\src\\shaders\\fragmentShader";
+    private static final String VERTEX_FILE = "src\\shaders\\vertexShader";
+    private static final String FRAGMENT_FILE = "src\\shaders\\fragmentShader";
 
     private int location_tranformationMatrix;
     private int location_projectionMatrix;

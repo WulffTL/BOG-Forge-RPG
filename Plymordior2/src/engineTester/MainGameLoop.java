@@ -150,7 +150,7 @@ public class MainGameLoop {
                 picker.update();
                 Vector3f terrainPoint2 = picker.getCurrentTerrainPoint();
                 if (picker.isIntersectingSphere(terrainPoint2, entity)){
-                    entity.increasePosition(1,0,1);
+                    System.out.println("It happened!");
                 }
             }
             renderer.renderScene(entities, terrains, lights, camera);
