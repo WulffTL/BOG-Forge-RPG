@@ -85,9 +85,6 @@ public class Terrain {
             normalsWriter = new FileWriter(new File("src/terrains/terrainNormals.txt"));
             textureCoordsWriter = new FileWriter(new File("src/terrains/terrainTextureCoords.txt"));
             vertexPointersWriter = new FileWriter(new File("src/terrains/terrainVertexPointers.txt"));
-            vertexPointersWriter.write("");
-            textureCoordsWriter.write("");
-            normalsWriter.write("");
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -193,7 +190,7 @@ public class Terrain {
             BufferedReader vertexPointersBReader = new BufferedReader(new FileReader(new File(vertexPointers)));
             if(normalsBReader.readLine() == null && textureCoordsBReader.readLine() == null && vertexPointersBReader.readLine() == null){
                 useHeightMap = true;
-            }else useHeightMap = true;
+            }else useHeightMap = false;
             normalsBReader.close();
             textureCoordsBReader.close();
             vertexPointersBReader.close();

@@ -55,7 +55,7 @@ public class MainGameLoop {
         //Our player model
         RawModel person = OBJLoader.loadObjModel("person",loader);
         TexturedModel man = new TexturedModel(person, new ModelTexture(loader.loadTexture("playerTexture")));
-        Player player = new Player(man, new Vector3f(100,0,-50),0,0,0,1);
+        Player player = new Player(man, new Vector3f(100,0,-50),0,180,0,1);
         entities.add(player);
 
         //Pine Tree Model
@@ -75,16 +75,16 @@ public class MainGameLoop {
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        entities.add(new Entity(lamp, new Vector3f(185,terrain.getHeightOfTerrain(185,-293), -293),0,0,0,1,10));
-        entities.add(new Entity(lamp, new Vector3f(370,terrain.getHeightOfTerrain(370,-300), -300),0,0,0,1,10));
-        entities.add(new Entity(lamp, new Vector3f(293,terrain.getHeightOfTerrain(293,-305), -305),0,0,0,1,10));
+        entities.add(new Entity(lamp, new Vector3f(185,terrain.getHeightOfTerrain(185,-293), -293),0,0,0,1,1));
+        entities.add(new Entity(lamp, new Vector3f(370,terrain.getHeightOfTerrain(370,-300), -300),0,0,0,1,1));
+        entities.add(new Entity(lamp, new Vector3f(293,terrain.getHeightOfTerrain(293,-305), -305),0,0,0,1,1));
 
         //Adding 500 random ferns
         for (int i = 0; i < 500; i++) {
             float x = random.nextFloat() * 800;
             float z = random.nextFloat() * -600;
             float y = terrain.getHeightOfTerrain(x,z);
-            entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z),0,0,0,0.6f,1));
+            entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z),0,0,0,0.6f,3));
         }
 
         //Adding 50 random trees
@@ -92,7 +92,7 @@ public class MainGameLoop {
             float x = random.nextFloat() * 800;
             float z = random.nextFloat() * -600;
             float y = terrain.getHeightOfTerrain(x,z);
-            entities.add(new Entity(tree, new Vector3f(x, y, z),0,0,0,3,1));
+            entities.add(new Entity(tree, new Vector3f(x, y, z),0,0,0,3,0));
         }
 
         /****************************************LIGHTS****************************************/
@@ -147,10 +147,8 @@ public class MainGameLoop {
             }
 
             for(Entity entity : entities) {
-                picker.update();
-                Vector3f terrainPoint2 = picker.getCurrentTerrainPoint();
-                if (picker.isIntersectingSphere(terrainPoint2, entity)){
-                    System.out.println("It happened!");
+                if (picker.isIntersectingSphere(terrainPoint, entity)){
+                    entity.increasePosition(0.1f,0,0);
                 }
             }
             renderer.renderScene(entities, terrains, lights, camera);

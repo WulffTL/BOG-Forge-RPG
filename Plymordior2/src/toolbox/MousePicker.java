@@ -136,9 +136,9 @@ public class MousePicker {
         float yPos = entity.getPosition().y;
         float zPos = entity.getPosition().z;
         if(currentRay != null){
-        if (Maths.isBetween(currentRay.x,-(xPos + entity.getBoundingRadius()),xPos + entity.getBoundingRadius()) &&
-            Maths.isBetween(currentRay.y,-(yPos + entity.getBoundingRadius()),yPos + entity.getBoundingRadius()) &&
-                    Maths.isBetween(currentRay.z,-(zPos + entity.getBoundingRadius()),zPos + entity.getBoundingRadius())) {
+        if (Maths.isBetween(currentRay.x,xPos - entity.getBoundingRadius(),xPos + entity.getBoundingRadius()) &&
+            Maths.isBetween(currentRay.z,zPos - entity.getBoundingRadius(),zPos + entity.getBoundingRadius()) &&
+                   Maths.isBetween(currentTerrainPoint.y,yPos - entity.getBoundingRadius(),yPos + entity.getBoundingRadius())) {
             intersecting = true;
         }
         }
