@@ -65,8 +65,10 @@ public class MasterRenderer {
         GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
-    public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Camera camera){
+    public void renderScene(List<Entity> entities,List<Entity> immovableEntities,
+                            List<Terrain> terrains, List<Light> lights, Camera camera){
         entities.forEach(this::processEntity);
+        immovableEntities.forEach(this::processEntity);
         terrains.forEach(this::processTerrain);
         render(lights, camera);
     }

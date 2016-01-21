@@ -1,8 +1,11 @@
 package entities;
 
+import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
 import terrains.Terrain;
+
+import java.util.Random;
 
 /**
  * Created by Travis on 10/25/2015.
@@ -62,9 +65,23 @@ public class Entity {
     }
 
     public void moveTowards(Vector3f position, Terrain terrain){
-        this.position.x = (15*this.position.x + position.x)/16;
-        this.position.z = (15*this.position.z + position.z)/16;
+        this.position.x = (this.position.x + position.x)/2;
+        this.position.z = (this.position.z + position.z)/2;
         this.position.y = terrain.getHeightOfTerrain(this.position.x, this.position.z);
+    }
+
+    public void moveAway(Vector3f movingFrom){
+        boolean PosX = movingFrom.x - this.position.x >0;
+        boolean PosZ = movingFrom.z - this.position.z >0;
+        if(PosX && PosZ){
+
+        }else if(!PosX && PosZ){
+
+        }else if(PosX && !PosZ){
+
+        }else {
+
+        }
     }
 
     public TexturedModel getModel() {

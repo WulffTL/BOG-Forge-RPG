@@ -12,11 +12,15 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.*;
 import models.RawModel;
+import superPowers.Powers;
 import terrains.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
 import toolbox.MousePicker;
+import water.WaterRenderer;
+import water.WaterShader;
+import water.WaterTile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +37,11 @@ public class MainGameLoop {
         DisplayManager.createDisplay();
         Loader loader = new Loader();
 
+        /****************************************RENDERERS****************************************/
+
+        GuiRenderer guiRenderer = new GuiRenderer(loader);
+        MasterRenderer renderer = new MasterRenderer(loader);
+
         /****************************************TERRAINS****************************************/
         //Create an array for our terrains to go into
         List<Terrain> terrains = new ArrayList<>();
@@ -46,17 +55,25 @@ public class MainGameLoop {
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap2"));
         //load in texture pack, blend map, and height map to create the texture
-        Terrain terrain = new Terrain(0,-1, loader, texturePack, blendMap, "heightMap2");
+        Terrain terrain = new Terrain(0,-1, loader, texturePack, blendMap, "heightMap");
         terrains.add(terrain);
+
+        /****************************************WATER****************************************/
+
+        WaterShader waterShader = new WaterShader();
+        WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix());
+        List<WaterTile> waters = new ArrayList<>();
+        waters.add(new WaterTile(75,-75,0));
 
         /****************************************MODELS****************************************/
         List<Entity> entities = new ArrayList<>();
+        List<Entity> immovableEntities = new ArrayList<>();
 
         //Our player model
         RawModel person = OBJLoader.loadObjModel("person",loader);
         TexturedModel man = new TexturedModel(person, new ModelTexture(loader.loadTexture("playerTexture")));
         Player player = new Player(man, new Vector3f(100,0,-50),0,180,0,1);
-        entities.add(player);
+        immovableEntities.add(player);
 
         //Pine Tree Model
         RawModel model = OBJLoader.loadObjModel("pine", loader);
@@ -75,16 +92,16 @@ public class MainGameLoop {
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        entities.add(new Entity(lamp, new Vector3f(185,terrain.getHeightOfTerrain(185,-293), -293),0,0,0,1,1));
-        entities.add(new Entity(lamp, new Vector3f(370,terrain.getHeightOfTerrain(370,-300), -300),0,0,0,1,1));
-        entities.add(new Entity(lamp, new Vector3f(293,terrain.getHeightOfTerrain(293,-305), -305),0,0,0,1,1));
+        entities.add(new Entity(lamp, new Vector3f(185,terrain.getHeightOfTerrain(185,-293), -293),0,0,0,1,0));
+        entities.add(new Entity(lamp, new Vector3f(370,terrain.getHeightOfTerrain(370,-300), -300),0,0,0,1,0));
+        entities.add(new Entity(lamp, new Vector3f(293,terrain.getHeightOfTerrain(293,-305), -305),0,0,0,1,0));
 
         //Adding 500 random ferns
         for (int i = 0; i < 500; i++) {
             float x = random.nextFloat() * 800;
             float z = random.nextFloat() * -600;
             float y = terrain.getHeightOfTerrain(x,z);
-            entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z),0,0,0,0.6f,3));
+            entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z),0,0,0,0.6f,6));
         }
 
         //Adding 50 random trees
@@ -98,17 +115,24 @@ public class MainGameLoop {
         /****************************************LIGHTS****************************************/
 
         List<Light> lights = new ArrayList<>();
+        List<Light> powerLights = new ArrayList<>();
+
+        Light powerLight = new Light(new Vector3f(0,0,0), new Vector3f(2,2,0), new Vector3f(1,0.01f,0.002f));
+        powerLights.add(powerLight);
 
         Light sun = new Light(new Vector3f(0,1000,-7000),new Vector3f(1,1,1));
-        Light lavaLight = new Light(new Vector3f(293,terrain.getHeightOfTerrain(293,-305)+13,-305), new Vector3f(2,2,0),
-                new Vector3f(1,0.01f,0.002f));
-        lights.add(lavaLight);
-
         lights.add(sun);
         lights.add(new Light(new Vector3f(185,terrain.getHeightOfTerrain(185,-293)+13,-293),
                 new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
         lights.add(new Light(new Vector3f(370,terrain.getHeightOfTerrain(370,-300)+13,-300),
                 new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
+        lights.add(new Light(new Vector3f(293,terrain.getHeightOfTerrain(293,-305)+13,-305), new Vector3f(2,2,0),
+                new Vector3f(1,0.01f,0.002f)));
+
+        List<Light> allLights = new ArrayList<>();
+        allLights.addAll(powerLights);
+        allLights.addAll(lights);
+
 
 
         /****************************************CAMERA****************************************/
@@ -125,14 +149,13 @@ public class MainGameLoop {
         guis.add(backgroundHealthBar);
         guis.add(healthBar);
 
-        /****************************************RENDERERS****************************************/
-
-        GuiRenderer guiRenderer = new GuiRenderer(loader);
-        MasterRenderer renderer = new MasterRenderer(loader);
-
         /****************************************MOUSE PICKER****************************************/
 
         MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix(), terrain);
+
+        /****************************************POWERS****************************************/
+
+        Powers playerPowers = new Powers(player,terrain,powerLights,entities);
 
         /****************************************MAIN GAME LOOP****************************************/
 
@@ -141,17 +164,11 @@ public class MainGameLoop {
             camera.move();
 
             picker.update();
-            Vector3f terrainPoint = picker.getCurrentTerrainPoint();
-            if(terrainPoint != null){
-                lavaLight.setPosition(new Vector3f(terrainPoint.x, terrainPoint.y + 1, terrainPoint.z));
-            }
+            playerPowers.forcePull(picker);
+            playerPowers.forcePush();
 
-            for(Entity entity : entities) {
-                if (picker.isIntersectingSphere(terrainPoint, entity)){
-                    entity.moveTowards(player.getPosition(),terrain);
-                }
-            }
-            renderer.renderScene(entities, terrains, lights, camera);
+            renderer.renderScene(entities, immovableEntities, terrains, allLights, camera);
+            waterRenderer.render(waters,camera);
 
             float playersCurrentStamina = player.getCurrentStamina();
             GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("backgroundBar"),
@@ -165,9 +182,13 @@ public class MainGameLoop {
 
             DisplayManager.updateDisplay();
         }
+
+        /****************************************CLEAN UP****************************************/
+
         guiRenderer.cleanUp();
         renderer.cleanUp();
         loader.cleanUp();
+        waterShader.cleanUp();
         DisplayManager.closeDisplay();
     }
 }

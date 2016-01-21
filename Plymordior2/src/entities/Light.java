@@ -26,6 +26,10 @@ public class Light {
         return  attenuation;
     }
 
+    public void setAttenuation(float a, float b, float c) {
+        this.attenuation = new Vector3f(a,b,c);
+    }
+
     public Vector3f getPosition() {
         return position;
     }
