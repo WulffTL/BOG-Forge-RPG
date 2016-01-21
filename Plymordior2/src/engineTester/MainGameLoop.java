@@ -46,7 +46,7 @@ public class MainGameLoop {
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap2"));
         //load in texture pack, blend map, and height map to create the texture
-        Terrain terrain = new Terrain(0,-1, loader, texturePack, blendMap, "heightMap");
+        Terrain terrain = new Terrain(0,-1, loader, texturePack, blendMap, "heightMap2");
         terrains.add(terrain);
 
         /****************************************MODELS****************************************/
@@ -148,7 +148,7 @@ public class MainGameLoop {
 
             for(Entity entity : entities) {
                 if (picker.isIntersectingSphere(terrainPoint, entity)){
-                    entity.increasePosition(0.1f,0,0);
+                    entity.moveTowards(player.getPosition(),terrain);
                 }
             }
             renderer.renderScene(entities, terrains, lights, camera);

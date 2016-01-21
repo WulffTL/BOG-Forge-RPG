@@ -2,6 +2,7 @@ package entities;
 
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
+import terrains.Terrain;
 
 /**
  * Created by Travis on 10/25/2015.
@@ -58,6 +59,12 @@ public class Entity {
         this.rotX += dx;
         this.rotY += dy;
         this.rotZ += dz;
+    }
+
+    public void moveTowards(Vector3f position, Terrain terrain){
+        this.position.x = (15*this.position.x + position.x)/16;
+        this.position.z = (15*this.position.z + position.z)/16;
+        this.position.y = terrain.getHeightOfTerrain(this.position.x, this.position.z);
     }
 
     public TexturedModel getModel() {
