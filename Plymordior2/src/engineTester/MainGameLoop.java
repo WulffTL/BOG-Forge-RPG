@@ -18,6 +18,7 @@ import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
 import toolbox.MousePicker;
+import water.WaterFrameBuffers;
 import water.WaterRenderer;
 import water.WaterShader;
 import water.WaterTile;
@@ -64,6 +65,10 @@ public class MainGameLoop {
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix());
         List<WaterTile> waters = new ArrayList<>();
         waters.add(new WaterTile(75,-75,0));
+
+        WaterFrameBuffers fbos = new WaterFrameBuffers();
+        GuiTexture waterGui = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f,0.5f),
+                new Vector2f(0.5f,0.5f)); //add gui texture to gui texture in the gui part
 
         /****************************************MODELS****************************************/
         List<Entity> entities = new ArrayList<>();
@@ -112,6 +117,10 @@ public class MainGameLoop {
             entities.add(new Entity(tree, new Vector3f(x, y, z),0,0,0,3,0));
         }
 
+        //Adding NPC
+        Entity npc = new Entity(man, new Vector3f(293,terrain.getHeightOfTerrain(293,-305), -305),0,0,0,1,10);
+        entities.add(npc);
+
         /****************************************LIGHTS****************************************/
 
         List<Light> lights = new ArrayList<>();
@@ -148,6 +157,7 @@ public class MainGameLoop {
                 new Vector2f(-0.6f, -0.8f), new Vector2f(0.25f, 0.05f));
         guis.add(backgroundHealthBar);
         guis.add(healthBar);
+        guis.add(waterGui);
 
         /****************************************MOUSE PICKER****************************************/
 
@@ -167,6 +177,10 @@ public class MainGameLoop {
             playerPowers.forcePull(picker);
             playerPowers.forcePush();
 
+            fbos.bindReflectionFrameBuffer();
+            renderer.renderScene(entities,immovableEntities,terrains,lights,camera);
+            fbos.unbindCurrentFrameBuffer();
+
             renderer.renderScene(entities, immovableEntities, terrains, allLights, camera);
             waterRenderer.render(waters,camera);
 
@@ -185,6 +199,7 @@ public class MainGameLoop {
 
         /****************************************CLEAN UP****************************************/
 
+        fbos.cleanUp();
         guiRenderer.cleanUp();
         renderer.cleanUp();
         loader.cleanUp();
