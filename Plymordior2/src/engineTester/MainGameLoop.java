@@ -8,8 +8,11 @@ import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.TexturedModel;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 import renderEngine.*;
 import models.RawModel;
 import superPowers.Powers;
@@ -62,13 +65,11 @@ public class MainGameLoop {
         /****************************************WATER****************************************/
 
         WaterShader waterShader = new WaterShader();
-        WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix());
+        WaterFrameBuffers buffers = new WaterFrameBuffers();
+        WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        waters.add(new WaterTile(75,-75,0));
-
-        WaterFrameBuffers fbos = new WaterFrameBuffers();
-        GuiTexture waterGui = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f,0.5f),
-                new Vector2f(0.5f,0.5f)); //add gui texture to gui texture in the gui part
+        WaterTile water = new WaterTile(75, -410, -1);
+        waters.add(water);
 
         /****************************************MODELS****************************************/
         List<Entity> entities = new ArrayList<>();
@@ -157,7 +158,6 @@ public class MainGameLoop {
                 new Vector2f(-0.6f, -0.8f), new Vector2f(0.25f, 0.05f));
         guis.add(backgroundHealthBar);
         guis.add(healthBar);
-        guis.add(waterGui);
 
         /****************************************MOUSE PICKER****************************************/
 
@@ -177,11 +177,25 @@ public class MainGameLoop {
             playerPowers.forcePull(picker);
             playerPowers.forcePush();
 
-            fbos.bindReflectionFrameBuffer();
-            renderer.renderScene(entities,immovableEntities,terrains,lights,camera);
-            fbos.unbindCurrentFrameBuffer();
+            GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
-            renderer.renderScene(entities, immovableEntities, terrains, allLights, camera);
+            //RENDER REFLECTION TEXTURE
+            buffers.bindReflectionFrameBuffer();
+            float distance = 2 * (camera.getPosition().y - water.getHeight());
+            camera.getPosition().y -= distance;
+            camera.invertPitch();
+            renderer.renderScene(entities,immovableEntities,terrains,lights,camera,new Vector4f(0,1,0,-water.getHeight()));
+            camera.getPosition().y += distance;
+            camera.invertPitch();
+
+            //RENDER REFRACTION TEXTURE
+            buffers.bindRefractionFrameBuffer();
+            renderer.renderScene(entities,immovableEntities,terrains,lights,camera,new Vector4f(0,-1,0,water.getHeight()));
+
+            //RENDER TO SCREEN
+            GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+            buffers.unbindCurrentFrameBuffer();
+            renderer.renderScene(entities,immovableEntities,terrains,lights,camera, new Vector4f(0,-1,0,15));
             waterRenderer.render(waters,camera);
 
             float playersCurrentStamina = player.getCurrentStamina();
@@ -199,7 +213,7 @@ public class MainGameLoop {
 
         /****************************************CLEAN UP****************************************/
 
-        fbos.cleanUp();
+        buffers.cleanUp();
         guiRenderer.cleanUp();
         renderer.cleanUp();
         loader.cleanUp();
