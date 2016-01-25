@@ -68,7 +68,7 @@ public class MainGameLoop {
         WaterFrameBuffers buffers = new WaterFrameBuffers();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(75, -410, -1);
+        WaterTile water = new WaterTile(75, -410, -0.1f);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -184,7 +184,7 @@ public class MainGameLoop {
             float distance = 2 * (camera.getPosition().y - water.getHeight());
             camera.getPosition().y -= distance;
             camera.invertPitch();
-            renderer.renderScene(entities,immovableEntities,terrains,lights,camera,new Vector4f(0,1,0,-water.getHeight()));
+            renderer.renderScene(entities,immovableEntities,terrains,lights,camera,new Vector4f(0,1,0,-water.getHeight()+0.1f));
             camera.getPosition().y += distance;
             camera.invertPitch();
 
@@ -196,7 +196,7 @@ public class MainGameLoop {
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
             buffers.unbindCurrentFrameBuffer();
             renderer.renderScene(entities,immovableEntities,terrains,lights,camera, new Vector4f(0,-1,0,15));
-            waterRenderer.render(waters,camera);
+            waterRenderer.render(waters,camera,sun);
 
             float playersCurrentStamina = player.getCurrentStamina();
             GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("backgroundBar"),
