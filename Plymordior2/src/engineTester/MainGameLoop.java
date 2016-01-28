@@ -54,13 +54,28 @@ public class MainGameLoop {
         TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("grassy"));
         TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("grassFlowers"));
         TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("mud"));
+        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("snow"));
         //We place the four textures into a texture pack for the terrain to read
         TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
+        TerrainTexturePack snowPack = new TerrainTexturePack(snowTexture, rTexture, gTexture, bTexture);
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap2"));
         //load in texture pack, blend map, and height map to create the texture
-        Terrain terrain = new Terrain(0,-1, loader, texturePack, blendMap, "heightMap");
+        Terrain terrain = new Terrain(0,1, loader, texturePack, blendMap, "heightMap");
+        Terrain terrain2 = new Terrain(1,0, loader, texturePack, blendMap, "heightMap");
+        Terrain terrain3 = new Terrain(1,1, loader, texturePack, blendMap, "heightMap");
+        Terrain snowTerrain = new Terrain(0,0,loader,snowPack,blendMap,"heightMap");
+
         terrains.add(terrain);
+        terrains.add(snowTerrain);
+        terrains.add(terrain2);
+        terrains.add(terrain3);
+
+        Terrain[][] terrainArray = new Terrain[4][4];
+        terrainArray[0][1] = terrain;
+        terrainArray[1][0] = terrain2;
+        terrainArray[1][1] = terrain3;
+        terrainArray[0][0] = snowTerrain;
 
         /****************************************WATER****************************************/
 
@@ -78,7 +93,7 @@ public class MainGameLoop {
         //Our player model
         RawModel person = OBJLoader.loadObjModel("person",loader);
         TexturedModel man = new TexturedModel(person, new ModelTexture(loader.loadTexture("playerTexture")));
-        Player player = new Player(man, new Vector3f(100,0,-50),0,180,0,1);
+        Player player = new Player(man, new Vector3f(10,10,10),0,180,0,1);
         immovableEntities.add(player);
 
         //Pine Tree Model
@@ -170,7 +185,7 @@ public class MainGameLoop {
         /****************************************MAIN GAME LOOP****************************************/
 
         while(!Display.isCloseRequested()){
-            player.move(terrain);
+            player.move(Terrain.getCurrentTerrain(terrainArray, player));
             camera.move();
 
             picker.update();

@@ -71,7 +71,7 @@ public class MasterRenderer {
         entities.forEach(this::processEntity);
         immovableEntities.forEach(this::processEntity);
         terrains.forEach(this::processTerrain);
-        render(lights, camera,clipPlane);
+        render(lights, camera, clipPlane);
     }
 
     public void render(List<Light> lights, Camera camera, Vector4f clipPlane) {

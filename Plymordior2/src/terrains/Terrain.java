@@ -1,5 +1,6 @@
 package terrains;
 
+import entities.Player;
 import models.RawModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -11,6 +12,7 @@ import toolbox.Maths;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.List;
 
 /**
  * Created by Travis on 1/10/2016.
@@ -41,6 +43,10 @@ public class Terrain {
         return z;
     }
 
+    public static float getSIZE() {
+        return SIZE;
+    }
+
     public float getX() {
         return x;
     }
@@ -52,6 +58,24 @@ public class Terrain {
         this.x = gridX * SIZE;
         this.z = gridZ * SIZE;
         this.model = generateTerrain(loader, heightMap);
+    }
+
+    private static Terrain getTerrain(Terrain[][] terrains, Player player) {
+
+        float x = player.getPosition().x;
+        float z = player.getPosition().z;
+
+        float size = Terrain.SIZE;
+
+        if (x > terrains.length * size || x < 0 || z > terrains.length * size || z < 0) {
+            System.err.println("Player out of the terrain !");
+            System.exit(-1);
+        }
+
+        int gridX = (int) Math.floor(x / size);
+        int gridZ = (int) Math.floor(z / size);
+
+        return terrains[gridX][gridZ];
     }
 
     public float getHeightOfTerrain(float worldX, float worldZ){
@@ -181,6 +205,12 @@ public class Terrain {
 
     public TerrainTexturePack getTexturePack() {
         return texturePack;
+    }
+
+    public static Terrain getCurrentTerrain(Terrain[][] terrains, Player player){
+        int gridX = (int) Math.floor(player.getPosition().x/Terrain.SIZE);
+        int gridZ = (int) Math.floor(player.getPosition().z/Terrain.SIZE);
+        return terrains[gridX][gridZ];
     }
 
     public boolean isHeightMap (String normals, String textureCoords, String vertexPointers){
