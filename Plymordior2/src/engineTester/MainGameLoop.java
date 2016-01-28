@@ -83,7 +83,7 @@ public class MainGameLoop {
         WaterFrameBuffers buffers = new WaterFrameBuffers();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(75, -410, -0.1f);
+        WaterTile water = new WaterTile(75, 410, -0.1f);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -113,14 +113,14 @@ public class MainGameLoop {
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        entities.add(new Entity(lamp, new Vector3f(185,terrain.getHeightOfTerrain(185,-293), -293),0,0,0,1,0));
-        entities.add(new Entity(lamp, new Vector3f(370,terrain.getHeightOfTerrain(370,-300), -300),0,0,0,1,0));
-        entities.add(new Entity(lamp, new Vector3f(293,terrain.getHeightOfTerrain(293,-305), -305),0,0,0,1,0));
+        entities.add(new Entity(lamp, new Vector3f(185,terrain.getHeightOfTerrain(185,293), 293),0,0,0,1,0));
+        entities.add(new Entity(lamp, new Vector3f(370,terrain.getHeightOfTerrain(370,300), 300),0,0,0,1,0));
+        entities.add(new Entity(lamp, new Vector3f(293,terrain.getHeightOfTerrain(293,305), 305),0,0,0,1,0));
 
         //Adding 500 random ferns
         for (int i = 0; i < 500; i++) {
             float x = random.nextFloat() * 800;
-            float z = random.nextFloat() * -600;
+            float z = random.nextFloat() * 600;
             float y = terrain.getHeightOfTerrain(x,z);
             entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z),0,0,0,0.6f,6));
         }
@@ -128,13 +128,13 @@ public class MainGameLoop {
         //Adding 50 random trees
         for (int i = 0; i < 50; i++) {
             float x = random.nextFloat() * 800;
-            float z = random.nextFloat() * -600;
+            float z = random.nextFloat() * 600;
             float y = terrain.getHeightOfTerrain(x,z);
             entities.add(new Entity(tree, new Vector3f(x, y, z),0,0,0,3,0));
         }
 
         //Adding NPC
-        Entity npc = new Entity(man, new Vector3f(293,terrain.getHeightOfTerrain(293,-305), -305),0,0,0,1,10);
+        Entity npc = new Entity(man, new Vector3f(293,terrain.getHeightOfTerrain(293,305), 305),0,0,0,1,10);
         entities.add(npc);
 
         /****************************************LIGHTS****************************************/
@@ -147,11 +147,11 @@ public class MainGameLoop {
 
         Light sun = new Light(new Vector3f(0,1000,-7000),new Vector3f(1,1,1));
         lights.add(sun);
-        lights.add(new Light(new Vector3f(185,terrain.getHeightOfTerrain(185,-293)+13,-293),
+        lights.add(new Light(new Vector3f(185,terrain.getHeightOfTerrain(185,293)+13,293),
                 new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
-        lights.add(new Light(new Vector3f(370,terrain.getHeightOfTerrain(370,-300)+13,-300),
+        lights.add(new Light(new Vector3f(370,terrain.getHeightOfTerrain(370,300)+13,300),
                 new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
-        lights.add(new Light(new Vector3f(293,terrain.getHeightOfTerrain(293,-305)+13,-305), new Vector3f(2,2,0),
+        lights.add(new Light(new Vector3f(293,terrain.getHeightOfTerrain(293,305)+13,305), new Vector3f(2,2,0),
                 new Vector3f(1,0.01f,0.002f)));
 
         List<Light> allLights = new ArrayList<>();
