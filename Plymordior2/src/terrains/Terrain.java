@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class Terrain {
     private static final float SIZE = 800;
-    private static final float MAX_HEIGHT = 20;
+    private static final float MAX_HEIGHT = 30;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
 
     private float x;
@@ -30,10 +30,6 @@ public class Terrain {
     private boolean useHeightMap;
 
     private float[][] heights;
-
-    private FileWriter normalsWriter = null;
-    private FileWriter textureCoordsWriter = null;
-    private FileWriter vertexPointersWriter = null;
 
     public RawModel getModel() {
         return model;
@@ -105,13 +101,6 @@ public class Terrain {
         }
 
     private RawModel generateTerrain(Loader loader, String heightMap){
-        try {
-            normalsWriter = new FileWriter(new File("src/terrains/terrainNormals.txt"));
-            textureCoordsWriter = new FileWriter(new File("src/terrains/terrainTextureCoords.txt"));
-            vertexPointersWriter = new FileWriter(new File("src/terrains/terrainVertexPointers.txt"));
-        }catch (IOException e){
-            e.printStackTrace();
-        }
 
         BufferedImage image = null;
         try {
@@ -140,22 +129,6 @@ public class Terrain {
                 normals[vertexPointer*3+2] = normal.z;
                 textureCoords[vertexPointer*2] = (float)j/((float)VERTEX_COUNT - 1);
                 textureCoords[vertexPointer*2+1] = (float)i/((float)VERTEX_COUNT - 1);
-                try {
-                    if (vertexPointersWriter != null) {
-                        vertexPointersWriter.write(vertices[vertexPointer*3] + "," + vertices[vertexPointer*3+1] + "," +
-                                vertices[vertexPointer*3+2] + "\n");
-                    }
-                    if (textureCoordsWriter != null) {
-                        textureCoordsWriter.write(vertices[vertexPointer*3] + "," + vertices[vertexPointer*3+1] + "," +
-                                vertices[vertexPointer*3+2] + "\n");
-                    }
-                    if (normalsWriter != null) {
-                        normalsWriter.write(vertices[vertexPointer*3] + "," + vertices[vertexPointer*3+1] + "," +
-                                vertices[vertexPointer*3+2] + "\n");
-                    }
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
                 vertexPointer++;
             }
         }

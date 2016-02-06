@@ -59,7 +59,7 @@ public class MainGameLoop {
         TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
         TerrainTexturePack snowPack = new TerrainTexturePack(snowTexture, rTexture, gTexture, bTexture);
         //We load up a blendmap which will tell the terrain which texture to use at what time
-        TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap2"));
+        TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         //load in texture pack, blend map, and height map to create the texture
         Terrain terrain = new Terrain(0,1, loader, texturePack, blendMap, "heightMap");
         Terrain terrain2 = new Terrain(1,0, loader, texturePack, blendMap, "heightMap");
@@ -83,7 +83,7 @@ public class MainGameLoop {
         WaterFrameBuffers buffers = new WaterFrameBuffers();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(75, 410, -0.1f);
+        WaterTile water = new WaterTile(75, 410, -0.2f);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -142,20 +142,11 @@ public class MainGameLoop {
         List<Light> lights = new ArrayList<>();
         List<Light> powerLights = new ArrayList<>();
 
-        Light powerLight = new Light(new Vector3f(0,0,0), new Vector3f(2,2,0), new Vector3f(1,0.01f,0.002f));
-        powerLights.add(powerLight);
-
         Light sun = new Light(new Vector3f(0,1000,-7000),new Vector3f(1,1,1));
         lights.add(sun);
-        lights.add(new Light(new Vector3f(185,terrain.getHeightOfTerrain(185,293)+13,293),
-                new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
-        lights.add(new Light(new Vector3f(370,terrain.getHeightOfTerrain(370,300)+13,300),
-                new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
-        lights.add(new Light(new Vector3f(293,terrain.getHeightOfTerrain(293,305)+13,305), new Vector3f(2,2,0),
-                new Vector3f(1,0.01f,0.002f)));
 
         List<Light> allLights = new ArrayList<>();
-        allLights.addAll(powerLights);
+
         allLights.addAll(lights);
 
 
@@ -189,8 +180,6 @@ public class MainGameLoop {
             camera.move();
 
             picker.update();
-            playerPowers.forcePull(picker);
-            playerPowers.forcePush();
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
