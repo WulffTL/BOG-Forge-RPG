@@ -9,7 +9,6 @@ import terrains.Terrain;
 import toolbox.Maths;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,22 +41,22 @@ public class Player extends Entity {
         falling(terrain);
         checkInputs();
         currentSpeed *= (currentStamina/100);
-        super.increaseRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
+        super.increaseHRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
 
         float maxMove = RUN_SPEED * DisplayManager.getFrameTimeSeconds();
         float distance = currentSpeed * DisplayManager.getFrameTimeSeconds();
         float strafeDistance = strafeSpeed * DisplayManager.getFrameTimeSeconds();
 
-        float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotY())));
-        float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotY())));
-        float strafex = (float) (strafeDistance * Math.sin(Math.toRadians(super.getRotY() + 90)));
-        float strafez = (float) (strafeDistance * Math.cos(Math.toRadians(super.getRotY() + 90)));
+        float dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY())));
+        float dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY())));
+        float strafex = (float) (strafeDistance * Math.sin(Math.toRadians(super.gethRotY() + 90)));
+        float strafez = (float) (strafeDistance * Math.cos(Math.toRadians(super.gethRotY() + 90)));
 
         float moveX = Maths.betweenValues((strafex+dx),-maxMove, maxMove);
         float moveZ = Maths.betweenValues((strafez+dz),-maxMove, maxMove);
 
         if(terrain.getHeightOfTerrain(getPosition().x + moveX,getPosition().z + moveZ) <=
-                getPosition().y + 2){
+                getPosition().y + 4){
             super.increasePosition(moveX,0,moveZ);
         }
 

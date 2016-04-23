@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Travis on 1/10/2016.
  */
 public class Terrain {
-    private static final float SIZE = 800;
+    private static final float SIZE = 1024;
     private static final float MAX_HEIGHT = 30;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
 
@@ -27,25 +27,8 @@ public class Terrain {
     private RawModel model;
     private TerrainTexturePack texturePack;
     private TerrainTexture blendMap;
-    private boolean useHeightMap;
 
     private float[][] heights;
-
-    public RawModel getModel() {
-        return model;
-    }
-
-    public float getZ() {
-        return z;
-    }
-
-    public static float getSIZE() {
-        return SIZE;
-    }
-
-    public float getX() {
-        return x;
-    }
 
     public Terrain(int gridX, int gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap,
                    String heightMap) {
@@ -56,22 +39,20 @@ public class Terrain {
         this.model = generateTerrain(loader, heightMap);
     }
 
-    private static Terrain getTerrain(Terrain[][] terrains, Player player) {
+    public static float getSIZE() {
+        return SIZE;
+    }
 
-        float x = player.getPosition().x;
-        float z = player.getPosition().z;
+    public RawModel getModel() {
+        return model;
+    }
 
-        float size = Terrain.SIZE;
+    public float getZ() {
+        return z;
+    }
 
-        if (x > terrains.length * size || x < 0 || z > terrains.length * size || z < 0) {
-            System.err.println("Player out of the terrain !");
-            System.exit(-1);
-        }
-
-        int gridX = (int) Math.floor(x / size);
-        int gridZ = (int) Math.floor(z / size);
-
-        return terrains[gridX][gridZ];
+    public float getX() {
+        return x;
     }
 
     public float getHeightOfTerrain(float worldX, float worldZ){
@@ -161,7 +142,7 @@ public class Terrain {
     }
 
     private  float getHeight(int x, int z, BufferedImage image){
-        float height = 0;
+        float height;
             if (x < 0 || x >= image.getHeight() || z < 0 || z >= image.getHeight()) {
                 return 0;
             }
@@ -180,26 +161,12 @@ public class Terrain {
         return texturePack;
     }
 
-    public static Terrain getCurrentTerrain(Terrain[][] terrains, Player player){
-        int gridX = (int) Math.floor(player.getPosition().x/Terrain.SIZE);
-        int gridZ = (int) Math.floor(player.getPosition().z/Terrain.SIZE);
-        return terrains[gridX][gridZ];
-    }
-
-    public boolean isHeightMap (String normals, String textureCoords, String vertexPointers){
-        try{
-            BufferedReader normalsBReader = new BufferedReader(new FileReader(new File(normals)));
-            BufferedReader textureCoordsBReader = new BufferedReader(new FileReader(new File(textureCoords)));
-            BufferedReader vertexPointersBReader = new BufferedReader(new FileReader(new File(vertexPointers)));
-            if(normalsBReader.readLine() == null && textureCoordsBReader.readLine() == null && vertexPointersBReader.readLine() == null){
-                useHeightMap = true;
-            }else useHeightMap = false;
-            normalsBReader.close();
-            textureCoordsBReader.close();
-            vertexPointersBReader.close();
-        }catch (IOException e){
-            e.printStackTrace();
+    public static Terrain getCurrentTerrain(Terrain[][] terrains, float x, float z){
+        int gridX = (int) Math.floor(x/Terrain.SIZE);
+        int gridZ = (int) Math.floor(z/Terrain.SIZE);
+        if(!(gridX < 0 || gridX >= terrains.length || gridZ < 0 || gridZ >= terrains.length)) {
+            return terrains[gridX][gridZ];
         }
-        return useHeightMap;
+        else return terrains[0][0];
     }
 }

@@ -1,11 +1,7 @@
 package entities;
 
-import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
-import terrains.Terrain;
-
-import java.util.Random;
 
 /**
  * Created by Travis on 10/25/2015.
@@ -13,31 +9,41 @@ import java.util.Random;
 public class Entity {
     private TexturedModel model;
     private Vector3f position;
-    private float rotX,rotY,rotZ;
+    private float hRotX, hRotY, hRotZ;
     private float scale;
     private float boundingRadius;
 
     private int textureIndex = 0;
 
-    public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ,
+    public Entity (TexturedModel model) {
+        this.model = model;
+        this.position = new Vector3f(400,12,400);
+        this.hRotX = 0;
+        this.hRotY = 0;
+        this.hRotZ = 0;
+        this.scale = 1;
+        this.boundingRadius = 0;
+    }
+
+    public Entity(TexturedModel model, Vector3f position, float hRotX, float hRotY, float hRotZ,
                   float scale, float boundingRadius) {
         this.model = model;
         this.position = position;
-        this.rotX = rotX;
-        this.rotY = rotY;
-        this.rotZ = rotZ;
+        this.hRotX = hRotX;
+        this.hRotY = hRotY;
+        this.hRotZ = hRotZ;
         this.scale = scale;
         this.boundingRadius = boundingRadius;
     }
 
-    public Entity(TexturedModel model, int index, Vector3f position, float rotX, float rotY, float rotZ,
+    public Entity(TexturedModel model, int index, Vector3f position, float hRotX, float hRotY, float hRotZ,
                   float scale, float boundingRadius) {
         this.textureIndex = index;
         this.model = model;
         this.position = position;
-        this.rotX = rotX;
-        this.rotY = rotY;
-        this.rotZ = rotZ;
+        this.hRotX = hRotX;
+        this.hRotY = hRotY;
+        this.hRotZ = hRotZ;
         this.scale = scale;
         this.boundingRadius = boundingRadius;
     }
@@ -58,34 +64,18 @@ public class Entity {
         this.position.z+=dz;
     }
 
-    public void increaseRotation(float dx, float dy, float dz){
-        this.rotX += dx;
-        this.rotY += dy;
-        this.rotZ += dz;
-    }
-
-    public void moveTowards(Vector3f position, Terrain terrain){
-        this.position.x = (this.position.x + position.x)/2;
-        this.position.z = (this.position.z + position.z)/2;
-        this.position.y = terrain.getHeightOfTerrain(this.position.x, this.position.z);
-    }
-
-    public void moveAway(Vector3f movingFrom){
-        boolean PosX = movingFrom.x - this.position.x >0;
-        boolean PosZ = movingFrom.z - this.position.z >0;
-        if(PosX && PosZ){
-
-        }else if(!PosX && PosZ){
-
-        }else if(PosX && !PosZ){
-
-        }else {
-
-        }
+    public void increaseHRotation(float dx, float dy, float dz){
+        this.hRotX += dx;
+        this.hRotY += dy;
+        this.hRotZ += dz;
     }
 
     public TexturedModel getModel() {
         return model;
+    }
+
+    public void setModel(TexturedModel model) {
+        this.model = model;
     }
 
     public Vector3f getPosition() {
@@ -96,16 +86,20 @@ public class Entity {
         this.position = position;
     }
 
-    public float getRotX() {
-        return rotX;
+    public void setEntityHeight(float height){
+        this.position.y = height;
     }
 
-    public float getRotY() {
-        return rotY;
+    public float gethRotX() {
+        return hRotX;
     }
 
-    public float getRotZ() {
-        return rotZ;
+    public float gethRotY() {
+        return hRotY;
+    }
+
+    public float gethRotZ() {
+        return hRotZ;
     }
 
     public float getScale() {

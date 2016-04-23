@@ -1,6 +1,6 @@
 package entities;
 
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import terrains.Terrain;
@@ -13,9 +13,9 @@ public class Camera {
     private float distanceFromPlayer = 50;
     private float angleAroundPlayer = 0;
 
-    private Vector3f position = new Vector3f(100,35,50);
+    private Vector3f position = new Vector3f(400,15,300);
     private float pitch = 10;
-    private float yaw = 0;
+    private float yaw = 180;
     private float roll;
 
     private Player player;
@@ -25,13 +25,31 @@ public class Camera {
         this.player = player;
     }
 
+    public Camera(){}
+
+    /**
+     * This method is to be used for the start menu to create an environment that controls the scope of the camera
+     * only to where the entity is in view
+     */
+    public void startMenuMove(){
+        if(Mouse.isButtonDown(0)){
+            float pitchChange = Mouse.getDY() * 0.1f;
+            pitch -= pitchChange;
+            if(pitch < 2){
+                pitch = 2;
+            } else if(pitch > 14.5f){
+                pitch = 14.5f;
+            }
+        }
+    }
+
     public void move(){
         calculateZoom();
         calculateAngleAroundPlayer();
         float horizontalDistance = calculateHorizontalDistance();
         float verticalDistance = calculateVerticalDistance();
         calculateCameraPosition(horizontalDistance,verticalDistance);
-        this.yaw = 180 - (player.getRotY() + angleAroundPlayer);
+        this.yaw = 180 - (player.gethRotY() + angleAroundPlayer);
     }
 
     public Vector3f getPosition() {
@@ -55,7 +73,7 @@ public class Camera {
     }
 
     private void calculateCameraPosition(float horizontalDistance, float verticalDistance){
-        float theta = player.getRotY() + angleAroundPlayer;
+        float theta = player.gethRotY() + angleAroundPlayer;
         float offsetX = (float) (horizontalDistance * Math.sin(Math.toRadians(theta)));
         float offsetZ = (float) (horizontalDistance * Math.cos(Math.toRadians(theta)));
         position.x = player.getPosition().x - offsetX;
