@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-import org.w3c.dom.Text;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
@@ -33,38 +32,30 @@ public class StartMenu {
         MasterRenderer renderer = new MasterRenderer(loader);
 
         List<Light> lights = new ArrayList<>();
-        Light overheadLight = new Light(new Vector3f(0,1000,-7000),new Vector3f(1,1,1));
+        Light overheadLight = new Light(new Vector3f(4500,1000,4500),new Vector3f(1,1,1));
+        Light leftLight = new Light(new Vector3f(400,500,-4000), new Vector3f(1,1,1));
+        Light rightLight = new Light(new Vector3f(-4000,500,400), new Vector3f(1,1,1));
         lights.add(overheadLight);
+        lights.add(leftLight);
+        lights.add(rightLight);
 
         List<Terrain> terrains = new ArrayList<>();
-        TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grassy2"));
-        TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("grass"));
-        TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("grassFlowers"));
-        TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("mud"));
-        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("snow"));
-        TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
-        TerrainTexturePack snowPack = new TerrainTexturePack(snowTexture, rTexture, gTexture, bTexture);
-        TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-                terrains.add(new Terrain(i,j,loader,snowPack,blendMap,"mountainHeightMap"));
-            }
-        }
+        generateTerrain(loader, terrains);
 
         //Our player model
         List<Entity> entities = new ArrayList<>();
         List<Entity> immovableEntities = new ArrayList<>();
         List<TexturedModel> models = new ArrayList<>();
-        RawModel tree = OBJLoader.loadObjModel("lowPolyTree",loader);
-        RawModel cubePlayer = OBJLoader.loadObjModel("lastTry",loader);
-        RawModel lamp = OBJLoader.loadObjModel("lamp",loader);
-        TexturedModel lampModel = new TexturedModel(lamp, new ModelTexture(loader.loadTexture("lamp")));
-        TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        models.add(playerTexture);
-        TexturedModel testModel = new TexturedModel(tree, new ModelTexture(loader.loadTexture("lowPolyTree")));
-        models.add(testModel);
-        models.add(lampModel);
-        StartMenuEntity startMenuEntity = new StartMenuEntity(playerTexture);
+        RawModel playerCylinder = OBJLoader.loadObjModel("playerCylinder",loader);
+        RawModel cubePlayer = OBJLoader.loadObjModel("playerCube",loader);
+        RawModel spherePlayer = OBJLoader.loadObjModel("playerSphere",loader);
+        TexturedModel sphereModel = new TexturedModel(spherePlayer, new ModelTexture(loader.loadTexture("white")));
+        TexturedModel cubeModel = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
+        models.add(cubeModel);
+        TexturedModel cylinderModel = new TexturedModel(playerCylinder, new ModelTexture(loader.loadTexture("white")));
+        models.add(cylinderModel);
+        models.add(sphereModel);
+        StartMenuEntity startMenuEntity = new StartMenuEntity(cubeModel);
         entities.add(startMenuEntity);
         immovableEntities.add(startMenuEntity);
 
@@ -80,7 +71,6 @@ public class StartMenu {
                 startMenuEntity.switchModel(models,2);
             }
 
-            camera.startMenuMove();
             startMenuEntity.rotate();
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
             renderer.renderScene(entities,immovableEntities,terrains,lights,camera, new Vector4f(0,-1,0,15));
@@ -90,5 +80,19 @@ public class StartMenu {
         loader.cleanUp();
         DisplayManager.closeDisplay();
 
+    }
+
+    private static void generateTerrain(Loader loader, List<Terrain> terrains){
+        TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("grass"));
+        TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("grassFlowers"));
+        TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("mud"));
+        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("snow"));
+        TerrainTexturePack snowPack = new TerrainTexturePack(snowTexture, rTexture, gTexture, bTexture);
+        TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                terrains.add(new Terrain(i,j,loader,snowPack,blendMap,"mountainHeightMap"));
+            }
+        }
     }
 }
