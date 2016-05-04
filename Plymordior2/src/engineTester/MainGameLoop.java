@@ -35,7 +35,7 @@ import java.util.Random;
 
 public class MainGameLoop {
 
-    private static final int GRID_SIZE_TERRAINS = 32;
+    private static final int GRID_SIZE_TERRAINS = 9;
     public static Terrain[][] terrainArray = new Terrain[GRID_SIZE_TERRAINS][GRID_SIZE_TERRAINS];
 
     public static int getGridSizeTerrains(){

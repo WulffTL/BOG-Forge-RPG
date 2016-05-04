@@ -13,6 +13,18 @@ public class Camera {
     private float distanceFromPlayer = 50;
     private float angleAroundPlayer = 0;
 
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
+    }
+
     private Vector3f position = new Vector3f(400,15,350);
     private float pitch = -10;
     private float yaw = 180;

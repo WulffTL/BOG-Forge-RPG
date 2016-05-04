@@ -3,6 +3,7 @@ package toolbox;
 import entities.Camera;
 import entities.Entity;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -74,14 +75,23 @@ public class Maths {
         return minValue;
     }
 
-    public static float distanceBetween(Entity entity1, Entity entity2){
-        float x1 = entity1.getPosition().x;
-        float x2 = entity2.getPosition().x;
-        float y1 = entity1.getPosition().y;
-        float y2 = entity2.getPosition().y;
-        float z1 = entity1.getPosition().z;
-        float z2 = entity2.getPosition().z;
+    public static float distanceBetween(Vector3f v1, Vector3f v2){
+        float x1 = v1.x;
+        float x2 = v2.x;
+        float y1 = v1.y;
+        float y2 = v2.y;
+        float z1 = v1.z;
+        float z2 = v2.z;
 
         return (float) Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2),2) + Math.pow((z1-z2),2));
+    }
+
+    public static float distanceBetween(Vector2f v1, Vector2f v2){
+        float x1 = v1.x;
+        float x2 = v2.x;
+        float y1 = v1.y;
+        float y2 = v2.y;
+
+        return (float) Math.sqrt(Math.pow((x1-x2),2) + Math.pow((x1-x2),2));
     }
 }
