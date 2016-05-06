@@ -16,13 +16,11 @@ import java.util.List;
  */
 public class Player extends Entity {
 
-    private static final float RUN_SPEED = 100;
+    private static final float RUN_SPEED = 300;
     private static final float TURN_SPEED = 160;
-    private static final float GRAVITY = -50;
-    private static final float JUMP_POWER = 20;
+    private static final float GRAVITY = -40;
+    private static final float JUMP_POWER = 300;
     private static final float STAMNIA_DRAIN = 1 ;
-
-    private static final float TERRAIN_HEIGHT = 0;
 
     private float currentSpeed = 0;
     private float strafeSpeed = 0;
