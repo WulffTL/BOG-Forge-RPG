@@ -13,8 +13,20 @@ public class Camera {
     private float distanceFromPlayer = 50;
     private float angleAroundPlayer = 0;
 
-    private Vector3f position = new Vector3f(400,15,300);
-    private float pitch = 10;
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
+    }
+
+    private Vector3f position = new Vector3f(400,15,350);
+    private float pitch = -10;
     private float yaw = 180;
     private float roll;
 
@@ -31,17 +43,6 @@ public class Camera {
      * This method is to be used for the start menu to create an environment that controls the scope of the camera
      * only to where the entity is in view
      */
-    public void startMenuMove(){
-        if(Mouse.isButtonDown(0)){
-            float pitchChange = Mouse.getDY() * 0.1f;
-            pitch -= pitchChange;
-            if(pitch < 2){
-                pitch = 2;
-            } else if(pitch > 14.5f){
-                pitch = 14.5f;
-            }
-        }
-    }
 
     public void move(){
         calculateZoom();

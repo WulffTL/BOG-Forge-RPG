@@ -18,11 +18,9 @@ public class Player extends Entity {
 
     private static final float RUN_SPEED = 100;
     private static final float TURN_SPEED = 160;
-    private static final float GRAVITY = -50;
-    private static final float JUMP_POWER = 20;
+    private static final float GRAVITY = -80;
+    private static final float JUMP_POWER = 30;
     private static final float STAMNIA_DRAIN = 1 ;
-
-    private static final float TERRAIN_HEIGHT = 0;
 
     private float currentSpeed = 0;
     private float strafeSpeed = 0;
@@ -38,7 +36,6 @@ public class Player extends Entity {
     }
 
     public void move(Terrain terrain){
-        falling(terrain);
         checkInputs();
         currentSpeed *= (currentStamina/100);
         super.increaseHRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
@@ -68,8 +65,6 @@ public class Player extends Entity {
             isInAir = false;
             super.getPosition().y = terrainHeight;
         }
-        currentStamina -= staminaLost * DisplayManager.getFrameTimeSeconds();
-        currentStamina = Maths.betweenValues(currentStamina,0,100);
     }
 
     private  void jump(){
@@ -82,10 +77,8 @@ public class Player extends Entity {
     private void checkInputs(){
         if(Keyboard.isKeyDown(Keyboard.KEY_W) || (Mouse.isButtonDown(1) && Mouse.isButtonDown(0))){
             this.currentSpeed = RUN_SPEED;
-            this.staminaLost = STAMNIA_DRAIN;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
             this.currentSpeed = -0.5f*RUN_SPEED;
-            this.staminaLost = 0.4f*STAMNIA_DRAIN;
         }else {
             this.currentSpeed = 0;
         }
@@ -125,78 +118,4 @@ public class Player extends Entity {
 
     public float getCurrentStamina() {
         return currentStamina;
-    }
-
-    private void falling(Terrain terrain){
-        int timesToCheck=2;
-        float currentPlayerHeight = getPosition().y;
-        List<Float> nearbyHeights = new ArrayList<>();
-        for (int i = 0; i < timesToCheck; i++){
-            nearbyHeights.add(terrain.getHeightOfTerrain(getPosition().x + (i+1)*0.1f, getPosition().z + (i+1)*0.1f));
-            nearbyHeights.add(terrain.getHeightOfTerrain(getPosition().x + (i+1)*-0.1f, getPosition().z + (i+1)*0.1f));
-            nearbyHeights.add(terrain.getHeightOfTerrain(getPosition().x + (i+1)*0.1f, getPosition().z + (i+1)*-0.1f));
-            nearbyHeights.add(terrain.getHeightOfTerrain(getPosition().x + (i+1)*-0.1f, getPosition().z + (i+1)*-0.1f));
-        }
-        float minHeight = Maths.getMinValue(nearbyHeights);
-        int remainder = nearbyHeights.indexOf(minHeight) % 4;
-        int count = 0;
-        for(int i = remainder; i < nearbyHeights.size(); i += 4){
-            if(nearbyHeights.get(i) < currentPlayerHeight - 0.3f){
-                count++;
-            }
-        }
-        if(count == timesToCheck){
-            switch (remainder) {
-                case 0: for(int j = 0; j < timesToCheck; j++){
-                    increasePosition(0.1f,0,0.1f);
-                    upwardSpeed += 0.1f * GRAVITY * DisplayManager.getFrameTimeSeconds();
-                    super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
-                    float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x,super.getPosition().z);
-                    if(super.getPosition().y< terrainHeight){
-                        upwardSpeed = 0;
-                        isInAir = false;
-                        super.getPosition().y = terrainHeight;
-                    }
-                }
-                    break;
-                case 1: for(int j = 0; j < timesToCheck; j++){
-                    increasePosition(-0.1f,0,0.1f);
-                    upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
-                    super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
-                    float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x,super.getPosition().z);
-                    if(super.getPosition().y< terrainHeight){
-                        upwardSpeed = 0;
-                        isInAir = false;
-                        super.getPosition().y = terrainHeight;
-                    }
-                }
-                    break;
-                case 2: for(int j = 0; j < timesToCheck; j++){
-                    increasePosition(0.1f,0,-0.1f);
-                    upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
-                    super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
-                    float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x,super.getPosition().z);
-                    if(super.getPosition().y< terrainHeight){
-                        upwardSpeed = 0;
-                        isInAir = false;
-                        super.getPosition().y = terrainHeight;
-                    }
-                }
-                    break;
-                case 3: for(int j = 0; j < timesToCheck; j++){
-                    increasePosition(-0.1f,0,-0.1f);
-                    upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
-                    super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
-                    float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x,super.getPosition().z);
-                    if(super.getPosition().y< terrainHeight){
-                        upwardSpeed = 0;
-                        isInAir = false;
-                        super.getPosition().y = terrainHeight;
-                    }
-                }
-                    break;
-            }
-        }
-
-    }
-}
+    }}

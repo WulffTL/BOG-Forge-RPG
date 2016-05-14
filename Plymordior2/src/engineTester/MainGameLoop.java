@@ -35,8 +35,7 @@ import java.util.Random;
 
 public class MainGameLoop {
 
-    private static final int GRID_SIZE_TERRAINS = 32;
-    public static Terrain[][] terrainArray = new Terrain[GRID_SIZE_TERRAINS][GRID_SIZE_TERRAINS];
+    private static final int GRID_SIZE_TERRAINS = 9;
 
     public static int getGridSizeTerrains(){
         return GRID_SIZE_TERRAINS;
@@ -144,43 +143,7 @@ public class MainGameLoop {
 //        entities.add(new Entity(lamp, new Vector3f(370,Terrain.getCurrentTerrain(terrainArray,370,300).getHeightOfTerrain(370,300), 300),0,0,0,1,0));
 //        entities.add(new Entity(lamp, new Vector3f(293,Terrain.getCurrentTerrain(terrainArray,293,305).getHeightOfTerrain(293,305), 305),0,0,0,1,0));
 //
-//        //Adding 5000 random ferns
-//        for (int i = 0; i < 5000; i++) {
-//            float x = random.nextFloat() * 2400;
-//            float z = random.nextFloat() * 1800;
-//            float y = Terrain.getCurrentTerrain(terrainArray,x,z).getHeightOfTerrain(x,z);
-//            entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z),0,0,0,0.6f,6));
-//        }
 //
-//        //Adding 50 random trees
-//        for (int i = 0; i < 500; i++) {
-//            float x = random.nextFloat() * 2400;
-//            float z = random.nextFloat() * 1800;
-//            float y = Terrain.getCurrentTerrain(terrainArray,x,z).getHeightOfTerrain(x,z);
-//            entities.add(new Entity(tree, new Vector3f(x, y, z),0,0,0,3,0));
-//        }
-//
-//        //Adding NPCs
-//        ArrayList<NPC> NPCs = new ArrayList<>();
-//        NPC npc1 = new NPC(playerTexture, new Vector3f(393,Terrain.getCurrentTerrain(terrainArray,393,1305).getHeightOfTerrain(393,1305), 1305),
-//                0,0,0,1,10,new ArrayList<>(),new ArrayList<>());
-//        NPCs.add(npc1);
-//
-//        NPC npc2 = new NPC(playerTexture, new Vector3f(893,Terrain.getCurrentTerrain(terrainArray,893,105).getHeightOfTerrain(893,105), 105),
-//                0,0,0,1,10, new ArrayList<>(), new ArrayList<>());
-//        NPCs.add(npc2);
-//
-//        NPC npc3 = new NPC(playerTexture, new Vector3f(1493,Terrain.getCurrentTerrain(terrainArray,1493,305).getHeightOfTerrain(1493,305), 305),
-//                0,0,0,1,10, new ArrayList<>(), new ArrayList<>());
-//        NPCs.add(npc3);
-//
-//        npc1.addEvade(player);
-//        npc1.addPursue(theOneLamp);
-//        npc2.addEvade(player);
-//        npc2.addPursue(theOneLamp);
-//        npc3.addEvade(player);
-//        npc3.addPursue(theOneLamp);
-//        entities.addAll(NPCs);
 //
 //        /****************************************LIGHTS****************************************/
 //
@@ -197,19 +160,6 @@ public class MainGameLoop {
 //
 //        Camera camera = new Camera(player);
 //
-//        /****************************************GUIS****************************************/
-//
-//        List<GuiTexture> guis = new ArrayList<>();
-//        GuiTexture backgroundHealthBar = new GuiTexture(loader.loadTexture("backgroundBar"),
-//                new Vector2f(-0.6f, -0.8f), new Vector2f(0.25f, 0.05f));
-//        GuiTexture healthBar = new GuiTexture(loader.loadTexture("healthBar"),
-//                new Vector2f(-0.6f, -0.8f), new Vector2f(0.25f, 0.05f));
-//        guis.add(backgroundHealthBar);
-//        guis.add(healthBar);
-//
-//        /****************************************MOUSE PICKER****************************************/
-//
-//        MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix(), terrain);
 //
 //        /****************************************MAIN GAME LOOP****************************************/
 //
