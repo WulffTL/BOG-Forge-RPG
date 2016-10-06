@@ -19,7 +19,7 @@ public class OBJLoader {
     public static RawModel loadObjModel (String fileName, Loader loader){
         FileReader fileReader = null;
         try {
-            fileReader = new FileReader(new File("/home/wulfftl/IdeaProjects/BOG-Forge-RPG/Plymordior2/res/" + fileName + ".obj"));
+            fileReader = new FileReader(new File("./Plymordior2/res/" + fileName + ".obj"));
         } catch (FileNotFoundException e) {
             System.err.println("Couldn't load file!");
             e.printStackTrace();
