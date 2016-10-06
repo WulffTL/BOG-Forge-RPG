@@ -1,6 +1,5 @@
 package entities;
 
-import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import terrains.Terrain;
