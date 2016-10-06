@@ -46,13 +46,13 @@ public class StartMenu {
         List<Entity> entities = new ArrayList<>();
         List<Entity> immovableEntities = new ArrayList<>();
         List<TexturedModel> models = new ArrayList<>();
-        RawModel playerCylinder = OBJLoader.loadObjModel("playerCylinder",loader);
-        RawModel cubePlayer = OBJLoader.loadObjModel("playerCube",loader);
-        RawModel spherePlayer = OBJLoader.loadObjModel("playerSphere",loader);
-        TexturedModel sphereModel = new TexturedModel(spherePlayer, new ModelTexture(loader.loadTexture("white")));
-        TexturedModel cubeModel = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
+        RawModel playerCylinder = OBJLoader.loadObjModel("person",loader);
+        RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
+        RawModel spherePlayer = OBJLoader.loadObjModel("person",loader);
+        TexturedModel sphereModel = new TexturedModel(spherePlayer, new ModelTexture(loader.loadTexture("steel_floor")));
+        TexturedModel cubeModel = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("steel_floor")));
         models.add(cubeModel);
-        TexturedModel cylinderModel = new TexturedModel(playerCylinder, new ModelTexture(loader.loadTexture("white")));
+        TexturedModel cylinderModel = new TexturedModel(playerCylinder, new ModelTexture(loader.loadTexture("steel_floor")));
         models.add(cylinderModel);
         models.add(sphereModel);
         StartMenuEntity startMenuEntity = new StartMenuEntity(cubeModel);
@@ -86,12 +86,12 @@ public class StartMenu {
         TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("grass"));
         TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("grassFlowers"));
         TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("mud"));
-        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("snow"));
+        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("steel_floor"));
         TerrainTexturePack snowPack = new TerrainTexturePack(snowTexture, rTexture, gTexture, bTexture);
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         for(int i = 0; i < 3; i++){
             for(int j = 0; j < 3; j++){
-                terrains.add(new Terrain(i,j,loader,snowPack,blendMap,"mountainHeightMap"));
+                terrains.add(new Terrain(i,j,loader,snowPack,blendMap,"Heightmap"));
             }
         }
     }

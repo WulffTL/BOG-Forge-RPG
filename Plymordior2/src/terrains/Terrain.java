@@ -85,7 +85,7 @@ public class Terrain {
 
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new File("res/" + heightMap + ".png"));
+            image = ImageIO.read(new File("/home/wulfftl/IdeaProjects/BOG-Forge-RPG/Plymordior2/res/" + heightMap + ".png"));
         }catch (IOException e){
             e.printStackTrace();
         }
