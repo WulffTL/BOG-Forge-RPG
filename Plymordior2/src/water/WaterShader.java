@@ -8,8 +8,8 @@ import entities.Camera;
 
 public class WaterShader extends ShaderProgram {
 
-	private final static String VERTEX_FILE = "src/water/waterVertex.txt";
-	private final static String FRAGMENT_FILE = "src/water/waterFragment.txt";
+	private final static String VERTEX_FILE = "./Plymordior2/src/water/waterVertex.txt";
+	private final static String FRAGMENT_FILE = "./Plymordior2/src/water/waterFragment.txt";
 
 	private int location_modelMatrix;
 	private int location_viewMatrix;
