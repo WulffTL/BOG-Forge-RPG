@@ -35,7 +35,12 @@ public class Player extends Entity {
         super(model, position, rotX, rotY, rotZ, scale, 1);
     }
 
+    /**
+     * Moves the player based on user input as well as the current terrain
+     * @param terrain the terrain the player is currently occupying, used for yPos ((TODO: This must be removed))
+     */
     public void move(Terrain terrain){
+        //checkInputs() will set the values for movement
         checkInputs();
         currentSpeed *= (currentStamina/100);
         super.increaseHRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
@@ -52,6 +57,7 @@ public class Player extends Entity {
         float moveX = Maths.betweenValues((strafex+dx),-maxMove, maxMove);
         float moveZ = Maths.betweenValues((strafez+dz),-maxMove, maxMove);
 
+        //TODO: This current move setup allows players to run faster by strafing and running
         if(terrain.getHeightOfTerrain(getPosition().x + moveX,getPosition().z + moveZ) <=
                 getPosition().y + 4){
             super.increasePosition(moveX,0,moveZ);
@@ -67,6 +73,9 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * This will increase the players upward speed by their jump power. The jump power will decrease over time
+     */
     private  void jump(){
         if(!isInAir) {
             this.upwardSpeed = JUMP_POWER;
@@ -74,15 +83,19 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Checks for user input and appropriately sets values to various variables related to the player's movement
+     */
     private void checkInputs(){
-        if(Keyboard.isKeyDown(Keyboard.KEY_W) || (Mouse.isButtonDown(1) && Mouse.isButtonDown(0))){
+        //Check for moving forward/backwards
+        if(Keyboard.isKeyDown(Keyboard.KEY_W) || (Mouse.isButtonDown(0) && Mouse.isButtonDown(1))){
             this.currentSpeed = RUN_SPEED;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
             this.currentSpeed = -0.5f*RUN_SPEED;
         }else {
             this.currentSpeed = 0;
         }
-
+        //Check for left/right strafing movement
         if(Keyboard.isKeyDown(Keyboard.KEY_Q)){
             this.strafeSpeed = RUN_SPEED;
             this.staminaLost = STAMNIA_DRAIN;
@@ -92,7 +105,7 @@ public class Player extends Entity {
         }else {
             this.strafeSpeed = 0;
         }
-
+        //Check for turning
         if(Keyboard.isKeyDown(Keyboard.KEY_D)){
             this.currentTurnSpeed = -TURN_SPEED;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_A)){
@@ -100,9 +113,9 @@ public class Player extends Entity {
         }else {
             this.currentTurnSpeed = 0;
         }
-
+        //Check for mouse inputs
         if(Mouse.isButtonDown(1)){
-            this.currentTurnSpeed = Mouse.getDX()*100;
+            this.currentTurnSpeed = -Mouse.getDX()*20;
         }
 
         if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
@@ -114,6 +127,10 @@ public class Player extends Entity {
             this.staminaLost = -20*STAMNIA_DRAIN;
         }
 
+    }
+
+    public void printCurrentLocation() {
+        System.out.printf("x Position: %f\ny Position: %f\nz Position: %f",getPosition().getX(),getPosition().getY(),getPosition().getZ());
     }
 
     public float getCurrentStamina() {

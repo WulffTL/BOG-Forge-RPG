@@ -25,6 +25,7 @@ import water.WaterRenderer;
 import water.WaterShader;
 import water.WaterTile;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,7 +42,7 @@ public class MainGameLoop {
         return GRID_SIZE_TERRAINS;
     }
 
-   public static void main(String[] args) {
+    public static void main(String[] args) {
 
         DisplayManager.createDisplay();
         Loader loader = new Loader();
@@ -59,46 +60,22 @@ public class MainGameLoop {
         TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("grass"));
         TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("grassFlowers"));
         TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("mud"));
-        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("white"));
+        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("steel_floor"));
         //We place the four textures into a texture pack for the terrain to read
         TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
         TerrainTexturePack snowPack = new TerrainTexturePack(snowTexture, rTexture, gTexture, bTexture);
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         //load in texture pack, blend map, and height map to create the texture
-        Terrain snowTerrain = new Terrain(0,0,loader,snowPack,blendMap,"white");
+        Terrain snowTerrain = new Terrain(0,0,loader,snowPack,blendMap,"heightMap1");
         Terrain terrain = new Terrain(0,1, loader, texturePack, blendMap, "white");
-        Terrain terrain2 = new Terrain(1,0, loader, texturePack, blendMap, "white");
-        Terrain terrain3 = new Terrain(1,1, loader, texturePack, blendMap, "white");
-        Terrain terrain4 = new Terrain(1,2, loader, texturePack, blendMap, "white");
-        Terrain terrain5 = new Terrain(2,1,loader,snowPack,blendMap,"white");
-        Terrain terrain6 = new Terrain(2,2,loader,snowPack,blendMap,"white");
-        Terrain terrain7 = new Terrain(2,0,loader,snowPack,blendMap,"white");
-        Terrain terrain8 = new Terrain(0,2,loader,snowPack,blendMap,"white");
-
 
         terrains.add(terrain);
         terrains.add(snowTerrain);
-        terrains.add(terrain2);
-        terrains.add(terrain3);
-        terrains.add(terrain4);
-        terrains.add(terrain5);
-        terrains.add(terrain6);
-        terrains.add(terrain7);
-        terrains.add(terrain8);
 
-
-       Terrain[][] terrainArray = new Terrain[3][3];
+        Terrain[][] terrainArray = new Terrain[3][3];
         terrainArray[0][0] = snowTerrain;
         terrainArray[0][1] = terrain;
-        terrainArray[1][0] = terrain2;
-        terrainArray[1][1] = terrain3;
-        terrainArray[1][2] = terrain4;
-        terrainArray[2][1] = terrain5;
-        terrainArray[2][2] = terrain6;
-        terrainArray[2][0] = terrain7;
-        terrainArray[0][2] = terrain8;
-
 
         /****************************************WATER****************************************/
 
@@ -106,7 +83,7 @@ public class MainGameLoop {
         WaterFrameBuffers buffers = new WaterFrameBuffers();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(150, 150, Terrain.getCurrentTerrain(terrainArray,100,100).getHeightOfTerrain(100,100) - 0.3f);
+        WaterTile water = new WaterTile(287, 56, Terrain.getCurrentTerrain(terrainArray,287,56).getHeightOfTerrain(287,56) + 2f);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -116,7 +93,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture, new Vector3f(700,Terrain.getCurrentTerrain(terrainArray,700,1000).getHeightOfTerrain(700,1000),1000),0,180,0,1);
+        Player player = new Player(playerTexture, new Vector3f(287,Terrain.getCurrentTerrain(terrainArray,287,56).getHeightOfTerrain(287,56),56),0,180,0,1);
         immovableEntities.add(player);
 
         //Pine Tree Model
@@ -141,8 +118,12 @@ public class MainGameLoop {
         entities.add(new Entity(lamp, new Vector3f(370,Terrain.getCurrentTerrain(terrainArray,370,300).getHeightOfTerrain(370,300), 300),0,0,0,1,0));
         entities.add(new Entity(lamp, new Vector3f(293,Terrain.getCurrentTerrain(terrainArray,293,305).getHeightOfTerrain(293,305), 305),0,0,0,1,0));
 
-       ArrayList<NPC> NPCs = new ArrayList<>();
-
+        for(int i = 0; i < 500; i++) {
+            float xPos = Math.abs(random.nextInt() % 800);
+            float zPos = Math.abs(random.nextInt() % 800);
+            float yPos = Terrain.getCurrentTerrain(terrainArray,xPos,zPos).getHeightOfTerrain(xPos,zPos);
+            immovableEntities.add(new Entity(fern, new Vector3f(xPos,yPos,zPos),0,0,0,1,0));
+        }
 
         /****************************************LIGHTS****************************************/
 
@@ -169,6 +150,10 @@ public class MainGameLoop {
 
             if(Time.isTopOfSecond(secondsPassed)){
                 secondsPassed++;
+            }
+
+            if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                player.printCurrentLocation();
             }
 
             camera.move();

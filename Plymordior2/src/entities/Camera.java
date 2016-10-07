@@ -82,11 +82,11 @@ public class Camera {
     }
 
     private float calculateHorizontalDistance(){
-        float horiztontalDistance = (float) (distanceFromPlayer * Math.cos(Math.toRadians(pitch)));
-        if(horiztontalDistance < 0){
-            horiztontalDistance = 0;
+        float horizontalDistance = (float) (distanceFromPlayer * Math.cos(Math.toRadians(pitch)));
+        if(horizontalDistance < 0){
+            horizontalDistance = 0;
         }
-        return horiztontalDistance;
+        return horizontalDistance;
 
     }
 
@@ -104,14 +104,17 @@ public class Camera {
         distanceFromPlayer -= zoomLevel;
     }
 
+    /**
+     * Changes the angle around the player based on mouse input from the user
+     */
     public void calculateAngleAroundPlayer(){
         if(Mouse.isButtonDown(0)){
             float angleChange = Mouse.getDX() * 0.3f;
             angleAroundPlayer -= angleChange;
-            float pitchChange = Mouse.getDY() * 0.1f;
+            float pitchChange = Mouse.getDY() * 0.3f;
             pitch -= pitchChange;
-            if(pitch < 0){
-                pitch = 0;
+            if(pitch < 10){
+                pitch = 10;
             } else if(pitch > 90){
                 pitch = 90;
             }
@@ -123,6 +126,17 @@ public class Camera {
             } else if(pitch > 90){
                 pitch = 90;
             }
+        }
+        if(Mouse.isButtonDown(0) && Mouse.isButtonDown(1)) {
+            movePlayerParallelWithCamera();
+        }
+    }
+
+    private void movePlayerParallelWithCamera() {
+        while(angleAroundPlayer <= -0.3f || angleAroundPlayer >= 0.3f) {
+            int multiplier = ((angleAroundPlayer < 0 ? -1 : 1));
+            player.increaseHRotation(0,multiplier*0.1f,0);
+            angleAroundPlayer -= multiplier*0.1f;
         }
     }
 }
