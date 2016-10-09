@@ -56,12 +56,7 @@ public class Player extends Entity {
 
         float moveX = Maths.betweenValues((strafex+dx),-maxMove, maxMove);
         float moveZ = Maths.betweenValues((strafez+dz),-maxMove, maxMove);
-
-        //TODO: This current move setup allows players to run faster by strafing and running
-        if(terrain.getHeightOfTerrain(getPosition().x + moveX,getPosition().z + moveZ) <=
-                getPosition().y + 4){
             super.increasePosition(moveX,0,moveZ);
-        }
 
         upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
         super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);

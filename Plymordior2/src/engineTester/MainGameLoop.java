@@ -13,19 +13,16 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import renderEngine.*;
 import models.RawModel;
-import startMenu.StartMenu;
 import terrains.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
-import toolbox.MousePicker;
 import toolbox.Time;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
 import water.WaterShader;
 import water.WaterTile;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -68,7 +65,7 @@ public class MainGameLoop {
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         //load in texture pack, blend map, and height map to create the texture
         Terrain snowTerrain = new Terrain(0,0,loader,snowPack,blendMap,"heightMap1");
-        Terrain terrain = new Terrain(0,1, loader, texturePack, blendMap, "white");
+        Terrain terrain = new Terrain(0,1, loader, texturePack, blendMap, "heightMap2");
 
         terrains.add(terrain);
         terrains.add(snowTerrain);
@@ -129,7 +126,7 @@ public class MainGameLoop {
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector3f(0,1000,-7000),new Vector3f(1,1,1));
+        Light sun = new Light(new Vector3f(400,400,100),new Vector3f(1,1,1));
         lights.add(sun);
 
         List<Light> allLights = new ArrayList<>();
