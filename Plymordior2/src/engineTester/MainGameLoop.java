@@ -1,6 +1,9 @@
 package engineTester;
 
 import entities.*;
+import fontMeshCreator.FontType;
+import fontMeshCreator.GUIText;
+import fontRendering.TextMaster;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.TexturedModel;
@@ -23,6 +26,7 @@ import water.WaterRenderer;
 import water.WaterShader;
 import water.WaterTile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -43,6 +47,11 @@ public class MainGameLoop {
 
         DisplayManager.createDisplay();
         Loader loader = new Loader();
+        TextMaster.init(loader);
+
+        /****************************************FONT STUFF****************************************/
+        FontType font = new FontType(loader.loadTexture("tahoma"), new File("./Plymordior2/res/tahoma.fnt"));
+        GUIText text = new GUIText("This is a test text!", 1, font, new Vector2f(0, 0), 1f, true);
 
         /****************************************RENDERERS****************************************/
 
@@ -195,11 +204,14 @@ public class MainGameLoop {
                     new Vector2f(-0.6f - 0.25f + (0.25f * (playersCurrentStamina/100)), -0.9f),
                     new Vector2f(0.25f * (playersCurrentStamina/100), 0.05f));
 
+            TextMaster.render();
+
             DisplayManager.updateDisplay();
         }
 
         /****************************************CLEAN UP****************************************/
 
+        TextMaster.cleanUp();
         buffers.cleanUp();
         guiRenderer.cleanUp();
         renderer.cleanUp();
