@@ -73,18 +73,37 @@ public class MainGameLoop {
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         //load in texture pack, blend map, and height map to create the texture
-        Terrain snowTerrain = new Terrain(0,0,loader,snowPack,blendMap,"heightMap1");
-        Terrain terrain = new Terrain(0,1, loader, texturePack, blendMap, "heightMap2");
-        Terrain terrain2 = new Terrain(0,2,loader,texturePack,blendMap,"heightMap3");
+        Terrain terrain0000 = new Terrain(0,0,loader,snowPack,blendMap,"heightMap1");
+        Terrain terrain0001 = new Terrain(0,1, loader, texturePack, blendMap, "heightMap2");
+        Terrain terrain0002 = new Terrain(0,2,loader,texturePack,blendMap,"heightMap3");
+        Terrain terrain0100 = new Terrain(1,0, loader, texturePack, blendMap, "heightMap0100");
+        Terrain terrain0101 = new Terrain(1,1, loader, texturePack, blendMap, "heightMap0101");
+        Terrain terrain0102 = new Terrain(1,2, loader, texturePack, blendMap, "heightMap2");
+        Terrain terrain0200 = new Terrain(2,0, loader, texturePack, blendMap, "heightMap2");
+        Terrain terrain0201 = new Terrain(2,1, loader, texturePack, blendMap, "heightMap2");
+        Terrain terrain0202 = new Terrain(2,2, loader, texturePack, blendMap, "heightMap2");
 
-        terrains.add(terrain);
-        terrains.add(snowTerrain);
-        terrains.add(terrain2);
+        terrains.add(terrain0000);
+        terrains.add(terrain0001);
+        terrains.add(terrain0002);
+        terrains.add(terrain0100);
+        terrains.add(terrain0101);
+        terrains.add(terrain0102);
+        terrains.add(terrain0200);
+        terrains.add(terrain0201);
+        terrains.add(terrain0202);
 
         Terrain[][] terrainArray = new Terrain[3][3];
-        terrainArray[0][0] = snowTerrain;
-        terrainArray[0][1] = terrain;
-        terrainArray[0][2] = terrain2;
+        terrainArray[0][0] = terrain0000;
+        terrainArray[0][1] = terrain0001;
+        terrainArray[0][2] = terrain0002;
+        terrainArray[1][0] = terrain0100;
+        terrainArray[1][1] = terrain0101;
+        terrainArray[1][2] = terrain0102;
+        terrainArray[2][0] = terrain0200;
+        terrainArray[2][1] = terrain0201;
+        terrainArray[2][2] = terrain0202;
+
 
         /****************************************WATER****************************************/
 

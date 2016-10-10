@@ -56,12 +56,12 @@ public class Player extends Entity {
 
         float moveX = Maths.betweenValues((strafex+dx),-maxMove, maxMove);
         float moveZ = Maths.betweenValues((strafez+dz),-maxMove, maxMove);
-            super.increasePosition(moveX,0,moveZ);
+        super.increasePosition(moveX,0,moveZ);
 
         upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
         super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
         float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x,super.getPosition().z);
-        if(super.getPosition().y< terrainHeight){
+        if(super.getPosition().y < terrainHeight && terrainHeight != 0){
             upwardSpeed = 0;
             isInAir = false;
             super.getPosition().y = terrainHeight;
