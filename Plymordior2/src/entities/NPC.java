@@ -4,10 +4,7 @@ import engineTester.MainGameLoop;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import renderEngine.DisplayManager;
-import terrains.Terrain;
-import toolbox.Maths;
-import toolbox.Time;
+import terrains.TerrainSquare;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,7 +15,7 @@ import java.util.Random;
 public class NPC extends Entity {
 
     private static final float NPC_SPEED = 45;
-    private static final float OUT_OF_BOUNDS = MainGameLoop.getGridSizeTerrains()*Terrain.getSIZE();
+    private static final float OUT_OF_BOUNDS = MainGameLoop.getGridSizeTerrains()* TerrainSquare.getSIZE();
     private static Vector2f evadeVector;
     private static Vector2f pursueVector;
     private static Vector2f moveVector = new Vector2f(1,0);

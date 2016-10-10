@@ -2,7 +2,7 @@ package entities;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
-import terrains.Terrain;
+import terrains.TerrainSquare;
 
 /**
  * Created by Travis on 10/26/2015.
@@ -30,7 +30,7 @@ public class Camera {
     private float roll;
 
     private Player player;
-    private Terrain terrain;
+    private TerrainSquare terrain;
 
     public Camera(Player player){
         this.player = player;

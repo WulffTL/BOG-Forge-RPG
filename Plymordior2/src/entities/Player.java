@@ -5,7 +5,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
-import terrains.Terrain;
+import terrains.TerrainSquare;
 import toolbox.Maths;
 
 /**
@@ -36,7 +36,7 @@ public class Player extends Entity {
      * Moves the player based on user input as well as the current terrain
      * @param terrain the terrain the player is currently occupying, used for yPos ((TODO: This must be removed))
      */
-    public void move(Terrain terrain){
+    public void move(TerrainSquare terrain){
         //checkInputs() will set the values for movement
         checkInputs();
         currentSpeed *= (currentStamina/100);

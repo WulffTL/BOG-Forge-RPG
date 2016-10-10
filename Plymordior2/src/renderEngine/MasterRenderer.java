@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector4f;
 import shaders.StaticShader;
 import shaders.TerrainShader;
 import skybox.SkyboxRenderer;
-import terrains.Terrain;
+import terrains.TerrainSquare;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class MasterRenderer {
     private TerrainShader terrainShader = new TerrainShader();
 
     private Map<TexturedModel,List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
-    private List<Terrain> terrains = new ArrayList<Terrain>();
+    private List<TerrainSquare> terrains = new ArrayList<TerrainSquare>();
 
     private SkyboxRenderer skyboxRenderer;
 
@@ -66,8 +66,8 @@ public class MasterRenderer {
         GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
-    public void renderScene(List<Entity> entities,List<Entity> immovableEntities,
-                            List<Terrain> terrains, List<Light> lights, Camera camera, Vector4f clipPlane){
+    public void renderScene(List<Entity> entities, List<Entity> immovableEntities,
+                            List<TerrainSquare> terrains, List<Light> lights, Camera camera, Vector4f clipPlane){
         entities.forEach(this::processEntity);
         immovableEntities.forEach(this::processEntity);
         terrains.forEach(this::processTerrain);
@@ -95,7 +95,7 @@ public class MasterRenderer {
         entities.clear();
     }
 
-    public void processTerrain(Terrain terrain){
+    public void processTerrain(TerrainSquare terrain){
         terrains.add(terrain);
     }
 

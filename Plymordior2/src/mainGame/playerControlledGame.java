@@ -1,19 +1,15 @@
 package mainGame;
 
 import entities.*;
-import models.RawModel;
-import models.TexturedModel;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
-import renderEngine.OBJLoader;
-import terrains.Terrain;
-import textures.ModelTexture;
+import terrains.TerrainSquare;
+
 import java.util.List;
 
 /**
@@ -26,8 +22,8 @@ public class PlayerControlledGame {
     private List<Entity> entities;
     private List<Entity> immovableEntities;
     private List<Light> lights;
-    private Terrain[][] terrainArray;
-    private List<Terrain> terrains;
+    private TerrainSquare[][] terrainArray;
+    private List<TerrainSquare> terrains;
     private MasterRenderer renderer;
     private Player player;
     private Camera camera;
@@ -35,7 +31,7 @@ public class PlayerControlledGame {
 
 
     public PlayerControlledGame(Loader loader, List<Entity> entities, List<Entity> immovableEntities, List<Light> lights,
-                         Terrain[][] terrainArray, List<Terrain> terrains, MasterRenderer renderer, Player player
+                                TerrainSquare[][] terrainArray, List<TerrainSquare> terrains, MasterRenderer renderer, Player player
                          ){
         this.loader = loader;
         this.entities = entities;
@@ -53,7 +49,7 @@ public class PlayerControlledGame {
 
         entities.add(player);
         while(!Display.isCloseRequested()){
-            player.move(Terrain.getCurrentTerrain(terrainArray, player.getPosition().x, player.getPosition().z));
+            player.move(TerrainSquare.getCurrentTerrain(terrainArray, player.getPosition().x, player.getPosition().z));
             camera.move();
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
             renderer.renderScene(entities,immovableEntities,terrains,lights,camera,clipPlane);

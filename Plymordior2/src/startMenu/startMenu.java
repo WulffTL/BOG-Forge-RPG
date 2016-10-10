@@ -13,7 +13,7 @@ import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
-import terrains.Terrain;
+import terrains.TerrainSquare;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
@@ -39,7 +39,7 @@ public class StartMenu {
         lights.add(leftLight);
         lights.add(rightLight);
 
-        List<Terrain> terrains = new ArrayList<>();
+        List<TerrainSquare> terrains = new ArrayList<>();
         generateTerrain(loader, terrains);
 
         //Our player model
@@ -82,7 +82,7 @@ public class StartMenu {
 
     }
 
-    private static void generateTerrain(Loader loader, List<Terrain> terrains){
+    private static void generateTerrain(Loader loader, List<TerrainSquare> terrains){
         TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("grass"));
         TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("grassFlowers"));
         TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("mud"));
@@ -91,7 +91,7 @@ public class StartMenu {
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         for(int i = 0; i < 3; i++){
             for(int j = 0; j < 3; j++){
-                terrains.add(new Terrain(i,j,loader,snowPack,blendMap,"white"));
+                terrains.add(new TerrainSquare(i,j,loader,snowPack,blendMap,"white"));
             }
         }
     }

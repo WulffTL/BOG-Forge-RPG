@@ -1,6 +1,5 @@
 package terrains;
 
-import entities.Player;
 import models.RawModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -12,12 +11,11 @@ import toolbox.Maths;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.List;
 
 /**
  * Created by Travis on 1/10/2016.
  */
-public class Terrain {
+public class TerrainSquare {
     private static final float SIZE = 1400;
     private static final float MAX_HEIGHT = 80;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
@@ -30,8 +28,8 @@ public class Terrain {
 
     private float[][] heights;
 
-    public Terrain(int gridX, int gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap,
-                   String heightMap) {
+    public TerrainSquare(int gridX, int gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap,
+                         String heightMap) {
         this.texturePack = texturePack;
         this.blendMap = blendMap;
         this.x = gridX * SIZE;
@@ -161,9 +159,9 @@ public class Terrain {
         return texturePack;
     }
 
-    public static Terrain getCurrentTerrain(Terrain[][] terrains, float x, float z){
-        int gridX = (int) Math.floor(x/Terrain.SIZE);
-        int gridZ = (int) Math.floor(z/Terrain.SIZE);
+    public static TerrainSquare getCurrentTerrain(TerrainSquare[][] terrains, float x, float z){
+        int gridX = (int) Math.floor(x/ TerrainSquare.SIZE);
+        int gridZ = (int) Math.floor(z/ TerrainSquare.SIZE);
         if(!(gridX < 0 || gridX >= terrains.length || gridZ < 0 || gridZ >= terrains.length)) {
             return terrains[gridX][gridZ];
         }

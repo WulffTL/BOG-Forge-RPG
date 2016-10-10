@@ -1,7 +1,5 @@
 package textures;
 
-import terrains.Terrain;
-
 /**
  * Created by Travis on 1/12/2016.
  */
