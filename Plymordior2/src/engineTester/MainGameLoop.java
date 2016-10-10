@@ -111,7 +111,7 @@ public class MainGameLoop {
         WaterFrameBuffers buffers = new WaterFrameBuffers();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(319, 1266, Terrain.getCurrentTerrain(terrainArray,319,1266).getHeightOfTerrain(319,1266) + 18f);
+        WaterTile water = new WaterTile(2122, 1816, Terrain.getCurrentTerrain(terrainArray,2122,1816).getHeightOfTerrain(2122,1816) + 0.8f);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -121,7 +121,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture, new Vector3f(87,Terrain.getCurrentTerrain(terrainArray,87,1356).getHeightOfTerrain(87,56),1356),0,180,0,1);
+        Player player = new Player(playerTexture, new Vector3f(87,Terrain.getCurrentTerrain(terrainArray,2100,1800).getHeightOfTerrain(2100,1800),1800),0,180,0,1);
         immovableEntities.add(player);
 
         //Pine Tree Model

@@ -8,9 +8,6 @@ import renderEngine.DisplayManager;
 import terrains.Terrain;
 import toolbox.Maths;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Travis on 1/12/2016.
  */
@@ -20,7 +17,7 @@ public class Player extends Entity {
     private static final float TURN_SPEED = 160;
     private static final float GRAVITY = -80;
     private static final float JUMP_POWER = 30;
-    private static final float STAMNIA_DRAIN = 1 ;
+    private static final float STAMINA_DRAIN = 1 ;
 
     private float currentSpeed = 0;
     private float strafeSpeed = 0;
@@ -93,10 +90,10 @@ public class Player extends Entity {
         //Check for left/right strafing movement
         if(Keyboard.isKeyDown(Keyboard.KEY_Q)){
             this.strafeSpeed = RUN_SPEED;
-            this.staminaLost = STAMNIA_DRAIN;
+            this.staminaLost = STAMINA_DRAIN;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
             this.strafeSpeed = -RUN_SPEED;
-            this.staminaLost = STAMNIA_DRAIN;
+            this.staminaLost = STAMINA_DRAIN;
         }else {
             this.strafeSpeed = 0;
         }
@@ -115,17 +112,17 @@ public class Player extends Entity {
 
         if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
             jump();
-            this.staminaLost = STAMNIA_DRAIN;
+            this.staminaLost = STAMINA_DRAIN;
         }
 
         if(this.currentSpeed == 0){
-            this.staminaLost = -20*STAMNIA_DRAIN;
+            this.staminaLost = -20* STAMINA_DRAIN;
         }
 
     }
 
     public void printCurrentLocation() {
-        System.out.printf("x Position: %f\ny Position: %f\nz Position: %f",getPosition().getX(),getPosition().getY(),getPosition().getZ());
+        System.out.printf("x Position: %f\ny Position: %f\nz Position: %f\n",getPosition().getX(),getPosition().getY(),getPosition().getZ());
     }
 
     public float getCurrentStamina() {
