@@ -66,13 +66,16 @@ public class MainGameLoop {
         //load in texture pack, blend map, and height map to create the texture
         Terrain snowTerrain = new Terrain(0,0,loader,snowPack,blendMap,"heightMap1");
         Terrain terrain = new Terrain(0,1, loader, texturePack, blendMap, "heightMap2");
+        Terrain terrain2 = new Terrain(0,2,loader,texturePack,blendMap,"heightMap3");
 
         terrains.add(terrain);
         terrains.add(snowTerrain);
+        terrains.add(terrain2);
 
         Terrain[][] terrainArray = new Terrain[3][3];
         terrainArray[0][0] = snowTerrain;
         terrainArray[0][1] = terrain;
+        terrainArray[0][2] = terrain2;
 
         /****************************************WATER****************************************/
 
@@ -80,7 +83,7 @@ public class MainGameLoop {
         WaterFrameBuffers buffers = new WaterFrameBuffers();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(287, 56, Terrain.getCurrentTerrain(terrainArray,287,56).getHeightOfTerrain(287,56) + 2f);
+        WaterTile water = new WaterTile(319, 1266, Terrain.getCurrentTerrain(terrainArray,319,1266).getHeightOfTerrain(319,1266) + 18f);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -90,7 +93,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture, new Vector3f(287,Terrain.getCurrentTerrain(terrainArray,287,56).getHeightOfTerrain(287,56),56),0,180,0,1);
+        Player player = new Player(playerTexture, new Vector3f(87,Terrain.getCurrentTerrain(terrainArray,87,1356).getHeightOfTerrain(87,56),1356),0,180,0,1);
         immovableEntities.add(player);
 
         //Pine Tree Model
@@ -117,9 +120,18 @@ public class MainGameLoop {
 
         for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextInt() % 800);
-            float zPos = Math.abs(random.nextInt() % 800);
+            float zPos = Math.abs(random.nextInt() % 2400);
             float yPos = Terrain.getCurrentTerrain(terrainArray,xPos,zPos).getHeightOfTerrain(xPos,zPos);
-            immovableEntities.add(new Entity(fern, new Vector3f(xPos,yPos,zPos),0,0,0,1,0));
+            float scale = Math.abs(random.nextFloat() * random.nextInt() % 3);
+            immovableEntities.add(new Entity(fern, new Vector3f(xPos,yPos,zPos),0,0,0,scale,0));
+        }
+
+        for(int i = 0; i < 50; i++) {
+            float xPos = Math.abs(random.nextInt() % 800);
+            float zPos = Math.abs(random.nextInt() % 2400);
+            float yPos = Terrain.getCurrentTerrain(terrainArray,xPos,zPos).getHeightOfTerrain(xPos,zPos);
+            float scale = Math.abs(random.nextFloat() * random.nextInt() % 10);
+            immovableEntities.add(new Entity(tree, new Vector3f(xPos,yPos,zPos),0,0,0,scale,0));
         }
 
         /****************************************LIGHTS****************************************/
