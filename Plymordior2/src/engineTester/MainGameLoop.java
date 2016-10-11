@@ -45,8 +45,9 @@ public class MainGameLoop {
         TextMaster.init(loader);
 
         /****************************************FONT STUFF****************************************/
-        FontType font = new FontType(loader.loadTexture("tahoma"), new File("./Plymordior2/res/tahoma.fnt"));
-        GUIText text = new GUIText("This is a test text!", 1, font, new Vector2f(0, 0), 1f, true);
+        FontType font = new FontType(loader.loadTexture("candara"), new File("./Plymordior2/res/candara.fnt"));
+        GUIText text = new GUIText("A sample string of text!", 3, font, new Vector2f(0.0f, 0.4f), 1f, true);
+        text.setColour(0.1f,0.1f,0.1f);
 
         /****************************************RENDERERS****************************************/
 
@@ -104,7 +105,6 @@ public class MainGameLoop {
         TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp",loader),
                 new ModelTexture(loader.loadTexture("lamp")));
         lamp.getTexture().setUseFakeLighting(true);
-        Entity theOneLamp = new Entity(lamp, new Vector2f(186, 294));
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations

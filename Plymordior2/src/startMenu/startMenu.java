@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import renderEngine.DisplayManager;
@@ -32,12 +33,8 @@ public class StartMenu {
         MasterRenderer renderer = new MasterRenderer(loader);
 
         List<Light> lights = new ArrayList<>();
-        Light overheadLight = new Light(new Vector3f(4500,1000,4500),new Vector3f(1,1,1));
-        Light leftLight = new Light(new Vector3f(400,500,-4000), new Vector3f(1,1,1));
-        Light rightLight = new Light(new Vector3f(-4000,500,400), new Vector3f(1,1,1));
+        Light overheadLight = new Light(new Vector2f(4500,4500),1000,new Vector3f(1,1,1));
         lights.add(overheadLight);
-        lights.add(leftLight);
-        lights.add(rightLight);
 
         List<TerrainSquare> terrains = new ArrayList<>();
         generateTerrain(loader, terrains);
