@@ -25,7 +25,6 @@ public class Player extends Entity {
 
     private float currentTurnSpeed = 0;
     private float upwardSpeed = 0;
-    private float staminaLost = 0;
     private float currentStamina = 100;
 
     private boolean isInAir = false;
@@ -33,10 +32,6 @@ public class Player extends Entity {
     private boolean isMovingBackward = false;
     private boolean isMovingLeft = false;
     private boolean isMovingRight = false;
-
-    private float distance;
-    private float dx;
-    private float dz;
 
     public Player(TexturedModel model, Vector2f position, Vector3f rotations, float scale) {
         super(model, position, rotations, scale);
@@ -51,55 +46,52 @@ public class Player extends Entity {
 
         //Turn character
         super.increaseHRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
-        //Calculate distance we will move
-        distance = RUN_SPEED * DisplayManager.getFrameTimeSeconds();
 
         //Calculate direction of movement, components of movement, and execute movement
         if(isMovingForward) {
             if(isMovingRight) {
-                isMovingLeft = false;
-                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 45)));
-                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 45)));
+                moveByComponents(-45);
             } else if (isMovingLeft) {
-                isMovingRight = false;
-                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + 45)));
-                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + 45)));
+                moveByComponents(45);
             } else {
-                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY())));
-                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY())));
+                moveByComponents(0);
             }
         } else if (isMovingBackward) {
             if(isMovingRight) {
-                isMovingLeft = false;
-                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 135)));
-                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 135)));
+                moveByComponents(-135);
             } else if(isMovingLeft) {
-                isMovingRight = false;
-                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 225)));
-                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 225)));
+                moveByComponents(-225);
             } else {
-                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + 180)));
-                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + 180)));
+                moveByComponents(180);
             }
         } else if (isMovingRight) {
-            dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 90)));
-            dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 90)));
+            moveByComponents(-90);
         } else if (isMovingLeft) {
-            dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + 90)));
-            dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + 90)));
+            moveByComponents(90);
         } else {
-            dx = 0;
-            dz = 0;
+            if(currentStamina < STAMINA_CAP) {
+                currentStamina += STAMINA_GAIN;
+            } else {
+                currentStamina = STAMINA_CAP;
+            }
         }
 
         upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
-        super.increasePosition(dx, upwardSpeed * DisplayManager.getFrameTimeSeconds(), dz);
+        super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
         float terrainHeight = TerrainGrid.getCurrentTerrainHeight(this.getPosition().x,this.getPosition().z);
         if(super.getPosition().y < terrainHeight && terrainHeight != 0){
             upwardSpeed = 0;
             isInAir = false;
             super.getPosition().y = terrainHeight;
         }
+    }
+
+    private void moveByComponents(int angleOffset) {
+        float distance = RUN_SPEED * DisplayManager.getFrameTimeSeconds();
+        float dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + angleOffset)));
+        float dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + angleOffset)));
+        super.increasePosition(dx,0,dz);
+        currentStamina -= STAMINA_DRAIN * DisplayManager.getFrameTimeSeconds();
     }
 
     /**

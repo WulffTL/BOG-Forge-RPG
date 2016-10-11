@@ -54,8 +54,6 @@ public class MainGameLoop {
         MasterRenderer renderer = new MasterRenderer(loader);
 
         /****************************************TERRAINS****************************************/
-        //Create an array for our terrains to go into
-        List<TerrainSquare> terrains = new ArrayList<>();
         //We place the four textures into a texture pack for the terrain to read
         TerrainTexturePack texturePack = new TerrainTexturePack(loader, "grassy2", "grass", "grassFlowers", "mud");
         //We load up a blendmap which will tell the terrain which texture to use at what time
@@ -115,15 +113,15 @@ public class MainGameLoop {
         entities.add(new Entity(lamp, new Vector2f(293, 305)));
 
         for(int i = 0; i < 500; i++) {
-            float xPos = Math.abs(random.nextInt() % 800);
-            float zPos = Math.abs(random.nextInt() % 2400);
+            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
+            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
             float scale = Math.abs(random.nextFloat() * random.nextInt() % 3);
             immovableEntities.add(new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
 
         for(int i = 0; i < 50; i++) {
-            float xPos = Math.abs(random.nextInt() % 800);
-            float zPos = Math.abs(random.nextInt() % 2400);
+            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
+            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
             float scale = Math.abs(random.nextFloat() * random.nextInt() % 10);
             immovableEntities.add(new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
@@ -132,7 +130,7 @@ public class MainGameLoop {
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector3f(400,400,100),new Vector3f(1,1,1));
+        Light sun = new Light(new Vector3f(TerrainSquare.TERRAIN_SIZE,TerrainSquare.TERRAIN_SIZE,1000),new Vector3f(1,1,1));
         lights.add(sun);
 
         List<Light> allLights = new ArrayList<>();
@@ -146,14 +144,8 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
-        long secondsPassed = System.currentTimeMillis();
-
         while(!Display.isCloseRequested()){
             player.move();
-
-            if(Time.isTopOfSecond(secondsPassed)){
-                secondsPassed++;
-            }
 
             if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 player.printCurrentLocation();
@@ -180,17 +172,6 @@ public class MainGameLoop {
             renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,15));
             waterRenderer.render(waters,camera,sun);
 
-            //GUI Stuff
-            float playersCurrentStamina = player.getCurrentStamina();
-            GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("backgroundBar"),
-                    new Vector2f(-0.6f, -0.9f), new Vector2f(0.25f, 0.05f));
-            GuiTexture staminaBar = new GuiTexture(loader.loadTexture("staminaBar"),
-                    new Vector2f(-0.6f - 0.25f + (0.25f * (playersCurrentStamina/100)), -0.9f),
-                    new Vector2f(0.25f * (playersCurrentStamina/100), 0.05f));
-            ArrayList<GuiTexture> guis = new ArrayList<>();
-            guis.add(backgroundStaminaBar);
-            guis.add(staminaBar);
-            guiRenderer.render(guis);
             TextMaster.render();
 
             DisplayManager.updateDisplay();
