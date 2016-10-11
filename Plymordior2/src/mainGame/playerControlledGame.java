@@ -49,10 +49,10 @@ public class PlayerControlledGame {
 
         entities.add(player);
         while(!Display.isCloseRequested()){
-            player.move(TerrainSquare.getCurrentTerrain(terrainArray, player.getPosition().x, player.getPosition().z));
+            player.move();
             camera.move();
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-            renderer.renderScene(entities,immovableEntities,terrains,lights,camera,clipPlane);
+            renderer.renderScene(entities,immovableEntities,lights,camera,clipPlane);
             DisplayManager.updateDisplay();
         }
 

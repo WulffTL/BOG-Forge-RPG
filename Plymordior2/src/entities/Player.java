@@ -57,9 +57,11 @@ public class Player extends Entity {
         //Calculate direction of movement, components of movement, and execute movement
         if(isMovingForward) {
             if(isMovingRight) {
+                isMovingLeft = false;
                 dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 45)));
                 dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 45)));
             } else if (isMovingLeft) {
+                isMovingRight = false;
                 dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + 45)));
                 dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + 45)));
             } else {
@@ -68,9 +70,11 @@ public class Player extends Entity {
             }
         } else if (isMovingBackward) {
             if(isMovingRight) {
+                isMovingLeft = false;
                 dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 135)));
                 dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 135)));
             } else if(isMovingLeft) {
+                isMovingRight = false;
                 dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 225)));
                 dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 225)));
             } else {
@@ -115,8 +119,10 @@ public class Player extends Entity {
         //Check for left/right strafing movement
         if(Keyboard.isKeyDown(Keyboard.KEY_Q)){
             isMovingLeft = true;
+            isMovingRight = false;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
             isMovingRight = true;
+            isMovingLeft = false;
         }else {
             isMovingLeft = false;
             isMovingRight = false;
@@ -125,8 +131,10 @@ public class Player extends Entity {
         //Check for moving forward/backwards
         if(Keyboard.isKeyDown(Keyboard.KEY_W) || (Mouse.isButtonDown(0) && Mouse.isButtonDown(1))){
             isMovingForward = true;
+            isMovingBackward = false;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
             isMovingBackward = true;
+            isMovingForward = false;
         }else {
             isMovingForward = false;
             isMovingBackward = false;
