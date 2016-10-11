@@ -94,4 +94,8 @@ public class Maths {
 
         return (float) Math.sqrt(Math.pow((x1-x2),2) + Math.pow((x1-x2),2));
     }
+
+    public static float pythagreonDistance(float a, float b) {
+        return (float) Math.sqrt(Math.pow(a,2) + Math.pow(b,2));
+    }
 }

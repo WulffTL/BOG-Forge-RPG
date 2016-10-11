@@ -6,6 +6,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
+import terrains.TerrainGrid;
 import terrains.TerrainSquare;
 import toolbox.Maths;
 
@@ -22,14 +23,20 @@ public class Player extends Entity {
     private static final float STAMINA_GAIN = 50;
     private static final float STAMINA_CAP = 100;
 
-    private float currentSpeed = 0;
-    private float strafeSpeed = 0;
     private float currentTurnSpeed = 0;
     private float upwardSpeed = 0;
     private float staminaLost = 0;
     private float currentStamina = 100;
 
     private boolean isInAir = false;
+    private boolean isMovingForward = false;
+    private boolean isMovingBackward = false;
+    private boolean isMovingLeft = false;
+    private boolean isMovingRight = false;
+
+    private float distance;
+    private float dx;
+    private float dz;
 
     public Player(TexturedModel model, Vector2f position, Vector3f rotations, float scale) {
         super(model, position, rotations, scale);
@@ -37,35 +44,53 @@ public class Player extends Entity {
 
     /**
      * Moves the player based on user input as well as the current terrain
-     * @param terrain the terrain the player is currently occupying, used for yPos ((TODO: This must be removed))
      */
-    public void move(TerrainSquare terrain){
+    public void move(){
         //checkInputs() will set the values for movement
         checkInputs();
-        currentSpeed *= (currentStamina/100);
+
+        //Turn character
         super.increaseHRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
+        //Calculate distance we will move
+        distance = RUN_SPEED * DisplayManager.getFrameTimeSeconds();
 
-        float maxMove = RUN_SPEED * DisplayManager.getFrameTimeSeconds();
-        float distance = currentSpeed * DisplayManager.getFrameTimeSeconds();
-        float strafeDistance = strafeSpeed * DisplayManager.getFrameTimeSeconds();
-
-        float dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY())));
-        float dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY())));
-        float strafex = (float) (strafeDistance * Math.sin(Math.toRadians(super.gethRotY() + 90)));
-        float strafez = (float) (strafeDistance * Math.cos(Math.toRadians(super.gethRotY() + 90)));
-
-        float moveX = Maths.betweenValues((strafex+dx),-maxMove, maxMove);
-        float moveZ = Maths.betweenValues((strafez+dz),-maxMove, maxMove);
-        super.increasePosition(moveX,0,moveZ);
-        if((moveX >0 || moveZ > 0) && currentStamina > 0) {
-            currentStamina -= STAMINA_DRAIN*DisplayManager.getFrameTimeSeconds();
-        } else if (currentStamina < STAMINA_CAP) {
-            currentStamina += STAMINA_GAIN*DisplayManager.getFrameTimeSeconds();
+        //Calculate direction of movement, components of movement, and execute movement
+        if(isMovingForward) {
+            if(isMovingRight) {
+                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 45)));
+                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 45)));
+            } else if (isMovingLeft) {
+                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + 45)));
+                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + 45)));
+            } else {
+                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY())));
+                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY())));
+            }
+        } else if (isMovingBackward) {
+            if(isMovingRight) {
+                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 135)));
+                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 135)));
+            } else if(isMovingLeft) {
+                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 225)));
+                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 225)));
+            } else {
+                dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + 180)));
+                dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + 180)));
+            }
+        } else if (isMovingRight) {
+            dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() - 90)));
+            dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() - 90)));
+        } else if (isMovingLeft) {
+            dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + 90)));
+            dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + 90)));
+        } else {
+            dx = 0;
+            dz = 0;
         }
 
         upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
-        super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
-        float terrainHeight = terrain.getHeightOfTerrain(super.getPosition().x,super.getPosition().z);
+        super.increasePosition(dx, upwardSpeed * DisplayManager.getFrameTimeSeconds(), dz);
+        float terrainHeight = TerrainGrid.getCurrentTerrainHeight(this.getPosition().x,this.getPosition().z);
         if(super.getPosition().y < terrainHeight && terrainHeight != 0){
             upwardSpeed = 0;
             isInAir = false;
@@ -87,22 +112,26 @@ public class Player extends Entity {
      * Checks for user input and appropriately sets values to various variables related to the player's movement
      */
     private void checkInputs(){
-        //Check for moving forward/backwards
-        if(Keyboard.isKeyDown(Keyboard.KEY_W) || (Mouse.isButtonDown(0) && Mouse.isButtonDown(1))){
-            this.currentSpeed = RUN_SPEED;
-        }else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
-            this.currentSpeed = -0.5f*RUN_SPEED;
-        }else {
-            this.currentSpeed = 0;
-        }
         //Check for left/right strafing movement
         if(Keyboard.isKeyDown(Keyboard.KEY_Q)){
-            this.strafeSpeed = RUN_SPEED;
+            isMovingLeft = true;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
-            this.strafeSpeed = -RUN_SPEED;
+            isMovingRight = true;
         }else {
-            this.strafeSpeed = 0;
+            isMovingLeft = false;
+            isMovingRight = false;
         }
+
+        //Check for moving forward/backwards
+        if(Keyboard.isKeyDown(Keyboard.KEY_W) || (Mouse.isButtonDown(0) && Mouse.isButtonDown(1))){
+            isMovingForward = true;
+        }else if(Keyboard.isKeyDown(Keyboard.KEY_S)){
+            isMovingBackward = true;
+        }else {
+            isMovingForward = false;
+            isMovingBackward = false;
+        }
+
         //Check for turning
         if(Keyboard.isKeyDown(Keyboard.KEY_D)){
             this.currentTurnSpeed = -TURN_SPEED;

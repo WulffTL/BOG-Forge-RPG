@@ -73,7 +73,7 @@ public class StartMenu {
 
             startMenuEntity.rotate();
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-            renderer.renderScene(entities,immovableEntities,terrains,lights,camera, new Vector4f(0,-1,0,15));
+            renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,15));
             DisplayManager.updateDisplay();
         }
 

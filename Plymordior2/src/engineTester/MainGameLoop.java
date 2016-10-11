@@ -149,7 +149,7 @@ public class MainGameLoop {
         long secondsPassed = System.currentTimeMillis();
 
         while(!Display.isCloseRequested()){
-            player.move(TerrainGrid.getTerrainByPosition(player.getPosition().getX(), player.getPosition().getZ()));
+            player.move();
 
             if(Time.isTopOfSecond(secondsPassed)){
                 secondsPassed++;
