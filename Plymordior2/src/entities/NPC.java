@@ -15,22 +15,17 @@ import java.util.Random;
 public class NPC extends Entity {
 
     private static final float NPC_SPEED = 45;
-    private static final float OUT_OF_BOUNDS = MainGameLoop.getGridSizeTerrains()* TerrainSquare.getSIZE();
     private static Vector2f evadeVector;
     private static Vector2f pursueVector;
     private static Vector2f moveVector = new Vector2f(1,0);
     ArrayList<Entity> evadeList;
     ArrayList<Entity> pursueList;
 
-    public NPC(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale, float boundingRadius,
+    public NPC(TexturedModel model, Vector2f position, Vector3f rotations, float scale,
                ArrayList<Entity> evadeList, ArrayList<Entity> pursueList) {
-        super(model, position, rotX, rotY, rotZ, scale, boundingRadius);
+        super(model, position, rotations, scale);
         this.evadeList = evadeList;
         this.pursueList = pursueList;
-    }
-
-    public NPC(TexturedModel model, int index, Vector3f position, float rotX, float rotY, float rotZ, float scale, float boundingRadius) {
-        super(model, index, position, rotX, rotY, rotZ, scale, boundingRadius);
     }
 
     private Vector2f evadeVector(){

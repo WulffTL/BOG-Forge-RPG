@@ -16,6 +16,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import renderEngine.*;
 import models.RawModel;
+import terrains.TerrainGrid;
 import terrains.TerrainSquare;
 import textures.ModelTexture;
 import textures.TerrainTexture;
@@ -37,12 +38,6 @@ import java.util.Random;
 
 public class MainGameLoop {
 
-    private static final int GRID_SIZE_TERRAINS = 9;
-
-    public static int getGridSizeTerrains(){
-        return GRID_SIZE_TERRAINS;
-    }
-
     public static void main(String[] args) {
 
         DisplayManager.createDisplay();
@@ -61,48 +56,21 @@ public class MainGameLoop {
         /****************************************TERRAINS****************************************/
         //Create an array for our terrains to go into
         List<TerrainSquare> terrains = new ArrayList<>();
-        //First we get the four textures for the blend map
-        TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grassy2"));
-        TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("grass"));
-        TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("grassFlowers"));
-        TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("mud"));
-        TerrainTexture snowTexture = new TerrainTexture(loader.loadTexture("steel_floor"));
         //We place the four textures into a texture pack for the terrain to read
-        TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
-        TerrainTexturePack snowPack = new TerrainTexturePack(snowTexture, rTexture, gTexture, bTexture);
+        TerrainTexturePack texturePack = new TerrainTexturePack(loader, "grassy2", "grass", "grassFlowers", "mud");
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         //load in texture pack, blend map, and height map to create the texture
-        TerrainSquare terrain0000 = new TerrainSquare(0,0,loader,snowPack,blendMap,"heightMap1");
-        TerrainSquare terrain0001 = new TerrainSquare(0,1, loader, texturePack, blendMap, "heightMap2");
-        TerrainSquare terrain0002 = new TerrainSquare(0,2,loader,texturePack,blendMap,"heightMap3");
-        TerrainSquare terrain0100 = new TerrainSquare(1,0, loader, texturePack, blendMap, "heightMap0100");
-        TerrainSquare terrain0101 = new TerrainSquare(1,1, loader, texturePack, blendMap, "heightMap0101");
-        TerrainSquare terrain0102 = new TerrainSquare(1,2, loader, texturePack, blendMap, "heightMap2");
-        TerrainSquare terrain0200 = new TerrainSquare(2,0, loader, texturePack, blendMap, "heightMap2");
-        TerrainSquare terrain0201 = new TerrainSquare(2,1, loader, texturePack, blendMap, "heightMap2");
-        TerrainSquare terrain0202 = new TerrainSquare(2,2, loader, texturePack, blendMap, "heightMap2");
 
-        terrains.add(terrain0000);
-        terrains.add(terrain0001);
-        terrains.add(terrain0002);
-        terrains.add(terrain0100);
-        terrains.add(terrain0101);
-        terrains.add(terrain0102);
-        terrains.add(terrain0200);
-        terrains.add(terrain0201);
-        terrains.add(terrain0202);
-
-        TerrainSquare[][] terrainArray = new TerrainSquare[3][3];
-        terrainArray[0][0] = terrain0000;
-        terrainArray[0][1] = terrain0001;
-        terrainArray[0][2] = terrain0002;
-        terrainArray[1][0] = terrain0100;
-        terrainArray[1][1] = terrain0101;
-        terrainArray[1][2] = terrain0102;
-        terrainArray[2][0] = terrain0200;
-        terrainArray[2][1] = terrain0201;
-        terrainArray[2][2] = terrain0202;
+        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,blendMap,"heightMap1"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(0,1,loader,texturePack,blendMap,"heightMap2"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(0,2,loader,texturePack,blendMap,"heightMap3"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(1,0,loader,texturePack,blendMap,"heightMap0100"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(1,1,loader,texturePack,blendMap,"heightMap0101"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(1,2,loader,texturePack,blendMap,"heightMap1"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(2,0,loader,texturePack,blendMap,"heightMap1"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(2,1,loader,texturePack,blendMap,"heightMap1"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(2,2,loader,texturePack,blendMap,"heightMap1"));
 
 
         /****************************************WATER****************************************/
@@ -111,7 +79,7 @@ public class MainGameLoop {
         WaterFrameBuffers buffers = new WaterFrameBuffers();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(2122, 1816, TerrainSquare.getCurrentTerrain(terrainArray,2122,1816).getHeightOfTerrain(2122,1816) + 0.8f);
+        WaterTile water = new WaterTile(2122, 1816, 0.8f);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -121,7 +89,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture, new Vector3f(87, TerrainSquare.getCurrentTerrain(terrainArray,2100,1800).getHeightOfTerrain(2100,1800),1800),0,180,0,1);
+        Player player = new Player(playerTexture,new Vector2f(100,100),new Vector3f(0,0,0),1);
         immovableEntities.add(player);
 
         //Pine Tree Model
@@ -138,28 +106,26 @@ public class MainGameLoop {
         TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp",loader),
                 new ModelTexture(loader.loadTexture("lamp")));
         lamp.getTexture().setUseFakeLighting(true);
-        Entity theOneLamp = new Entity(lamp, new Vector3f(186, TerrainSquare.getCurrentTerrain(terrainArray,186,294).getHeightOfTerrain(186,294), 294), 0, 0, 0, 1, 0);
+        Entity theOneLamp = new Entity(lamp, new Vector2f(186, 294));
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        entities.add(new Entity(lamp, new Vector3f(185, TerrainSquare.getCurrentTerrain(terrainArray,185,293).getHeightOfTerrain(185,293), 293),0,0,0,1,0));
-        entities.add(new Entity(lamp, new Vector3f(370, TerrainSquare.getCurrentTerrain(terrainArray,370,300).getHeightOfTerrain(370,300), 300),0,0,0,1,0));
-        entities.add(new Entity(lamp, new Vector3f(293, TerrainSquare.getCurrentTerrain(terrainArray,293,305).getHeightOfTerrain(293,305), 305),0,0,0,1,0));
+        entities.add(new Entity(lamp, new Vector2f(185, 293)));
+        entities.add(new Entity(lamp, new Vector2f(370, 300)));
+        entities.add(new Entity(lamp, new Vector2f(293, 305)));
 
         for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextInt() % 800);
             float zPos = Math.abs(random.nextInt() % 2400);
-            float yPos = TerrainSquare.getCurrentTerrain(terrainArray,xPos,zPos).getHeightOfTerrain(xPos,zPos);
             float scale = Math.abs(random.nextFloat() * random.nextInt() % 3);
-            immovableEntities.add(new Entity(fern, new Vector3f(xPos,yPos,zPos),0,0,0,scale,0));
+            immovableEntities.add(new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
 
         for(int i = 0; i < 50; i++) {
             float xPos = Math.abs(random.nextInt() % 800);
             float zPos = Math.abs(random.nextInt() % 2400);
-            float yPos = TerrainSquare.getCurrentTerrain(terrainArray,xPos,zPos).getHeightOfTerrain(xPos,zPos);
             float scale = Math.abs(random.nextFloat() * random.nextInt() % 10);
-            immovableEntities.add(new Entity(tree, new Vector3f(xPos,yPos,zPos),0,0,0,scale,0));
+            immovableEntities.add(new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
 
         /****************************************LIGHTS****************************************/
@@ -183,7 +149,7 @@ public class MainGameLoop {
         long secondsPassed = System.currentTimeMillis();
 
         while(!Display.isCloseRequested()){
-            player.move(TerrainSquare.getCurrentTerrain(terrainArray, player.getPosition().x, player.getPosition().z));
+            player.move(TerrainGrid.getTerrainByPosition(player.getPosition().getX(), player.getPosition().getZ()));
 
             if(Time.isTopOfSecond(secondsPassed)){
                 secondsPassed++;
@@ -202,27 +168,29 @@ public class MainGameLoop {
             float distance = 2 * (camera.getPosition().y - water.getHeight());
             camera.getPosition().y -= distance;
             camera.invertPitch();
-            renderer.renderScene(entities,immovableEntities,terrains,lights,camera,new Vector4f(0,1,0,-water.getHeight()+0.1f));
             camera.getPosition().y += distance;
             camera.invertPitch();
 
             //RENDER REFRACTION TEXTURE
             buffers.bindRefractionFrameBuffer();
-            renderer.renderScene(entities,immovableEntities,terrains,lights,camera,new Vector4f(0,-1,0,water.getHeight()));
 
             //RENDER TO SCREEN
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
             buffers.unbindCurrentFrameBuffer();
-            renderer.renderScene(entities,immovableEntities,terrains,lights,camera, new Vector4f(0,-1,0,15));
+            renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,15));
             waterRenderer.render(waters,camera,sun);
 
+            //GUI Stuff
             float playersCurrentStamina = player.getCurrentStamina();
             GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("backgroundBar"),
                     new Vector2f(-0.6f, -0.9f), new Vector2f(0.25f, 0.05f));
             GuiTexture staminaBar = new GuiTexture(loader.loadTexture("staminaBar"),
                     new Vector2f(-0.6f - 0.25f + (0.25f * (playersCurrentStamina/100)), -0.9f),
                     new Vector2f(0.25f * (playersCurrentStamina/100), 0.05f));
-
+            ArrayList<GuiTexture> guis = new ArrayList<>();
+            guis.add(backgroundStaminaBar);
+            guis.add(staminaBar);
+            guiRenderer.render(guis);
             TextMaster.render();
 
             DisplayManager.updateDisplay();

@@ -16,12 +16,12 @@ import java.io.*;
  * Created by Travis on 1/10/2016.
  */
 public class TerrainSquare {
-    private static final float SIZE = 1400;
-    private static final float MAX_HEIGHT = 80;
+    public static final int TERRAIN_SIZE = 1400;
+    public static final float TERRAIN_MAX_HEIGHT = 80;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
 
-    private float x;
-    private float z;
+    private int gridX;
+    private int gridZ;
     private RawModel model;
     private TerrainTexturePack texturePack;
     private TerrainTexture blendMap;
@@ -32,31 +32,35 @@ public class TerrainSquare {
                          String heightMap) {
         this.texturePack = texturePack;
         this.blendMap = blendMap;
-        this.x = gridX * SIZE;
-        this.z = gridZ * SIZE;
+        this.gridX = gridX * TERRAIN_SIZE;
+        this.gridZ = gridZ * TERRAIN_SIZE;
         this.model = generateTerrain(loader, heightMap);
-    }
-
-    public static float getSIZE() {
-        return SIZE;
     }
 
     public RawModel getModel() {
         return model;
     }
 
-    public float getZ() {
-        return z;
+    public int getGridZ() {
+        return gridZ;
     }
 
-    public float getX() {
-        return x;
+    public int getGridZNormalized() {
+        return gridZ/TERRAIN_SIZE;
+    }
+
+    public int getGridX() {
+        return gridX;
+    }
+
+    public int getGridXNormalized() {
+        return gridX/TERRAIN_SIZE;
     }
 
     public float getHeightOfTerrain(float worldX, float worldZ){
-        float terrainX = worldX - this.x;
-        float terrainZ = worldZ - this.z;
-        float gridSquareSize = SIZE / ((float)heights.length - 1);
+        float terrainX = worldX - this.gridX;
+        float terrainZ = worldZ - this.gridZ;
+        float gridSquareSize = TERRAIN_SIZE / ((float)heights.length - 1);
         int gridX = (int) Math.floor(terrainX / gridSquareSize);
         int gridZ = (int) Math.floor(terrainZ / gridSquareSize);
         if(gridX >= heights.length - 1 || gridZ >= heights.length -1 || gridX < 0 || gridZ < 0){
@@ -97,11 +101,11 @@ public class TerrainSquare {
         int vertexPointer = 0;
         for(int i=0;i<VERTEX_COUNT;i++){
             for(int j=0;j<VERTEX_COUNT;j++){
-                vertices[vertexPointer*3] = (float)j/((float)VERTEX_COUNT - 1) * SIZE;
+                vertices[vertexPointer*3] = (float)j/((float)VERTEX_COUNT - 1) * TERRAIN_SIZE;
                 float height = getHeight(j, i, image);
                 heights[j][i] = height;
                 vertices[vertexPointer*3+1] = getHeight(j,i,image);
-                vertices[vertexPointer*3+2] = (float)i/((float)VERTEX_COUNT - 1) * SIZE;
+                vertices[vertexPointer*3+2] = (float)i/((float)VERTEX_COUNT - 1) * TERRAIN_SIZE;
                 Vector3f normal = calculateNormal(j, i, image);
                 normals[vertexPointer*3] = normal.x;
                 normals[vertexPointer*3+1] = normal.y;
@@ -147,7 +151,7 @@ public class TerrainSquare {
             height = image.getRGB(x, z);
             height += MAX_PIXEL_COLOR / 2f;
             height /= MAX_PIXEL_COLOR / 2f;
-            height *= MAX_HEIGHT;
+            height *= TERRAIN_MAX_HEIGHT;
         return height;
     }
 
@@ -160,8 +164,8 @@ public class TerrainSquare {
     }
 
     public static TerrainSquare getCurrentTerrain(TerrainSquare[][] terrains, float x, float z){
-        int gridX = (int) Math.floor(x/ TerrainSquare.SIZE);
-        int gridZ = (int) Math.floor(z/ TerrainSquare.SIZE);
+        int gridX = (int) Math.floor(x/ TerrainSquare.TERRAIN_SIZE);
+        int gridZ = (int) Math.floor(z/ TerrainSquare.TERRAIN_SIZE);
         if(!(gridX < 0 || gridX >= terrains.length || gridZ < 0 || gridZ >= terrains.length)) {
             return terrains[gridX][gridZ];
         }

@@ -1,7 +1,9 @@
 package entities;
 
 import models.TexturedModel;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import terrains.TerrainGrid;
 
 /**
  * Created by Travis on 10/25/2015.
@@ -11,8 +13,6 @@ public class Entity {
     private Vector3f position;
     private float hRotX, hRotY, hRotZ;
     private float scale;
-    private float boundingRadius;
-
     private int textureIndex = 0;
 
     public Entity (TexturedModel model) {
@@ -22,30 +22,24 @@ public class Entity {
         this.hRotY = 0;
         this.hRotZ = 0;
         this.scale = 1;
-        this.boundingRadius = 0;
     }
 
-    public Entity(TexturedModel model, Vector3f position, float hRotX, float hRotY, float hRotZ,
-                  float scale, float boundingRadius) {
+    public Entity(TexturedModel model, Vector2f position) {
         this.model = model;
-        this.position = position;
-        this.hRotX = hRotX;
-        this.hRotY = hRotY;
-        this.hRotZ = hRotZ;
-        this.scale = scale;
-        this.boundingRadius = boundingRadius;
+        this.position = new Vector3f(position.x, TerrainGrid.getCurrentTerrainHeight(position.x,position.y),position.y);
+        this.hRotX = 0;
+        this.hRotY = 0;
+        this.hRotZ = 0;
+        this.scale = 1;
     }
 
-    public Entity(TexturedModel model, int index, Vector3f position, float hRotX, float hRotY, float hRotZ,
-                  float scale, float boundingRadius) {
-        this.textureIndex = index;
+    public Entity(TexturedModel model, Vector2f position, Vector3f rotations, float scale) {
         this.model = model;
-        this.position = position;
-        this.hRotX = hRotX;
-        this.hRotY = hRotY;
-        this.hRotZ = hRotZ;
+        this.position = new Vector3f(position.x, TerrainGrid.getCurrentTerrainHeight(position.x,position.y),position.y);
+        this.hRotX = rotations.x;
+        this.hRotY = rotations.y;
+        this.hRotZ = rotations.z;
         this.scale = scale;
-        this.boundingRadius = boundingRadius;
     }
 
     public float getTextureXOffset(){
@@ -104,9 +98,5 @@ public class Entity {
 
     public float getScale() {
         return scale;
-    }
-
-    public float getBoundingRadius() {
-        return boundingRadius;
     }
 }

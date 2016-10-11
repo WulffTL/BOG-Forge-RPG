@@ -3,6 +3,7 @@ package entities;
 import models.TexturedModel;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import terrains.TerrainSquare;
@@ -18,6 +19,8 @@ public class Player extends Entity {
     private static final float GRAVITY = -80;
     private static final float JUMP_POWER = 30;
     private static final float STAMINA_DRAIN = 1 ;
+    private static final float STAMINA_GAIN = 50;
+    private static final float STAMINA_CAP = 100;
 
     private float currentSpeed = 0;
     private float strafeSpeed = 0;
@@ -28,8 +31,8 @@ public class Player extends Entity {
 
     private boolean isInAir = false;
 
-    public Player(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
-        super(model, position, rotX, rotY, rotZ, scale, 1);
+    public Player(TexturedModel model, Vector2f position, Vector3f rotations, float scale) {
+        super(model, position, rotations, scale);
     }
 
     /**
@@ -54,6 +57,11 @@ public class Player extends Entity {
         float moveX = Maths.betweenValues((strafex+dx),-maxMove, maxMove);
         float moveZ = Maths.betweenValues((strafez+dz),-maxMove, maxMove);
         super.increasePosition(moveX,0,moveZ);
+        if((moveX >0 || moveZ > 0) && currentStamina > 0) {
+            currentStamina -= STAMINA_DRAIN*DisplayManager.getFrameTimeSeconds();
+        } else if (currentStamina < STAMINA_CAP) {
+            currentStamina += STAMINA_GAIN*DisplayManager.getFrameTimeSeconds();
+        }
 
         upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
         super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
@@ -90,10 +98,8 @@ public class Player extends Entity {
         //Check for left/right strafing movement
         if(Keyboard.isKeyDown(Keyboard.KEY_Q)){
             this.strafeSpeed = RUN_SPEED;
-            this.staminaLost = STAMINA_DRAIN;
         }else if(Keyboard.isKeyDown(Keyboard.KEY_E)){
             this.strafeSpeed = -RUN_SPEED;
-            this.staminaLost = STAMINA_DRAIN;
         }else {
             this.strafeSpeed = 0;
         }
@@ -112,13 +118,7 @@ public class Player extends Entity {
 
         if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
             jump();
-            this.staminaLost = STAMINA_DRAIN;
         }
-
-        if(this.currentSpeed == 0){
-            this.staminaLost = -20* STAMINA_DRAIN;
-        }
-
     }
 
     public void printCurrentLocation() {

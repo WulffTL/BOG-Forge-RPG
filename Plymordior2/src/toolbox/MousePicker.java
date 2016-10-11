@@ -130,20 +130,20 @@ public class MousePicker {
         }
     }
 
-    public boolean isIntersectingSphere(Vector3f currentRay, Entity entity) {
-        boolean intersecting = false;
-        float xPos = entity.getPosition().x;
-        float yPos = entity.getPosition().y;
-        float zPos = entity.getPosition().z;
-        if(currentRay != null){
-        if (Maths.isBetween(currentRay.x,xPos - entity.getBoundingRadius(),xPos + entity.getBoundingRadius()) &&
-            Maths.isBetween(currentRay.z,zPos - entity.getBoundingRadius(),zPos + entity.getBoundingRadius()) &&
-                   Maths.isBetween(currentTerrainPoint.y,yPos - entity.getBoundingRadius(),yPos + entity.getBoundingRadius())) {
-            intersecting = true;
-        }
-        }
-        return intersecting;
-    }
+//    public boolean isIntersectingSphere(Vector3f currentRay, Entity entity) {
+//        boolean intersecting = false;
+//        float xPos = entity.getPosition().x;
+//        float yPos = entity.getPosition().y;
+//        float zPos = entity.getPosition().z;
+//        if(currentRay != null){
+//        if (Maths.isBetween(currentRay.x,xPos - entity.getBoundingRadius(),xPos + entity.getBoundingRadius()) &&
+//            Maths.isBetween(currentRay.z,zPos - entity.getBoundingRadius(),zPos + entity.getBoundingRadius()) &&
+//                   Maths.isBetween(currentTerrainPoint.y,yPos - entity.getBoundingRadius(),yPos + entity.getBoundingRadius())) {
+//            intersecting = true;
+//        }
+//        }
+//        return intersecting;
+//    }
 
     private TerrainSquare getTerrain(float worldX, float worldZ) {
         return terrain;

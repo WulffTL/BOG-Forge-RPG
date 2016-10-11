@@ -28,23 +28,25 @@ public class TerrainRenderer {
 
     public void render(List<TerrainSquare> terrains){
         for(TerrainSquare terrain:terrains){
-            prepareTerrain(terrain);
-            loadModelMatrix(terrain);
-            GL11.glDrawElements(GL11.GL_TRIANGLES, terrain.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-            unbindTexturedModel();
-
+            if(terrain != null) {
+                prepareTerrain(terrain);
+                loadModelMatrix(terrain);
+                GL11.glDrawElements(GL11.GL_TRIANGLES, terrain.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+                unbindTexturedModel();
+            }
         }
     }
 
     private void prepareTerrain(TerrainSquare terrain){
-        RawModel rawModel = terrain.getModel();
-        GL30.glBindVertexArray(rawModel.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
-        bindTexures(terrain);
-        shader.loadShineVariables(1,0);
-
+        if(terrain != null) {
+            RawModel rawModel = terrain.getModel();
+            GL30.glBindVertexArray(rawModel.getVaoID());
+            GL20.glEnableVertexAttribArray(0);
+            GL20.glEnableVertexAttribArray(1);
+            GL20.glEnableVertexAttribArray(2);
+            bindTexures(terrain);
+            shader.loadShineVariables(1,0);
+        }
     }
 
     private void bindTexures(TerrainSquare terrain){
@@ -70,7 +72,9 @@ public class TerrainRenderer {
     }
 
     private void loadModelMatrix(TerrainSquare terrain){
-        Matrix4f transformationMatrix = Maths.createTransformationMatrix(new Vector3f(terrain.getX(),0,terrain.getZ()),0,0,0,1);
-        shader.loadTransformationMatrix(transformationMatrix);
+        if(terrain != null) {
+            Matrix4f transformationMatrix = Maths.createTransformationMatrix(new Vector3f(terrain.getGridX(),0,terrain.getGridZ()),0,0,0,1);
+            shader.loadTransformationMatrix(transformationMatrix);
+        }
     }
 }
