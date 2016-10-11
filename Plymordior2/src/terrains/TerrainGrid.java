@@ -6,7 +6,7 @@ import toolbox.Maths;
  * Created by Travis on 10/10/2016.
  */
 public class TerrainGrid {
-    private static final int DIMENSIONS = 3;
+    public static final int DIMENSIONS = 3;
     private static TerrainSquare[][] terrainSquares = new TerrainSquare[DIMENSIONS][DIMENSIONS];
 
     public static void addTerrainSquare(TerrainSquare terrainSquare) {

@@ -25,7 +25,7 @@ public class Camera {
     }
 
     private Vector3f position = new Vector3f(400,15,350);
-    private float pitch = -10;
+    private float pitch = 10;
     private float yaw = 180;
     private float roll;
 

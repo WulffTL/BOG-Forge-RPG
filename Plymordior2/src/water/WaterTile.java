@@ -4,7 +4,7 @@ import terrains.TerrainGrid;
 
 public class WaterTile {
 	
-	public static final float TILE_SIZE = 60;
+	public static final float TILE_SIZE = 300;
 	
 	private float height;
 	private float x,z;

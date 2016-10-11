@@ -61,16 +61,11 @@ public class MainGameLoop {
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         //load in texture pack, blend map, and height map to create the texture
 
-        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,blendMap,"heightMap1"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(0,1,loader,texturePack,blendMap,"heightMap2"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(0,2,loader,texturePack,blendMap,"heightMap3"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(1,0,loader,texturePack,blendMap,"heightMap0100"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(1,1,loader,texturePack,blendMap,"heightMap0101"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(1,2,loader,texturePack,blendMap,"heightMap1"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(2,0,loader,texturePack,blendMap,"heightMap1"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(2,1,loader,texturePack,blendMap,"heightMap1"));
-        TerrainGrid.addTerrainSquare(new TerrainSquare(2,2,loader,texturePack,blendMap,"heightMap1"));
-
+        for(int i = 0; i < TerrainGrid.DIMENSIONS; i++) {
+            for(int j = 0; j < TerrainGrid.DIMENSIONS; j++) {
+                TerrainGrid.addTerrainSquare(new TerrainSquare(i,j,loader,texturePack,blendMap));
+            }
+        }
 
         /****************************************WATER****************************************/
 
@@ -88,7 +83,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture,new Vector2f(170,274),new Vector3f(0,0,0),1);
+        Player player = new Player(playerTexture,new Vector2f(1948,1615),new Vector3f(0,0,0),1);
         immovableEntities.add(player);
 
         //Pine Tree Model
