@@ -69,8 +69,8 @@ public class MainGameLoop {
 
         /****************************************WATER****************************************/
 
-        WaterShader waterShader = new WaterShader();
         WaterFrameBuffers buffers = new WaterFrameBuffers();
+        WaterShader waterShader = new WaterShader();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
         WaterTile water = new WaterTile(2122, 1816, 0.8f);
@@ -153,6 +153,8 @@ public class MainGameLoop {
 
             camera.move();
 
+            TextMaster.render();
+
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
             //RENDER REFLECTION TEXTURE
@@ -160,19 +162,19 @@ public class MainGameLoop {
             float distance = 2 * (camera.getPosition().y - water.getHeight());
             camera.getPosition().y -= distance;
             camera.invertPitch();
+            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,1,0,-water.getHeight()+0.1f));
             camera.getPosition().y += distance;
             camera.invertPitch();
 
             //RENDER REFRACTION TEXTURE
             buffers.bindRefractionFrameBuffer();
+            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,1,0,water.getHeight()));
 
             //RENDER TO SCREEN
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
             buffers.unbindCurrentFrameBuffer();
             renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,15));
             waterRenderer.render(waters,camera,sun);
-
-            TextMaster.render();
 
             DisplayManager.updateDisplay();
         }

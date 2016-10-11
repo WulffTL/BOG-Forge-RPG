@@ -17,13 +17,13 @@ import java.util.Random;
  * Created by Travis on 1/10/2016.
  */
 public class TerrainSquare {
-    public static final int TERRAIN_SIZE = 1024;
+    public static final float TERRAIN_SIZE = 1024;
 
     private static final int VERTEX_COUNT = 256;
     private static final int SEED = new Random().nextInt(1000000000);
 
-    private int gridX;
-    private int gridZ;
+    private float gridX;
+    private float gridZ;
     private RawModel model;
     private TerrainTexturePack texturePack;
     private TerrainTexture blendMap;
@@ -43,19 +43,19 @@ public class TerrainSquare {
         return model;
     }
 
-    public int getGridZ() {
+    public float getGridZ() {
         return gridZ;
     }
 
-    public int getGridZNormalized() {
+    public float getGridZNormalized() {
         return gridZ/TERRAIN_SIZE;
     }
 
-    public int getGridX() {
+    public float getGridX() {
         return gridX;
     }
 
-    public int getGridXNormalized() {
+    public float getGridXNormalized() {
         return gridX/TERRAIN_SIZE;
     }
 

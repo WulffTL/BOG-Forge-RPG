@@ -10,7 +10,7 @@ public class TerrainGrid {
     private static TerrainSquare[][] terrainSquares = new TerrainSquare[DIMENSIONS][DIMENSIONS];
 
     public static void addTerrainSquare(TerrainSquare terrainSquare) {
-        terrainSquares[terrainSquare.getGridXNormalized()][terrainSquare.getGridZNormalized()] = terrainSquare;
+        terrainSquares[(int)terrainSquare.getGridXNormalized()][(int)terrainSquare.getGridZNormalized()] = terrainSquare;
     }
 
     public static TerrainSquare[][] getTerrainSquares() {
