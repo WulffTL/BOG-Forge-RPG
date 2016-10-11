@@ -87,7 +87,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture,new Vector2f(100,100),new Vector3f(0,0,0),1);
+        Player player = new Player(playerTexture,new Vector2f(170,274),new Vector3f(0,0,0),1);
         immovableEntities.add(player);
 
         //Pine Tree Model
@@ -108,9 +108,12 @@ public class MainGameLoop {
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        entities.add(new Entity(lamp, new Vector2f(185, 293)));
-        entities.add(new Entity(lamp, new Vector2f(370, 300)));
-        entities.add(new Entity(lamp, new Vector2f(293, 305)));
+        int lampOneX = 185, lampOneY = 293;
+        int lampTwoX = 370, lampTwoY = 300;
+        int lampThreeX = 293, lampThreeY = 305;
+        entities.add(new Entity(lamp, new Vector2f(lampOneX, lampOneY)));
+        entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoY)));
+        entities.add(new Entity(lamp, new Vector2f(lampThreeX, lampThreeY)));
 
         for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
@@ -130,12 +133,14 @@ public class MainGameLoop {
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector3f(TerrainSquare.TERRAIN_SIZE,TerrainSquare.TERRAIN_SIZE,1000),new Vector3f(1,1,1));
+        Light sun = new Light(new Vector2f(0,-7000),1000, new Vector3f(1f,1f,1f));
         lights.add(sun);
-
-        List<Light> allLights = new ArrayList<>();
-
-        allLights.addAll(lights);
+        //red lamp
+        lights.add(new Light(new Vector2f(lampOneX,lampOneY),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
+        //green lamp
+        lights.add(new Light(new Vector2f(lampTwoX,lampTwoY),15,new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
+        //yellow lamp
+        lights.add(new Light(new Vector2f(lampThreeX,lampThreeY),15,new Vector3f(2,2,0), new Vector3f(1,0.01f,0.002f)));
 
         /****************************************CAMERA****************************************/
 
