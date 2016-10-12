@@ -90,7 +90,9 @@ public class Player extends Entity {
         float distance = RUN_SPEED * DisplayManager.getFrameTimeSeconds();
         float dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + angleOffset)));
         float dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + angleOffset)));
-        super.increasePosition(dx,0,dz);
+        if(TerrainGrid.getTerrainByPosition(this.getPosition().x + dx, this.getPosition().z + dz) != null) {
+            super.increasePosition(dx,0,dz);
+        }
         currentStamina -= STAMINA_DRAIN * DisplayManager.getFrameTimeSeconds();
     }
 

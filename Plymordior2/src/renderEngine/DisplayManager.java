@@ -23,7 +23,7 @@ public class DisplayManager {
 
         try {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
-            Display.create(new PixelFormat(), attribs);
+            Display.create(new PixelFormat().withDepthBits(24), attribs);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }

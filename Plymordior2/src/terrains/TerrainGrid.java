@@ -25,7 +25,7 @@ public class TerrainGrid {
     public static TerrainSquare getTerrainByPosition(float xPos, float zPos) {
         int gridX = (int) Math.floor(xPos/ TerrainSquare.TERRAIN_SIZE);
         int gridZ = (int) Math.floor(zPos/ TerrainSquare.TERRAIN_SIZE);
-        if(Maths.isBetween(gridX,0,DIMENSIONS) && Maths.isBetween(gridZ,0,DIMENSIONS)) {
+        if(Maths.isBetween(gridX,0,DIMENSIONS - 1) && Maths.isBetween(gridZ,0,DIMENSIONS - 1)) {
             return terrainSquares[gridX][gridZ];
         } else {
             System.out.println("ERROR: Terrain Array Index Out of Bounds Exception");

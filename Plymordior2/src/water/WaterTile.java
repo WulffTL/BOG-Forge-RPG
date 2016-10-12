@@ -1,10 +1,11 @@
 package water;
 
 import terrains.TerrainGrid;
+import terrains.TerrainSquare;
 
 public class WaterTile {
 	
-	public static final float TILE_SIZE = 300;
+	public static final float TILE_SIZE = TerrainSquare.TERRAIN_SIZE * TerrainGrid.DIMENSIONS;
 	
 	private float height;
 	private float x,z;

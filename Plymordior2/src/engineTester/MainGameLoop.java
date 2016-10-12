@@ -87,7 +87,7 @@ public class MainGameLoop {
         WaterShader waterShader = new WaterShader();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(2122, 1816, 0.8f);
+        WaterTile water = new WaterTile((TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, (TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, 0);
         waters.add(water);
 
         /****************************************MODELS****************************************/

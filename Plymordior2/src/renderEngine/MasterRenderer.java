@@ -28,7 +28,7 @@ import java.util.Map;
 public class MasterRenderer {
 
     public static final float FOV = 70;
-    public static final float NEAR_PLANE = 0.1f;
+    public static final float NEAR_PLANE = 1f;
     public static final float FAR_PLANE = 5000;
 
     private static float RED = 0.5444f;
