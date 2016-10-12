@@ -22,15 +22,30 @@ uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
 
-const float levels = 10.0;
+//const float levels = 100.0;
+
+const int pcfCount = 2;
+const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
 
 void main(void){
 
-    float objectNearestLight = texture(shadowMap, shadowCoords.xy).r;
-    float lightFactor = 1.0;
-    if(shadowCoords.z > objectNearestLight) {
-        lightFactor = 1.0 - (shadowCoords.w * 0.4);
+    float mapSize = 4096.0;
+    float texelSize = 1.0 / mapSize;
+    float total = 0.0;
+
+    for(int x = -pcfCount; x <= pcfCount; x++) {
+        for(int y = -pcfCount; y <= pcfCount; y++) {
+            float objectNearestLight = texture(shadowMap, shadowCoords.xy + vec2(x, y) * texelSize).r;
+            if(shadowCoords.z > objectNearestLight) {
+                total += 1.0;
+            }
+        }
     }
+
+    total /= totalTexels;
+
+    float objectNearestLight = texture(shadowMap, shadowCoords.xy).r;
+    float lightFactor = 1.0 - (total * shadowCoords.w);
 
     vec4 blendMapColor = texture(blendMap, pass_textureCoords);
 
@@ -54,22 +69,25 @@ void main(void){
         vec3 unitLightVector = normalize(toLightVector[i]);
         float nDot1 = dot(unitNormal,unitLightVector);
         float brightness = max(nDot1,0.2);
-        float level = floor(levels * brightness);
-        brightness = (level / levels);
+        //Cel Shading
+        //float level = floor(levels * brightness);
+        //brightness = (level / levels);
         brightness = max(brightness, 0.2);
         vec3 lightDirection = -unitLightVector;
         vec3 reflectedLightDirection = reflect(lightDirection,unitNormal);
         float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
         specularFactor = max(specularFactor,0.2);
-        level = floor(specularFactor * levels);
-        specularFactor = level / levels;
-        float dampedFactor = pow(specularFactor,shineDamper);
-        level = floor(dampedFactor * levels);
-        dampedFactor = level / levels;
-        totalSpecular = totalSpecular + (dampedFactor * reflectivity * lightColor[i])/attFactor;
+        //Cel Shading
+        //level = floor(specularFactor * levels);
+        //specularFactor = level / levels;
+        //float dampedFactor = pow(specularFactor,shineDamper);
+        //level = floor(dampedFactor * levels);
+        //dampedFactor = level / levels;
+        //multiply reflectivity by dampedFactor
+        totalSpecular = totalSpecular + (reflectivity * lightColor[i])/attFactor;
         totalDiffuse = totalDiffuse + (brightness * lightColor[i])/attFactor;
     }
-    totalDiffuse = max(totalDiffuse, 0.4) * lightFactor;
+    totalDiffuse = max(totalDiffuse * lightFactor, 0.4);
 
     out_Color = vec4(totalDiffuse,1.0) * totalColor + vec4(totalSpecular,1.0);
     out_Color = mix(vec4(skyColor,1.0),out_Color, visibility);
