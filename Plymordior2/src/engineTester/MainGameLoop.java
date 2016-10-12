@@ -16,6 +16,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import renderEngine.*;
 import models.RawModel;
+import terrains.HeightsGenerator;
 import terrains.TerrainGrid;
 import terrains.TerrainSquare;
 import textures.ModelTexture;
@@ -37,8 +38,8 @@ import java.util.Random;
 
 public class MainGameLoop {
 
-    private static final int MIDDAY = 120;
-    private static final int MIDNIGHT = 240;
+    public static final int MIDNIGHT = 2400;
+    public static final int MIDDAY = MIDNIGHT/2;
     private static float timeInSeconds = 0;
 
     public static void main(String[] args) {
@@ -87,7 +88,7 @@ public class MainGameLoop {
         WaterShader waterShader = new WaterShader();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile((TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, (TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, 0);
+        WaterTile water = new WaterTile((TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, (TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, -HeightsGenerator.AMPLITUDE/3);
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -123,14 +124,20 @@ public class MainGameLoop {
             float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
-            entities.add(new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
+            Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
+            if(entity.getPosition().getY() > 0) {
+                entities.add(entity);
+            }
         }
 
         for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
-            entities.add(new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
+            Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
+            if(entity.getPosition().getY() > 0) {
+                entities.add(entity);
+            }
         }
 
         /****************************************LIGHTS****************************************/
@@ -151,6 +158,8 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
+        //Calling right before while loop resets delta to 0 so we start close to midnight
+        DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
             player.move();
 

@@ -105,22 +105,22 @@ public class SkyboxRenderer {
         int texture1 = nightTexture;
         int texture2 = texture;
         float blendFactor;
-        float time = MainGameLoop.getTimeInSeconds() % 240;
-        if(time < 120) {
+        float time = MainGameLoop.getTimeInSeconds() % MainGameLoop.MIDNIGHT;
+        if(time < MainGameLoop.MIDDAY) {
             if(time == 0) {
                 MasterRenderer.setColor(0,0,0);
             } else {
-                MasterRenderer.setColor(time*dayRed/120,time*dayBlue/120,time*dayGreen/120);
+                MasterRenderer.setColor(time*dayRed/MainGameLoop.MIDDAY,time*dayBlue/MainGameLoop.MIDDAY,time*dayGreen/MainGameLoop.MIDDAY);
             }
-            blendFactor = time/120;
+            blendFactor = time/MainGameLoop.MIDDAY;
 
         } else {
-            if(time == 120) {
-                MasterRenderer.setColor(dayRed,dayGreen,dayBlue);
+            if(time == MainGameLoop.MIDDAY) {
+                MasterRenderer.setColor(dayRed,dayBlue,dayGreen);
             } else {
-                MasterRenderer.setColor((240-time)*dayRed/120, (240-time)*dayGreen/120, (240-time)*dayBlue/120);
+                MasterRenderer.setColor((MainGameLoop.MIDNIGHT-time)*dayRed/MainGameLoop.MIDDAY, (MainGameLoop.MIDNIGHT-time)*dayBlue/MainGameLoop.MIDDAY, (MainGameLoop.MIDNIGHT-time)*dayGreen/MainGameLoop.MIDDAY);
             }
-            blendFactor = (240-time)/120;
+            blendFactor = (MainGameLoop.MIDNIGHT-time)/MainGameLoop.MIDDAY;
         }
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
