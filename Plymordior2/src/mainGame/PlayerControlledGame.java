@@ -52,7 +52,7 @@ public class PlayerControlledGame {
             player.move();
             camera.move();
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
-            renderer.renderScene(entities,immovableEntities,lights,camera,clipPlane);
+            renderer.renderScene(entities,lights,camera,clipPlane);
             DisplayManager.updateDisplay();
         }
 

@@ -5,6 +5,7 @@ import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
 import fontRendering.TextMaster;
 import guis.GuiRenderer;
+import guis.GuiTexture;
 import models.TexturedModel;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -46,16 +47,6 @@ public class MainGameLoop {
         Loader loader = new Loader();
         TextMaster.init(loader);
 
-        /****************************************FONT STUFF****************************************/
-        FontType font = new FontType(loader.loadTexture("candara"), new File("./Plymordior2/res/candara.fnt"));
-        GUIText text = new GUIText("A sample string of text!", 3, font, new Vector2f(0.0f, 0.4f), 1f, true);
-        text.setColour(0.1f,0.1f,0.1f);
-
-        /****************************************RENDERERS****************************************/
-
-        GuiRenderer guiRenderer = new GuiRenderer(loader);
-        MasterRenderer renderer = new MasterRenderer(loader);
-
         /****************************************TERRAINS****************************************/
         //We place the four textures into a texture pack for the terrain to read
         TerrainTexturePack texturePack = new TerrainTexturePack(loader, "grassy2", "grass", "grassFlowers", "mud");
@@ -69,6 +60,27 @@ public class MainGameLoop {
             }
         }
 
+        /****************************************PLAYER****************************************/
+        //Our player model
+        RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
+        TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
+        Player player = new Player(playerTexture,new Vector2f(208,12),new Vector3f(0,0,0),1);
+
+        /****************************************CAMERA****************************************/
+
+        Camera camera = new Camera(player);
+
+        /****************************************FONT STUFF****************************************/
+        FontType font = new FontType(loader.loadTexture("candara"), new File("./Plymordior2/res/candara.fnt"));
+        GUIText text = new GUIText("A sample string of text!", 3, font, new Vector2f(0.0f, 0.4f), 1f, true);
+        text.setColour(0.1f,0.1f,0.1f);
+
+        /****************************************RENDERERS****************************************/
+
+        GuiRenderer guiRenderer = new GuiRenderer(loader);
+        MasterRenderer renderer = new MasterRenderer(loader, camera);
+
+
         /****************************************WATER****************************************/
 
         WaterFrameBuffers buffers = new WaterFrameBuffers();
@@ -80,13 +92,8 @@ public class MainGameLoop {
 
         /****************************************MODELS****************************************/
         List<Entity> entities = new ArrayList<>();
-        List<Entity> immovableEntities = new ArrayList<>();
 
-        //Our player model
-        RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
-        TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture,new Vector2f(208,12),new Vector3f(0,0,0),1);
-        immovableEntities.add(player);
+        entities.add(player);
 
         //Pine Tree Model
         RawModel model = OBJLoader.loadObjModel("pine", loader);
@@ -116,21 +123,21 @@ public class MainGameLoop {
             float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
-            immovableEntities.add(new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
+            entities.add(new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
 
         for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
-            immovableEntities.add(new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
+            entities.add(new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
 
         /****************************************LIGHTS****************************************/
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector2f(TerrainSquare.TERRAIN_SIZE*(TerrainGrid.DIMENSIONS/2),TerrainSquare.TERRAIN_SIZE*(TerrainGrid.DIMENSIONS/2)),5000, new Vector3f(1f,1f,1f));
+        Light sun = new Light(new Vector2f(100000,-100000),500000, new Vector3f(1f,1f,1f));
         lights.add(sun);
         //red lamp
         lights.add(new Light(new Vector2f(lampOneX,lampOneY),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
@@ -139,10 +146,11 @@ public class MainGameLoop {
         //yellow lamp
         lights.add(new Light(new Vector2f(lampThreeX,lampThreeY),15,new Vector3f(2,2,0), new Vector3f(1,0.01f,0.002f)));
 
-        /****************************************CAMERA****************************************/
+        /****************************************GUIS**************************************************/
+        List<GuiTexture> guiTextures = new ArrayList<>();
 
-        Camera camera = new Camera(player);
-
+        GuiTexture shadowMap = new GuiTexture(renderer.getShadowMapTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
+        guiTextures.add(shadowMap);
 
         /****************************************MAIN GAME LOOP****************************************/
 
@@ -155,6 +163,7 @@ public class MainGameLoop {
 
             camera.move();
 
+            renderer.renderShadowMap(entities,sun);
             TextMaster.render();
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
@@ -173,20 +182,21 @@ public class MainGameLoop {
             float distance = 2 * (camera.getPosition().y - water.getHeight());
             camera.getPosition().y -= distance;
             camera.invertPitch();
-            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,1,0,-water.getHeight()+1f));
+            renderer.renderScene(entities,lights,camera,new Vector4f(0,1,0,-water.getHeight()+1f));
             camera.getPosition().y += distance;
             camera.invertPitch();
 
             //RENDER REFRACTION TEXTURE
             buffers.bindRefractionFrameBuffer();
-            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,-1,0,water.getHeight()+1f));
+            renderer.renderScene(entities,lights,camera,new Vector4f(0,-1,0,water.getHeight()+1f));
 
             //RENDER TO SCREEN
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
             buffers.unbindCurrentFrameBuffer();
-            renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,1500));
+            renderer.renderScene(entities,lights,camera, new Vector4f(0,-1,0,1500));
             waterRenderer.render(waters,camera,sun);
 
+            guiRenderer.render(guiTextures);
             DisplayManager.updateDisplay();
         }
 

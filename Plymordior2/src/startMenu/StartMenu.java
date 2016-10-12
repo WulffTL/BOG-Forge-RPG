@@ -30,7 +30,7 @@ public class StartMenu {
     public static void startGame() {
         DisplayManager.createDisplay();
         Loader loader = new Loader();
-        MasterRenderer renderer = new MasterRenderer(loader);
+        //MasterRenderer renderer = new MasterRenderer(loader, camera);
 
         List<Light> lights = new ArrayList<>();
         Light overheadLight = new Light(new Vector2f(4500,4500),1000,new Vector3f(1,1,1));
@@ -70,7 +70,7 @@ public class StartMenu {
 
             startMenuEntity.rotate();
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
-            renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,15));
+            //renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,15));
             DisplayManager.updateDisplay();
         }
 

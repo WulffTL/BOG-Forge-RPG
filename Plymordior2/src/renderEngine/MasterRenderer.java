@@ -10,6 +10,8 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 import shaders.StaticShader;
 import shaders.TerrainShader;
+import shadows.ShadowMapEntityRenderer;
+import shadows.ShadowMapMasterRenderer;
 import skybox.SkyboxRenderer;
 import terrains.TerrainGrid;
 import terrains.TerrainSquare;
@@ -24,9 +26,9 @@ import java.util.Map;
  */
 public class MasterRenderer {
 
-    private static final float FOV = 70;
-    private static final float NEAR_PLANE = 0.1f;
-    private static final float FAR_PLANE = 5000;
+    public static final float FOV = 70;
+    public static final float NEAR_PLANE = 0.1f;
+    public static final float FAR_PLANE = 5000;
 
     private static float RED = 0.5444f;
     private static float GREEN = 0.62f;
@@ -44,14 +46,16 @@ public class MasterRenderer {
     private List<TerrainSquare> terrains = new ArrayList<>();
 
     private SkyboxRenderer skyboxRenderer;
+    private ShadowMapMasterRenderer shadowMapMasterRenderer;
 
-    public MasterRenderer(Loader loader){
+    public MasterRenderer(Loader loader, Camera camera){
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glCullFace(GL11.GL_BACK);
         createProjectionMatrix();
         renderer = new EntityRenderer(shader, projectionMatrix);
         terrainRenderer = new TerrainRenderer(terrainShader,projectionMatrix);
         skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
+        this.shadowMapMasterRenderer = new ShadowMapMasterRenderer(camera);
     }
 
     public Matrix4f getProjectionMatrix(){
@@ -67,9 +71,8 @@ public class MasterRenderer {
         GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
-    public void renderScene(List<Entity> entities, List<Entity> immovableEntities, List<Light> lights, Camera camera, Vector4f clipPlane){
+    public void renderScene(List<Entity> entities, List<Light> lights, Camera camera, Vector4f clipPlane){
         entities.forEach(this::processEntity);
-        immovableEntities.forEach(this::processEntity);
         for(TerrainSquare[] terrainSquares : TerrainGrid.getTerrainSquares()) {
             for(TerrainSquare terrainSquare : terrainSquares) {
                 this.processTerrain(terrainSquare);
@@ -122,23 +125,34 @@ public class MasterRenderer {
     }
 
     private void createProjectionMatrix(){
+        projectionMatrix = new Matrix4f();
         float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV/2f))) * aspectRatio);
+        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
         float x_scale = y_scale / aspectRatio;
         float frustum_length = FAR_PLANE - NEAR_PLANE;
 
-        projectionMatrix = new Matrix4f();
         projectionMatrix.m00 = x_scale;
         projectionMatrix.m11 = y_scale;
         projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
         projectionMatrix.m23 = -1;
-        projectionMatrix.m32 = -((2 * NEAR_PLANE + FAR_PLANE) / frustum_length);
+        projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
         projectionMatrix.m33 = 0;
+    }
+
+    public void renderShadowMap(List<Entity> entityList, Light sun) {
+        entityList.forEach(this::processEntity);
+        shadowMapMasterRenderer.render(entities,sun);
+        entities.clear();
+    }
+
+    public int getShadowMapTexture() {
+        return shadowMapMasterRenderer.getShadowMap();
     }
 
     public void cleanUp(){
         shader.cleanUp();
         terrainShader.cleanUp();
+        shadowMapMasterRenderer.cleanUp();
     }
 
     public static void setColor(float RED,float GREEN, float BLUE) {
