@@ -1,5 +1,7 @@
 package engineTester;
 
+import audio.AudioMaster;
+import audio.Source;
 import entities.*;
 import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
@@ -8,6 +10,8 @@ import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.TexturedModel;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -61,6 +65,15 @@ public class MainGameLoop {
                 TerrainGrid.addTerrainSquare(new TerrainSquare(i,j,loader,texturePack,blendMap));
             }
         }
+
+        /****************************************AUDIO*******************************************/
+        AudioMaster.init();
+        AL10.alDistanceModel(AL11.AL_EXPONENT_DISTANCE_CLAMPED);
+        int birdChirp = AudioMaster.loadSound("audio/bird.wav");
+        Source source = new Source();
+        source.setLooping(true);
+        source.play(birdChirp);
+        source.setPosition(185,TerrainGrid.getCurrentTerrainHeight(185,293) + 4, 293);
 
         /****************************************PLAYER****************************************/
         //Our player model
@@ -163,6 +176,7 @@ public class MainGameLoop {
         DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
             player.move();
+            AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
             if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 player.printCurrentLocation();
