@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="lombok">
+  <library name="slick-util">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/Plymordior2/libs/lombok.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Plymordior2/libs/slick-util.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

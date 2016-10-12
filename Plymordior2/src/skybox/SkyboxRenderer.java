@@ -1,5 +1,6 @@
 package skybox;
 
+import engineTester.MainGameLoop;
 import entities.Camera;
 import models.RawModel;
 import org.lwjgl.opengl.GL11;
@@ -68,7 +69,6 @@ public class SkyboxRenderer {
     private int texture;
     private int nightTexture;
     private SkyboxShader shader;
-    private float time = 0;
 
     public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix){
         cube = loader.loadToVAO(VERTICES, 3);
@@ -95,27 +95,15 @@ public class SkyboxRenderer {
     }
 
     private void bindTextures(){
-        time += DisplayManager.getFrameTimeSeconds() * 1000;
-        time %= 24000;
-        int texture1;
-        int texture2;
+        int texture1 = nightTexture;
+        int texture2 = texture;
         float blendFactor;
-        if(time >= 0 && time < 50000){
-            texture1 = texture;
-            texture2 = texture;
-            blendFactor = (time - 0)/(50000 - 0);
-        }else if(time >= 500000 && time < 80000){
-            texture1 = texture;
-            texture2 = nightTexture;
-            blendFactor = (time - 50000)/(80000 - 50000);
-        }else if(time >= 80000 && time < 210000){
-            texture1 = nightTexture;
-            texture2 = nightTexture;
-            blendFactor = (time - 80000)/(210000 - 80000);
-        }else{
-            texture1 = nightTexture;
-            texture2 = texture;
-            blendFactor = (time - 210000)/(240000 - 210000);
+        float time = MainGameLoop.getTimeInSeconds();
+        if(MainGameLoop.getTimeInSeconds() < 120) {
+            blendFactor = time/120;
+
+        } else {
+            blendFactor = (240-time)/120;
         }
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);

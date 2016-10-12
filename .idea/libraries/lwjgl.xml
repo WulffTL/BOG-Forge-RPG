@@ -1,13 +1,10 @@
 <component name="libraryTable">
   <library name="lwjgl">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/Plymordior2/lwjgl-2.9.3/jar/lwjgl.jar!/" />
-      <root url="jar://$PROJECT_DIR$/Plymordior2/lwjgl-2.9.3/jar/lwjgl_util.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Plymordior2/libs/lwjgl-2.9.3/jar/lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Plymordior2/libs/lwjgl-2.9.3/jar/lwjgl_util.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <NATIVE>
-      <root url="file://$PROJECT_DIR$/Plymordior2/lwjgl-2.9.3/native" />
-    </NATIVE>
     <SOURCES />
   </library>
 </component>

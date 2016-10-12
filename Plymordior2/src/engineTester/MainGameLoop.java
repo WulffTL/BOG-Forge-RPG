@@ -5,7 +5,6 @@ import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
 import fontRendering.TextMaster;
 import guis.GuiRenderer;
-import guis.GuiTexture;
 import models.TexturedModel;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -21,7 +20,6 @@ import terrains.TerrainSquare;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
-import toolbox.Time;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
 import water.WaterShader;
@@ -37,6 +35,10 @@ import java.util.Random;
  */
 
 public class MainGameLoop {
+
+    private static final int MIDDAY = 120;
+    private static final int MIDNIGHT = 240;
+    private static float timeInSeconds = 0;
 
     public static void main(String[] args) {
 
@@ -83,7 +85,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture,new Vector2f(1948,1615),new Vector3f(0,0,0),1);
+        Player player = new Player(playerTexture,new Vector2f(208,12),new Vector3f(0,0,0),1);
         immovableEntities.add(player);
 
         //Pine Tree Model
@@ -128,7 +130,7 @@ public class MainGameLoop {
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector2f(0,-7000),1000, new Vector3f(1f,1f,1f));
+        Light sun = new Light(new Vector2f(TerrainSquare.TERRAIN_SIZE*(TerrainGrid.DIMENSIONS/2),TerrainSquare.TERRAIN_SIZE*(TerrainGrid.DIMENSIONS/2)),5000, new Vector3f(1f,1f,1f));
         lights.add(sun);
         //red lamp
         lights.add(new Light(new Vector2f(lampOneX,lampOneY),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
@@ -157,6 +159,15 @@ public class MainGameLoop {
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
+            //change sun brightness
+            timeInSeconds += DisplayManager.getFrameTimeSeconds();
+            timeInSeconds %= MIDNIGHT;
+            if(timeInSeconds < MIDDAY) {
+                sun.setColor(new Vector3f(timeInSeconds/MIDDAY,timeInSeconds/MIDDAY,timeInSeconds/MIDDAY));
+            } else {
+                sun.setColor(new Vector3f((MIDNIGHT-timeInSeconds)/MIDDAY,(MIDNIGHT-timeInSeconds)/MIDDAY,(MIDNIGHT-timeInSeconds)/MIDDAY));
+            }
+
             //RENDER REFLECTION TEXTURE
             buffers.bindReflectionFrameBuffer();
             float distance = 2 * (camera.getPosition().y - water.getHeight());
@@ -173,7 +184,7 @@ public class MainGameLoop {
             //RENDER TO SCREEN
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
             buffers.unbindCurrentFrameBuffer();
-            renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,15));
+            renderer.renderScene(entities,immovableEntities,lights,camera, new Vector4f(0,-1,0,1500));
             waterRenderer.render(waters,camera,sun);
 
             DisplayManager.updateDisplay();
@@ -188,5 +199,9 @@ public class MainGameLoop {
         loader.cleanUp();
         waterShader.cleanUp();
         DisplayManager.closeDisplay();
+    }
+
+    public static float getTimeInSeconds() {
+        return timeInSeconds;
     }
 }
