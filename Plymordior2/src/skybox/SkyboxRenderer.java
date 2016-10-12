@@ -10,13 +10,16 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
+import renderEngine.MasterRenderer;
+import terrains.TerrainGrid;
+import terrains.TerrainSquare;
 
 /**
  * Created by Travis on 1/17/2016.
  */
 public class SkyboxRenderer {
 
-    private static final float SIZE = 2500f;
+    private static final float SIZE = TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS;
 
     private static final float[] VERTICES = {
             -SIZE,  SIZE, -SIZE,
@@ -95,14 +98,28 @@ public class SkyboxRenderer {
     }
 
     private void bindTextures(){
+        float dayRed = 0.54444f;
+        float dayBlue = 0.62f;
+        float dayGreen = 0.69f;
+
         int texture1 = nightTexture;
         int texture2 = texture;
         float blendFactor;
         float time = MainGameLoop.getTimeInSeconds();
-        if(MainGameLoop.getTimeInSeconds() < 120) {
+        if(time < 120) {
+            if(time == 0) {
+                MasterRenderer.setColor(0,0,0);
+            } else {
+                MasterRenderer.setColor(time*dayRed/120,time*dayBlue/120,time*dayGreen/120);
+            }
             blendFactor = time/120;
 
         } else {
+            if(time == 120) {
+                MasterRenderer.setColor(dayRed,dayGreen,dayBlue);
+            } else {
+                MasterRenderer.setColor((240-time)*dayRed/120, (240-time)*dayGreen/120, (240-time)*dayBlue/120);
+            }
             blendFactor = (240-time)/120;
         }
 

@@ -26,11 +26,11 @@ public class MasterRenderer {
 
     private static final float FOV = 70;
     private static final float NEAR_PLANE = 0.1f;
-    private static final float FAR_PLANE = 15000;
+    private static final float FAR_PLANE = TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS/2;
 
-    private static final float RED = 0.5444f;
-    private static final float GREEN = 0.62f;
-    private static final float BLUE = 0.69f;
+    private static float RED = 0.5444f;
+    private static float GREEN = 0.62f;
+    private static float BLUE = 0.69f;
 
     private Matrix4f projectionMatrix;
 
@@ -40,8 +40,8 @@ public class MasterRenderer {
     private TerrainRenderer terrainRenderer;
     private TerrainShader terrainShader = new TerrainShader();
 
-    private Map<TexturedModel,List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
-    private List<TerrainSquare> terrains = new ArrayList<TerrainSquare>();
+    private Map<TexturedModel,List<Entity>> entities = new HashMap<>();
+    private List<TerrainSquare> terrains = new ArrayList<>();
 
     private SkyboxRenderer skyboxRenderer;
 
@@ -139,5 +139,17 @@ public class MasterRenderer {
     public void cleanUp(){
         shader.cleanUp();
         terrainShader.cleanUp();
+    }
+
+    public static void setColor(float RED,float GREEN, float BLUE) {
+        MasterRenderer.RED = RED;
+        MasterRenderer.GREEN = GREEN;
+        MasterRenderer.BLUE = BLUE;
+    }
+
+    public static void incrementColor(float RED, float GREEN, float BLUE) {
+        MasterRenderer.RED += RED;
+        MasterRenderer.GREEN += GREEN;
+        MasterRenderer.BLUE += BLUE;
     }
 }

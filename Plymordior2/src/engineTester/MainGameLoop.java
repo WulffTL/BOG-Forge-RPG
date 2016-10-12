@@ -112,17 +112,17 @@ public class MainGameLoop {
         entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoY)));
         entities.add(new Entity(lamp, new Vector2f(lampThreeX, lampThreeY)));
 
-        for(int i = 0; i < 500; i++) {
-            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
-            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
-            float scale = Math.abs(random.nextFloat() * random.nextInt() % 3);
+        for(int i = 0; i < 5000; i++) {
+            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
             immovableEntities.add(new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
 
-        for(int i = 0; i < 50; i++) {
-            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
-            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE);
-            float scale = Math.abs(random.nextFloat() * random.nextInt() % 10);
+        for(int i = 0; i < 500; i++) {
+            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
             immovableEntities.add(new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale));
         }
 
