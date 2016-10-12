@@ -40,7 +40,8 @@ public class MainGameLoop {
 
     public static final int MIDNIGHT = 2400;
     public static final int MIDDAY = MIDNIGHT/2;
-    private static float timeInSeconds = 0;
+    //Start at midday
+    private static float timeInSeconds = MIDDAY;
 
     public static void main(String[] args) {
 
@@ -65,7 +66,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
-        Player player = new Player(playerTexture,new Vector2f(208,12),new Vector3f(0,0,0),1);
+        Player player = new Player(playerTexture,new Vector2f(245,341),new Vector3f(0,0,0),1);
 
         /****************************************CAMERA****************************************/
 
@@ -88,7 +89,7 @@ public class MainGameLoop {
         WaterShader waterShader = new WaterShader();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile((TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, (TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2, -HeightsGenerator.AMPLITUDE/3);
+        WaterTile water = new WaterTile(new Vector3f(TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE/2, -HeightsGenerator.AMPLITUDE/10, (TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2));
         waters.add(water);
 
         /****************************************MODELS****************************************/
@@ -121,8 +122,8 @@ public class MainGameLoop {
         entities.add(new Entity(lamp, new Vector2f(lampThreeX, lampThreeY)));
 
         for(int i = 0; i < 5000; i++) {
-            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
             Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
             if(entity.getPosition().getY() > 0) {
@@ -130,11 +131,11 @@ public class MainGameLoop {
             }
         }
 
-        for(int i = 0; i < 500; i++) {
-            float xPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-            float zPos = Math.abs(random.nextInt() % TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+        for(int i = 0; i < 5000; i++) {
+            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
-            Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
+            Entity entity = new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
             if(entity.getPosition().getY() > 0) {
                 entities.add(entity);
             }
@@ -144,7 +145,7 @@ public class MainGameLoop {
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector2f(100000,-100000),500, new Vector3f(1f,1f,1f));
+        Light sun = new Light(new Vector2f(100000,-100000),1500, new Vector3f(1f,1f,1f));
         lights.add(sun);
         //red lamp
         lights.add(new Light(new Vector2f(lampOneX,lampOneY),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));

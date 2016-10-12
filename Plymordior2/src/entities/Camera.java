@@ -9,7 +9,7 @@ import terrains.TerrainSquare;
  */
 public class Camera {
 
-    private float distanceFromPlayer = 50;
+    private float distanceFromPlayer = 100;
     private float angleAroundPlayer = 0;
 
     public void setPosition(Vector3f position) {
@@ -25,7 +25,7 @@ public class Camera {
     }
 
     private Vector3f position = new Vector3f(400,15,350);
-    private float pitch = 10;
+    private float pitch = 30;
     private float yaw = 180;
     private float roll;
 

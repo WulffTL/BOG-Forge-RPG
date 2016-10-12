@@ -1,5 +1,6 @@
 package water;
 
+import org.lwjgl.util.vector.Vector3f;
 import terrains.TerrainGrid;
 import terrains.TerrainSquare;
 
@@ -15,6 +16,12 @@ public class WaterTile {
 		this.z = centerZ;
 		this.height = TerrainGrid.getCurrentTerrainHeight(centerX,centerZ) + heightOffset;
 	}
+
+	public WaterTile(Vector3f position) {
+        this.x = position.x;
+        height = position.y;
+        this.z = position.z;
+    }
 
 	public float getHeight() {
 		return height;
