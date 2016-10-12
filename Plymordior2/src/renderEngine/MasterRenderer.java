@@ -26,7 +26,7 @@ public class MasterRenderer {
 
     private static final float FOV = 70;
     private static final float NEAR_PLANE = 0.1f;
-    private static final float FAR_PLANE = TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS/2;
+    private static final float FAR_PLANE = 5000;
 
     private static float RED = 0.5444f;
     private static float GREEN = 0.62f;

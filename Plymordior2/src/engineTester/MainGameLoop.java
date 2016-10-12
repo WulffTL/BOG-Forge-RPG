@@ -173,13 +173,13 @@ public class MainGameLoop {
             float distance = 2 * (camera.getPosition().y - water.getHeight());
             camera.getPosition().y -= distance;
             camera.invertPitch();
-            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,1,0,-water.getHeight()+0.1f));
+            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,1,0,-water.getHeight()+1f));
             camera.getPosition().y += distance;
             camera.invertPitch();
 
             //RENDER REFRACTION TEXTURE
             buffers.bindRefractionFrameBuffer();
-            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,1,0,water.getHeight()));
+            renderer.renderScene(entities,immovableEntities,lights,camera,new Vector4f(0,-1,0,water.getHeight()+1f));
 
             //RENDER TO SCREEN
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
