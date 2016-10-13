@@ -21,6 +21,7 @@ import org.lwjgl.util.vector.Vector4f;
 import particles.Particle;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
+import particles.ParticleTexture;
 import renderEngine.*;
 import models.RawModel;
 import terrains.HeightsGenerator;
@@ -108,11 +109,13 @@ public class MainGameLoop {
         MasterRenderer renderer = new MasterRenderer(loader, camera);
 
         /***************************************PARTICLES*****************************************/
+        ParticleTexture fireTexture = new ParticleTexture(loader.loadTexture("fire"), 8, false);
+        ParticleTexture starTexture = new ParticleTexture(loader.loadTexture("particleStar"), 1, false);
+        ParticleTexture starTextureAdditive = new ParticleTexture(loader.loadTexture("particleStar"), 1, true);
+
         ParticleMaster.init(loader,renderer.getProjectionMatrix());
-        ParticleSystem particleSystem = new ParticleSystem(50,20,0.4f,4,1);
-        particleSystem.setLifeError(0.1f);
-        particleSystem.setScaleError(1f);
-        particleSystem.setSpeedError(0.5f);
+        ParticleSystem starParticleSystem = new ParticleSystem(starTexture,150,10,0.1f,10,1.6f);
+        ParticleSystem starParticleSystemAdditive = new ParticleSystem(starTextureAdditive,150,10,0.1f,10,1.6f);
 
         /****************************************WATER****************************************/
 
@@ -195,15 +198,12 @@ public class MainGameLoop {
         DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
             player.move();
-            particleSystem.generateParticles(new Vector3f(lampOneX,TerrainGrid.getCurrentTerrainHeight(lampOneX,lampThreeY)+50, lampThreeY));
-            ParticleMaster.update();
+            starParticleSystem.generateParticles(new Vector3f(lampThreeX, TerrainGrid.getCurrentTerrainHeight(lampThreeX,lampTwoY)+ 20, lampTwoY));
+            starParticleSystemAdditive.generateParticles(new Vector3f(lampThreeX, TerrainGrid.getCurrentTerrainHeight(lampThreeX,lampTwoY)+ 20, lampTwoY));
+            ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
             lakeSource.setVolume(Math.max(0,(1 - (player.getDistanceToWater()/noiseDistanceThreshold))/4));
-
-            if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
-                new Particle(new Vector3f(player.getPosition()), new Vector3f(0, 30, 0), 1, 4, 0, 1);
-            }
 
             if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 player.printCurrentLocation();
