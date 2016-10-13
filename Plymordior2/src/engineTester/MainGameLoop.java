@@ -45,7 +45,7 @@ public class MainGameLoop {
     public static final int MIDNIGHT = 2400;
     public static final int MIDDAY = MIDNIGHT/2;
     //Start at midday
-    private static float timeInSeconds = MIDDAY;
+    private static float timeInSeconds = 1200;
 
     public static void main(String[] args) {
 
@@ -74,7 +74,9 @@ public class MainGameLoop {
         Source birdSource = new Source();
         birdSource.setLooping(true);
         birdSource.play(birdChirp);
-        birdSource.setPosition(185,TerrainGrid.getCurrentTerrainHeight(185,293) + 4, 293);
+        birdSource.setPosition(0,0,0);
+        birdSource.setMaxDistance(0);
+        birdSource.setVolume(.02f);
         //Lake Noises
         int lakeNoise = AudioMaster.loadSound("audio/lake.wav");
         Source lakeSource = new Source();
@@ -96,7 +98,6 @@ public class MainGameLoop {
         /****************************************FONT STUFF****************************************/
         FontType font = new FontType(loader.loadTexture("candara"), new File("./Plymordior2/res/candara.fnt"));
         GUIText text = new GUIText("A sample string of text!", 3, font, new Vector2f(0.0f, 0.4f), 1f, true);
-        text.setColour(0.1f,0.1f,0.1f);
 
         /****************************************RENDERERS****************************************/
 
@@ -167,7 +168,7 @@ public class MainGameLoop {
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector2f(100000,-100000),1500, new Vector3f(1f,1f,1f));
+        Light sun = new Light(new Vector2f(100000,-100000),15000, new Vector3f(1f,1f,1f));
         lights.add(sun);
         //red lamp
         lights.add(new Light(new Vector2f(lampOneX,lampOneY),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
@@ -187,7 +188,7 @@ public class MainGameLoop {
             player.move();
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
-            lakeSource.setVolume(Math.max(0,(1 - (player.getDistanceToWater()/noiseDistanceThreshold))/1.5f));
+            lakeSource.setVolume(Math.max(0,(1 - (player.getDistanceToWater()/noiseDistanceThreshold))/4));
 
             if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 player.printCurrentLocation();
@@ -195,8 +196,8 @@ public class MainGameLoop {
 
             camera.move();
 
+
             renderer.renderShadowMap(entities,sun);
-            TextMaster.render();
 
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
@@ -214,13 +215,13 @@ public class MainGameLoop {
             float distance = 2 * (camera.getPosition().y - WaterTile.HEIGHT);
             camera.getPosition().y -= distance;
             camera.invertPitch();
-            renderer.renderScene(entities,lights,camera,new Vector4f(0,1,0,WaterTile.HEIGHT+1f));
+            renderer.renderScene(entities,lights,camera,new Vector4f(0,1,0,-WaterTile.HEIGHT));
             camera.getPosition().y += distance;
             camera.invertPitch();
 
             //RENDER REFRACTION TEXTURE
             buffers.bindRefractionFrameBuffer();
-            renderer.renderScene(entities,lights,camera,new Vector4f(0,-1,0,WaterTile.HEIGHT+1f));
+            renderer.renderScene(entities,lights,camera,new Vector4f(0,-1,0,WaterTile.HEIGHT));
 
             //RENDER TO SCREEN
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
@@ -229,6 +230,7 @@ public class MainGameLoop {
             waterRenderer.render(waters,camera,sun);
 
             guiRenderer.render(guiTextures);
+            TextMaster.render();
             DisplayManager.updateDisplay();
         }
 
