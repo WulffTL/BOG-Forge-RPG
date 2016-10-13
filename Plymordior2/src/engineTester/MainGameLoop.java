@@ -49,7 +49,7 @@ public class MainGameLoop {
     public static final int MIDNIGHT = 2400;
     public static final int MIDDAY = MIDNIGHT/2;
     //Start at midday
-    private static float timeInSeconds = 1200;
+    private static float timeInSeconds = 0;
 
     public static void main(String[] args) {
 
@@ -198,8 +198,8 @@ public class MainGameLoop {
         DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
             player.move();
-            starParticleSystem.generateParticles(new Vector3f(lampThreeX, TerrainGrid.getCurrentTerrainHeight(lampThreeX,lampTwoY)+ 20, lampTwoY));
-            starParticleSystemAdditive.generateParticles(new Vector3f(lampThreeX, TerrainGrid.getCurrentTerrainHeight(lampThreeX,lampTwoY)+ 20, lampTwoY));
+            starParticleSystem.generateParticles(new Vector3f(lampThreeX+200, TerrainGrid.getCurrentTerrainHeight(lampThreeX+200,lampTwoY+100)+ 200, lampTwoY+100));
+            starParticleSystemAdditive.generateParticles(new Vector3f(lampThreeX+200, TerrainGrid.getCurrentTerrainHeight(lampThreeX+200,lampTwoY+100)+ 200, lampTwoY+100));
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 

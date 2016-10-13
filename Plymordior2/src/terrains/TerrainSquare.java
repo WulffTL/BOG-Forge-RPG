@@ -17,9 +17,9 @@ import java.util.Random;
  * Created by Travis on 1/10/2016.
  */
 public class TerrainSquare {
-    public static final float TERRAIN_SIZE = 1024;
+    public static final float TERRAIN_SIZE = 800;
 
-    private static final int VERTEX_COUNT = 256;
+    private static final int VERTEX_COUNT = 128;
     private static final int SEED = new Random().nextInt(1000000000);
 
     private float gridX;

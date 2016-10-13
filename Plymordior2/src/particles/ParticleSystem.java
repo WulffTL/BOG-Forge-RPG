@@ -1,5 +1,6 @@
 package particles;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.lwjgl.util.vector.Matrix4f;
@@ -18,6 +19,7 @@ public class ParticleSystem {
     private float directionDeviation = 0;
 
     private ParticleTexture texture;
+    private ArrayList<Particle> particles;
 
     private Random random = new Random();
 
@@ -28,6 +30,7 @@ public class ParticleSystem {
         this.gravityComplient = gravityComplient;
         this.averageLifeLength = lifeLength;
         this.averageScale = scale;
+        this.particles = new ArrayList<>((int)((lifeLength*pps*1.1)));
     }
 
     /**
