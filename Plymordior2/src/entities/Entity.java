@@ -4,6 +4,7 @@ import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import terrains.TerrainGrid;
+import water.WaterTile;
 
 /**
  * Created by Travis on 10/25/2015.
@@ -98,5 +99,39 @@ public class Entity {
 
     public float getScale() {
         return scale;
+    }
+
+    public float getDistanceToWater() {
+        boolean hasHitWater = false;
+        float noiseThreshold = 150f;
+        int checksPerSide = 3;
+        int radiusJump = 5;
+        float xPos = this.getPosition().getX();
+        float zPos = this.getPosition().getZ();
+        int radius = 0;
+        while(!hasHitWater && radius < noiseThreshold) {
+            for(int x = -radius; x <= radius; x += Math.max(1,radius/checksPerSide)) {
+                if(TerrainGrid.getTerrainByPosition(xPos + x, zPos + radius) != null && TerrainGrid.getCurrentTerrainHeight(xPos + x, zPos + radius) <= WaterTile.HEIGHT) {
+                    hasHitWater = true;
+                    break;
+                }
+                if(TerrainGrid.getTerrainByPosition(xPos + x, zPos - radius) != null && TerrainGrid.getCurrentTerrainHeight(xPos + x, zPos - radius) <= WaterTile.HEIGHT) {
+                    hasHitWater = true;
+                    break;
+                }
+            }
+            for(int z = -radius; z < radius; z += Math.max(1,radius/checksPerSide)) {
+                if(TerrainGrid.getTerrainByPosition(xPos + radius, zPos + z) != null && TerrainGrid.getCurrentTerrainHeight(xPos + radius, zPos + z) <= WaterTile.HEIGHT) {
+                    hasHitWater = true;
+                    break;
+                }
+                if(TerrainGrid.getTerrainByPosition(xPos - radius, zPos + z) != null && TerrainGrid.getCurrentTerrainHeight(xPos - radius, zPos + z) <= WaterTile.HEIGHT) {
+                    hasHitWater = true;
+                    break;
+                }
+            }
+            radius += radiusJump;
+        }
+        return radius;
     }
 }

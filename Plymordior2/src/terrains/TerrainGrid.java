@@ -28,7 +28,6 @@ public class TerrainGrid {
         if(Maths.isBetween(gridX,0,DIMENSIONS - 1) && Maths.isBetween(gridZ,0,DIMENSIONS - 1)) {
             return terrainSquares[gridX][gridZ];
         } else {
-            System.out.println("ERROR: Terrain Array Index Out of Bounds Exception");
             return null;
         }
 

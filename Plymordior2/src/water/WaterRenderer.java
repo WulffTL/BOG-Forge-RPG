@@ -48,7 +48,7 @@ public class WaterRenderer {
 		prepareRender(camera, sun);
 		for (WaterTile tile : water) {
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(
-					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
+					new Vector3f(tile.getX(), WaterTile.HEIGHT, tile.getZ()), 0, 0, 0,
 					WaterTile.TILE_SIZE/2);
 			shader.loadModelMatrix(modelMatrix);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());

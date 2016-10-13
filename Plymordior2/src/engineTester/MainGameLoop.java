@@ -69,11 +69,19 @@ public class MainGameLoop {
         /****************************************AUDIO*******************************************/
         AudioMaster.init();
         AL10.alDistanceModel(AL11.AL_EXPONENT_DISTANCE_CLAMPED);
+        //Bird Noises
         int birdChirp = AudioMaster.loadSound("audio/bird.wav");
-        Source source = new Source();
-        source.setLooping(true);
-        source.play(birdChirp);
-        source.setPosition(185,TerrainGrid.getCurrentTerrainHeight(185,293) + 4, 293);
+        Source birdSource = new Source();
+        birdSource.setLooping(true);
+        birdSource.play(birdChirp);
+        birdSource.setPosition(185,TerrainGrid.getCurrentTerrainHeight(185,293) + 4, 293);
+        //Lake Noises
+        int lakeNoise = AudioMaster.loadSound("audio/lake.wav");
+        Source lakeSource = new Source();
+        lakeSource.setLooping(true);
+        lakeSource.play(lakeNoise);
+        lakeSource.setPosition(0,0,0);
+        lakeSource.setMaxDistance(0);
 
         /****************************************PLAYER****************************************/
         //Our player model
@@ -102,8 +110,9 @@ public class MainGameLoop {
         WaterShader waterShader = new WaterShader();
         WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
         List<WaterTile> waters = new ArrayList<>();
-        WaterTile water = new WaterTile(new Vector3f(TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE/2, -HeightsGenerator.AMPLITUDE/10, (TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2));
+        WaterTile water = new WaterTile(TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE/2, (TerrainGrid.DIMENSIONS*TerrainSquare.TERRAIN_SIZE)/2);
         waters.add(water);
+        float noiseDistanceThreshold = 150;
 
         /****************************************MODELS****************************************/
         List<Entity> entities = new ArrayList<>();
@@ -172,11 +181,13 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
-        //Calling right before while loop resets delta to 0 so we start close to midnight
+        //Calling right before while loop resets delta to 0 so we start right at midday
         DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
             player.move();
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
+
+            lakeSource.setVolume(Math.max(0,(1 - (player.getDistanceToWater()/noiseDistanceThreshold))/1.5f));
 
             if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 player.printCurrentLocation();
@@ -200,16 +211,16 @@ public class MainGameLoop {
 
             //RENDER REFLECTION TEXTURE
             buffers.bindReflectionFrameBuffer();
-            float distance = 2 * (camera.getPosition().y - water.getHeight());
+            float distance = 2 * (camera.getPosition().y - WaterTile.HEIGHT);
             camera.getPosition().y -= distance;
             camera.invertPitch();
-            renderer.renderScene(entities,lights,camera,new Vector4f(0,1,0,-water.getHeight()+1f));
+            renderer.renderScene(entities,lights,camera,new Vector4f(0,1,0,WaterTile.HEIGHT+1f));
             camera.getPosition().y += distance;
             camera.invertPitch();
 
             //RENDER REFRACTION TEXTURE
             buffers.bindRefractionFrameBuffer();
-            renderer.renderScene(entities,lights,camera,new Vector4f(0,-1,0,water.getHeight()+1f));
+            renderer.renderScene(entities,lights,camera,new Vector4f(0,-1,0,WaterTile.HEIGHT+1f));
 
             //RENDER TO SCREEN
             GL11.glDisable(GL30.GL_CLIP_DISTANCE0);

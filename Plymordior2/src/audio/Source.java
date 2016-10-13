@@ -11,8 +11,6 @@ public class Source {
 
     public Source() {
         sourceId = AL10.alGenSources();
-        AL10.alSourcef(sourceId, AL10.AL_ROLLOFF_FACTOR, 2);
-        AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, 30);
     }
 
     public void play(int buffer) {
@@ -60,5 +58,17 @@ public class Source {
 
     public void setPosition(float x, float y, float z) {
         AL10.alSource3f(sourceId, AL10.AL_POSITION, x, y, z);
+    }
+
+    public void setRolloffFactor(int rolloffFactor) {
+        AL10.alSourcef(sourceId, AL10.AL_ROLLOFF_FACTOR, rolloffFactor);
+    }
+
+    public void setReferenceDistance(int referenceDistance) {
+        AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, referenceDistance);
+    }
+
+    public void setMaxDistance(int maxDistance) {
+        AL10.alSourcef(sourceId, AL10.AL_MAX_DISTANCE, maxDistance);
     }
 }
