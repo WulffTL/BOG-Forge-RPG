@@ -18,6 +18,9 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
+import particles.Particle;
+import particles.ParticleMaster;
+import particles.ParticleSystem;
 import renderEngine.*;
 import models.RawModel;
 import terrains.HeightsGenerator;
@@ -104,6 +107,12 @@ public class MainGameLoop {
         GuiRenderer guiRenderer = new GuiRenderer(loader);
         MasterRenderer renderer = new MasterRenderer(loader, camera);
 
+        /***************************************PARTICLES*****************************************/
+        ParticleMaster.init(loader,renderer.getProjectionMatrix());
+        ParticleSystem particleSystem = new ParticleSystem(50,20,0.4f,4,1);
+        particleSystem.setLifeError(0.1f);
+        particleSystem.setScaleError(1f);
+        particleSystem.setSpeedError(0.5f);
 
         /****************************************WATER****************************************/
 
@@ -186,9 +195,15 @@ public class MainGameLoop {
         DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
             player.move();
+            particleSystem.generateParticles(new Vector3f(lampOneX,TerrainGrid.getCurrentTerrainHeight(lampOneX,lampThreeY)+50, lampThreeY));
+            ParticleMaster.update();
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
             lakeSource.setVolume(Math.max(0,(1 - (player.getDistanceToWater()/noiseDistanceThreshold))/4));
+
+            if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
+                new Particle(new Vector3f(player.getPosition()), new Vector3f(0, 30, 0), 1, 4, 0, 1);
+            }
 
             if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 player.printCurrentLocation();
@@ -229,6 +244,7 @@ public class MainGameLoop {
             renderer.renderScene(entities,lights,camera, new Vector4f(0,-1,0,1500));
             waterRenderer.render(waters,camera,sun);
 
+            ParticleMaster.renderParticles(camera);
             guiRenderer.render(guiTextures);
             TextMaster.render();
             DisplayManager.updateDisplay();
@@ -236,6 +252,8 @@ public class MainGameLoop {
 
         /****************************************CLEAN UP****************************************/
 
+        ParticleMaster.cleanUp();
+        AudioMaster.cleanUp();
         TextMaster.cleanUp();
         buffers.cleanUp();
         guiRenderer.cleanUp();
