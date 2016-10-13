@@ -109,13 +109,13 @@ public class MainGameLoop {
         MasterRenderer renderer = new MasterRenderer(loader, camera);
 
         /***************************************PARTICLES*****************************************/
-        ParticleTexture fireTexture = new ParticleTexture(loader.loadTexture("fire"), 8, false);
-        ParticleTexture starTexture = new ParticleTexture(loader.loadTexture("particleStar"), 1, false);
         ParticleTexture starTextureAdditive = new ParticleTexture(loader.loadTexture("particleStar"), 1, true);
 
         ParticleMaster.init(loader,renderer.getProjectionMatrix());
-        ParticleSystem starParticleSystem = new ParticleSystem(starTexture,150,10,0.1f,10,1.6f);
         ParticleSystem starParticleSystemAdditive = new ParticleSystem(starTextureAdditive,150,10,0.1f,10,1.6f);
+        starParticleSystemAdditive.setLifeError(0.2f);
+        starParticleSystemAdditive.setSpeedError(0.5f);
+        starParticleSystemAdditive.setScaleError(1f);
 
         /****************************************WATER****************************************/
 
@@ -198,7 +198,6 @@ public class MainGameLoop {
         DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
             player.move();
-            starParticleSystem.generateParticles(new Vector3f(lampThreeX+200, TerrainGrid.getCurrentTerrainHeight(lampThreeX+200,lampTwoY+100)+ 200, lampTwoY+100));
             starParticleSystemAdditive.generateParticles(new Vector3f(lampThreeX+200, TerrainGrid.getCurrentTerrainHeight(lampThreeX+200,lampTwoY+100)+ 200, lampTwoY+100));
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());

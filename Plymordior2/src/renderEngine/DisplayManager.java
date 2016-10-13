@@ -23,7 +23,9 @@ public class DisplayManager {
 
         try {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
-            Display.create(new PixelFormat().withDepthBits(24), attribs);
+            Display.create(new PixelFormat().withSamples(8).withDepthBits(24), attribs);
+            Display.setTitle("BOG-Forge RPG");
+            GL11.glEnable(GL13.GL_MULTISAMPLE);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
