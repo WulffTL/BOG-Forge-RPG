@@ -59,7 +59,7 @@ public class MainGameLoop {
 
         /****************************************TERRAINS****************************************/
         //We place the four textures into a texture pack for the terrain to read
-        TerrainTexturePack texturePack = new TerrainTexturePack(loader, "grassy2", "grass", "grassFlowers", "mud");
+        TerrainTexturePack texturePack = new TerrainTexturePack(loader, "snow1", "mud", "grassy2", "brick");
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("blendMap"));
         //load in texture pack, blend map, and height map to create the texture
@@ -92,7 +92,7 @@ public class MainGameLoop {
         /****************************************PLAYER****************************************/
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
-        TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("white")));
+        TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("playerTexture")));
         Player player = new Player(playerTexture,new Vector2f(245,341),new Vector3f(0,0,0),1);
 
         /****************************************CAMERA****************************************/
@@ -101,7 +101,8 @@ public class MainGameLoop {
 
         /****************************************FONT STUFF****************************************/
         FontType font = new FontType(loader.loadTexture("candara"), new File("./Plymordior2/res/candara.fnt"));
-        GUIText text = new GUIText("A sample string of text!", 3, font, new Vector2f(0.0f, 0.4f), 1f, true);
+        GUIText text = new GUIText("Stamina", 0.7f, font, new Vector2f(0.18f,0.04f), 1f, false);
+        text.setColour(1,1,1);
 
         /****************************************RENDERERS****************************************/
 
@@ -156,7 +157,7 @@ public class MainGameLoop {
         entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoY)));
         entities.add(new Entity(lamp, new Vector2f(lampThreeX, lampThreeY)));
 
-        for(int i = 0; i < 5000; i++) {
+        for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
@@ -166,7 +167,7 @@ public class MainGameLoop {
             }
         }
 
-        for(int i = 0; i < 5000; i++) {
+        for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
@@ -191,6 +192,11 @@ public class MainGameLoop {
 
         /****************************************GUIS**************************************************/
         List<GuiTexture> guiTextures = new ArrayList<>();
+        GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("backgroundBar"), new Vector2f(-0.6f, 0.9f), new Vector2f(0.25f, 0.05f));
+        GuiTexture staminaBar = new GuiTexture(loader.loadTexture("staminaBar"), new Vector2f(-0.6f, 0.9f), new Vector2f(0.25f, 0.05f));
+        guiTextures.add(backgroundStaminaBar);
+        guiTextures.add(staminaBar);
+        //TODO: Create Character HP, Mana GUI
 
         /****************************************MAIN GAME LOOP****************************************/
 
@@ -209,7 +215,6 @@ public class MainGameLoop {
             }
 
             camera.move();
-
 
             renderer.renderShadowMap(entities,sun);
 
@@ -244,6 +249,9 @@ public class MainGameLoop {
             waterRenderer.render(waters,camera,sun);
 
             ParticleMaster.renderParticles(camera);
+            System.out.println(player.getCurrentStamina());
+            staminaBar.setPosition(new Vector2f(-0.6f - 0.25f + (0.25f * Math.min(100,(player.getCurrentStamina()/100f))), 0.9f));
+            staminaBar.setScale(new Vector2f(0.25f * Math.min(100,(player.getCurrentStamina()/100f)), 0.05f));
             guiRenderer.render(guiTextures);
             TextMaster.render();
             DisplayManager.updateDisplay();

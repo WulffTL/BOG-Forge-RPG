@@ -39,6 +39,15 @@ public class TerrainSquare {
         this.model = generateTerrain(loader, generator);
     }
 
+    public TerrainSquare(int gridX, int gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap, String heightMap) {
+        this.texturePack = texturePack;
+        this.blendMap = blendMap;
+        this.gridX = gridX * TERRAIN_SIZE;
+        this.gridZ = gridZ * TERRAIN_SIZE;
+        this.model = generateTerrain(loader, heightMap);
+        //TODO: Add height maps again
+    }
+
     public RawModel getModel() {
         return model;
     }
@@ -126,6 +135,11 @@ public class TerrainSquare {
             }
         }
         return loader.loadToVAO(vertices, textureCoords, normals, indices);
+    }
+
+    private RawModel generateTerrain(Loader loader, String heightMap) {
+        //TODO: Generate terrain from height map
+        return null;
     }
 
     private Vector3f calculateNormal(int x, int z, HeightsGenerator generator){

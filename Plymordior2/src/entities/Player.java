@@ -69,7 +69,7 @@ public class Player extends Entity {
         } else if (isMovingLeft) {
             moveByComponents(90);
         } else {
-            if(currentStamina < STAMINA_CAP) {
+            if(currentStamina + STAMINA_DRAIN < STAMINA_CAP) {
                 currentStamina += STAMINA_GAIN;
             } else {
                 currentStamina = STAMINA_CAP;
@@ -87,13 +87,18 @@ public class Player extends Entity {
     }
 
     private void moveByComponents(int angleOffset) {
-        float distance = RUN_SPEED * DisplayManager.getFrameTimeSeconds();
+        float time = DisplayManager.getFrameTimeSeconds();
+        float distance = RUN_SPEED * time;
         float dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + angleOffset)));
         float dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + angleOffset)));
         if(TerrainGrid.getTerrainByPosition(this.getPosition().x + dx, this.getPosition().z + dz) != null) {
             super.increasePosition(dx,0,dz);
         }
-        currentStamina -= STAMINA_DRAIN * DisplayManager.getFrameTimeSeconds();
+        if(currentStamina - (STAMINA_DRAIN * time) > 0) {
+            currentStamina -= STAMINA_DRAIN * time;
+        } else {
+            currentStamina = 0;
+        }
     }
 
     /**
@@ -157,5 +162,11 @@ public class Player extends Entity {
     }
 
     public float getCurrentStamina() {
-        return currentStamina;
+        if(currentStamina > STAMINA_CAP) {
+            return STAMINA_CAP;
+        } else if (currentStamina < 0) {
+            return 0;
+        } else {
+            return currentStamina;
+        }
     }}
