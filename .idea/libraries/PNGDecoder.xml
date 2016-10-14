@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="PNGDecoder">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/Plymordior2/libs/PNGDecoder.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/PNGDecoder.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
