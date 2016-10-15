@@ -30,6 +30,7 @@ import terrains.TerrainSquare;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
+import toolbox.Maths;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
 import water.WaterShader;
@@ -64,7 +65,7 @@ public class MainGameLoop {
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("/blendMaps/blendMap"));
         //load in texture pack, blend map, and height map to create the texture
 
-        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,blendMap,"heightMap"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,blendMap,"mountainHeightMap"));
 
         for(int i = 0; i < TerrainGrid.DIMENSIONS; i++) {
             for(int j = 0; j < TerrainGrid.DIMENSIONS; j++) {
@@ -154,32 +155,32 @@ public class MainGameLoop {
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        int lampOneX = 185, lampOneY = 293;
-        int lampTwoX = 370, lampTwoY = 300;
+        int lampOneX = 360, lampOneY = 435;
+        int lampTwoX = 305, lampTwoY = 431;
         int lampThreeX = 293, lampThreeY = 305;
         entities.add(new Entity(lamp, new Vector2f(lampOneX, lampOneY)));
         entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoY)));
         entities.add(new Entity(lamp, new Vector2f(lampThreeX, lampThreeY)));
 
-//        for(int i = 0; i < 500; i++) {
-//            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-//            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-//            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
-//            Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
-//            if(entity.getPosition().getY() > 0) {
-//                entities.add(entity);
-//            }
-//        }
-//
-//        for(int i = 0; i < 500; i++) {
-//            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-//            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-//            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
-//            Entity entity = new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
-//            if(entity.getPosition().getY() > 0) {
-//                entities.add(entity);
-//            }
-//        }
+        for(int i = 0; i < 5000; i++) {
+            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
+            Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
+            if(Maths.isBetween(entity.getPosition().getY(),0,HeightsGenerator.AMPLITUDE*0.9f)) {
+                entities.add(entity);
+            }
+        }
+
+        for(int i = 0; i < 500; i++) {
+            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
+            Entity entity = new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
+            if(Maths.isBetween(entity.getPosition().getY(),0,HeightsGenerator.AMPLITUDE*0.9f)) {
+                entities.add(entity);
+            }
+        }
 
         /****************************************LIGHTS****************************************/
 
