@@ -161,20 +161,13 @@ public class TerrainSquare {
             for(int j = 0; j < VERTEX_COUNT2; j++) {
                 vertices[vertexPointer * 3] = (float) j / ((float) VERTEX_COUNT2 - 1) * TERRAIN_SIZE;
                 float height = getHeight(j, i, image);
-                float percent = 1;
-                int edgeBuffer = 10;
-                if(!Maths.isBetween(i,edgeBuffer,VERTEX_COUNT2-edgeBuffer) || !Maths.isBetween(j,edgeBuffer,VERTEX_COUNT2-edgeBuffer)) {
-                    if(i > VERTEX_COUNT2 - edgeBuffer) {
-                        percent = (VERTEX_COUNT2 - ((i+j)/2)) / VERTEX_COUNT2;
-                    } else if(j > VERTEX_COUNT2 - edgeBuffer) {
-                        percent = (VERTEX_COUNT2 - ((i+j)/2)) / VERTEX_COUNT2;
-                    } else if(i < edgeBuffer) {
-                        percent = ((i+j)/2)/100;
-                    } else if(j < edgeBuffer) {
-                        percent = ((i+j)/2)/100;
-                    }
-                }
-                height = (height * (percent)) +  (getHeight(j,i,generator) * (1-percent));
+                float xDistanceFromCenter = Math.abs((VERTEX_COUNT2/2)-j);
+                float zDistanceFromCenter = Math.abs((VERTEX_COUNT2/2)-i);
+                float maxDistance = Math.max(xDistanceFromCenter,zDistanceFromCenter);
+                float percentProcedural = (float) Math.pow(maxDistance/(VERTEX_COUNT2/2),5);
+                percentProcedural = percentProcedural > 0.95 ? 1 : percentProcedural;
+                System.out.println(percentProcedural);
+                height = (height * (1 - percentProcedural)) +  (getHeight(j,i,generator) * (percentProcedural));
                 vertices[vertexPointer * 3 + 1] = height;
                 heights[j][i] = height;
                 vertices[vertexPointer * 3 + 2] = (float) i / ((float) VERTEX_COUNT2 - 1) * TERRAIN_SIZE;
