@@ -64,9 +64,13 @@ public class MainGameLoop {
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("/blendMaps/blendMap"));
         //load in texture pack, blend map, and height map to create the texture
 
+        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,blendMap,"heightMap"));
+
         for(int i = 0; i < TerrainGrid.DIMENSIONS; i++) {
             for(int j = 0; j < TerrainGrid.DIMENSIONS; j++) {
-                TerrainGrid.addTerrainSquare(new TerrainSquare(i,j,loader,texturePack,blendMap));
+                if(!(j == 0 && i == 0)){
+                    TerrainGrid.addTerrainSquare(new TerrainSquare(i,j,loader,texturePack,blendMap));
+                }
             }
         }
 
@@ -157,25 +161,25 @@ public class MainGameLoop {
         entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoY)));
         entities.add(new Entity(lamp, new Vector2f(lampThreeX, lampThreeY)));
 
-        for(int i = 0; i < 500; i++) {
-            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
-            Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
-            if(entity.getPosition().getY() > 0) {
-                entities.add(entity);
-            }
-        }
-
-        for(int i = 0; i < 500; i++) {
-            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
-            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
-            Entity entity = new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
-            if(entity.getPosition().getY() > 0) {
-                entities.add(entity);
-            }
-        }
+//        for(int i = 0; i < 500; i++) {
+//            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+//            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+//            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
+//            Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
+//            if(entity.getPosition().getY() > 0) {
+//                entities.add(entity);
+//            }
+//        }
+//
+//        for(int i = 0; i < 500; i++) {
+//            float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+//            float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
+//            float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
+//            Entity entity = new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
+//            if(entity.getPosition().getY() > 0) {
+//                entities.add(entity);
+//            }
+//        }
 
         /****************************************LIGHTS****************************************/
 
@@ -200,11 +204,19 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
+        float middleOfTerrain = TerrainSquare.TERRAIN_SIZE/2;
+        float starGUIHeight = HeightsGenerator.AMPLITUDE * 0.4f;
+        float radius = TerrainSquare.TERRAIN_SIZE/3;
+        float frequency = 30;
         //Calling right before while loop resets delta to 0 so we start right at midday
         DisplayManager.getFrameTimeSeconds();
         while(!Display.isCloseRequested()){
+            timeInSeconds += DisplayManager.getFrameTimeSeconds();
+            timeInSeconds %= MIDNIGHT;
             player.move();
-            starParticleSystemAdditive.generateParticles(new Vector3f(lampThreeX+200, TerrainGrid.getCurrentTerrainHeight(lampThreeX+200,lampTwoY+100)+ 200, lampTwoY+100));
+            float sinComponent = (float)Math.sin(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
+            float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
+            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfTerrain + (radius*sinComponent), starGUIHeight, middleOfTerrain + (radius*cosComponent)));
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
@@ -221,8 +233,6 @@ public class MainGameLoop {
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
             //change sun brightness
-            timeInSeconds += DisplayManager.getFrameTimeSeconds();
-            timeInSeconds %= MIDNIGHT;
             if(timeInSeconds < MIDDAY) {
                 sun.setColor(new Vector3f(timeInSeconds/MIDDAY,timeInSeconds/MIDDAY,timeInSeconds/MIDDAY));
             } else {
@@ -249,7 +259,6 @@ public class MainGameLoop {
             waterRenderer.render(waters,camera,sun);
 
             ParticleMaster.renderParticles(camera);
-            System.out.println(player.getCurrentStamina());
             staminaBar.setPosition(new Vector2f(-0.6f - 0.25f + (0.25f * Math.min(100,(player.getCurrentStamina()/100f))), 0.9f));
             staminaBar.setScale(new Vector2f(0.25f * Math.min(100,(player.getCurrentStamina()/100f)), 0.05f));
             guiRenderer.render(guiTextures);

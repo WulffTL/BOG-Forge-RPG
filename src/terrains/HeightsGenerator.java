@@ -7,9 +7,10 @@ import java.util.Random;
  */
 public class HeightsGenerator {
 
-    public static final float AMPLITUDE = 300f;
-    private static final int OCTAVES = 7;
-    private static final float ROUGHNESS = 0.5f;
+    public static final float AMPLITUDE = 200f;
+    private static final int OCTAVES = 6;
+    private static final float ROUGHNESS = 0.3f;
+
 
     private Random random = new Random();
     private int seed;
@@ -22,20 +23,19 @@ public class HeightsGenerator {
         zOffset = gridZ * (vertexCount-1);
     }
 
-
     public float generateHeight(int x, int z) {
         float total = 0;
         float d = (float) Math.pow(2, OCTAVES-1);
-        for(int i = 0; i < OCTAVES; i++) {
-            float freq = (float) (Math.pow(2,i) / d);
+        for(int i=0;i<OCTAVES;i++){
+            float freq = (float) (Math.pow(2, i) / d);
             float amp = (float) Math.pow(ROUGHNESS, i) * AMPLITUDE;
-            total += getInterpolatedNoise((x+xOffset)*freq, (z+zOffset)*freq) * amp;
+            total += getInterpolatedNoise((x+xOffset)*freq, (z + zOffset)*freq) * amp;
         }
         return total;
     }
 
     private float getSmoothNoise(int x, int z) {
-        float FACTOR = 4;
+        float FACTOR = 3;
         float corners = (getNoise(x-1, z-1) + getNoise(x+1, z-1) + getNoise(x-1, z+1) + getNoise(x+1, z+1))/(4*FACTOR);
         float sides = (getNoise(x-1,z) + getNoise(x+1, z) + getNoise(x, z-1) + getNoise(x, z+1))/(2*FACTOR);
         float center = getNoise(x,z)/FACTOR;
@@ -72,4 +72,5 @@ public class HeightsGenerator {
         float f = (float)(1f - Math.cos(theta)) * 0.5f;
         return a * (1f - f) + b*f;
     }
+
 }
