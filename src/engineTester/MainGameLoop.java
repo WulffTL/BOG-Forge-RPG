@@ -139,6 +139,10 @@ public class MainGameLoop {
 
         entities.add(player);
 
+        //Stall Model
+        RawModel stallModel = OBJLoader.loadObjModel("stall", loader);
+        TexturedModel stall = new TexturedModel(stallModel, new ModelTexture(loader.loadTexture("/objectTextures/stallTexture")));
+
         //Pine Tree Model
         RawModel model = OBJLoader.loadObjModel("pine", loader);
         TexturedModel tree = new TexturedModel(model, new ModelTexture(loader.loadTexture("/objectTextures/pine")));
@@ -160,6 +164,10 @@ public class MainGameLoop {
         int lampTwoX = 405, lampTwoZ = 546;
         entities.add(new Entity(lamp, new Vector2f(lampOneX, lampOneZ)));
         entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoZ)));
+
+        int stallPosX = 465;
+        int stallPozZ = 431;
+        entities.add(new Entity(stall, new Vector2f(stallPosX, stallPozZ), new Vector3f(0,135,0), 3));
 
         for(int i = 0; i < 5000; i++) {
             float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
