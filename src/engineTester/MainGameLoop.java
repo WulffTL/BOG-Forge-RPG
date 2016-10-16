@@ -228,7 +228,7 @@ public class MainGameLoop {
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
-            lakeSource.setVolume(Math.max(0,(1 - (player.getDistanceToWater()/noiseDistanceThreshold))/4));
+            lakeSource.setVolume(Math.max(0,(1 - (player.getRoundedDistanceToElevation(WaterTile.HEIGHT)/noiseDistanceThreshold))/4));
 
             if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
                 player.printCurrentLocation();

@@ -4,6 +4,7 @@ import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import terrains.TerrainGrid;
+import terrains.TerrainSquare;
 import water.WaterTile;
 
 /**
@@ -18,8 +19,9 @@ public class Entity {
     private int textureIndex = 0;
 
     public Entity (TexturedModel model) {
+        float middleOfMap = TerrainSquare.TERRAIN_SIZE/2;
         this.model = model;
-        this.position = new Vector3f(400,12,400);
+        this.position = new Vector3f(middleOfMap,TerrainGrid.getCurrentTerrainHeight(middleOfMap,middleOfMap),middleOfMap);
         this.hRotX = 0;
         this.hRotY = 0;
         this.hRotZ = 0;
@@ -102,32 +104,41 @@ public class Entity {
         return scale;
     }
 
-    public float getDistanceToWater() {
-        boolean hasHitWater = false;
-        float noiseThreshold = 150f;
+    /**
+     * Returns an estimate of the distance to water as a multiple of 5 or the max terrain size, whichever is lower.
+     * @return rounded distance to water
+     */
+    public float getRoundedDistanceToElevation(float elevation) {
+        boolean hasHitElevation = false;
         int checksPerSide = 3;
         int radiusJump = 5;
         float xPos = this.getPosition().getX();
         float zPos = this.getPosition().getZ();
         int radius = 0;
-        while(!hasHitWater && radius < noiseThreshold) {
+        while(!hasHitElevation && radius < TerrainSquare.TERRAIN_SIZE) {
+            //check top and bottom of square
             for(int x = -radius; x <= radius; x += Math.max(1,radius/checksPerSide)) {
-                if(TerrainGrid.getTerrainByPosition(xPos + x, zPos + radius) != null && TerrainGrid.getCurrentTerrainHeight(xPos + x, zPos + radius) <= WaterTile.HEIGHT) {
-                    hasHitWater = true;
+                //check top
+                if(TerrainGrid.getTerrainByPosition(xPos + x, zPos + radius) != null && TerrainGrid.getCurrentTerrainHeight(xPos + x, zPos + radius) <= elevation) {
+                    hasHitElevation = true;
                     break;
                 }
-                if(TerrainGrid.getTerrainByPosition(xPos + x, zPos - radius) != null && TerrainGrid.getCurrentTerrainHeight(xPos + x, zPos - radius) <= WaterTile.HEIGHT) {
-                    hasHitWater = true;
+                //check bottom
+                if(TerrainGrid.getTerrainByPosition(xPos + x, zPos - radius) != null && TerrainGrid.getCurrentTerrainHeight(xPos + x, zPos - radius) <= elevation) {
+                    hasHitElevation = true;
                     break;
                 }
             }
+            //check sides of square
             for(int z = -radius; z < radius; z += Math.max(1,radius/checksPerSide)) {
-                if(TerrainGrid.getTerrainByPosition(xPos + radius, zPos + z) != null && TerrainGrid.getCurrentTerrainHeight(xPos + radius, zPos + z) <= WaterTile.HEIGHT) {
-                    hasHitWater = true;
+                //check right side
+                if(TerrainGrid.getTerrainByPosition(xPos + radius, zPos + z) != null && TerrainGrid.getCurrentTerrainHeight(xPos + radius, zPos + z) <= elevation) {
+                    hasHitElevation = true;
                     break;
                 }
-                if(TerrainGrid.getTerrainByPosition(xPos - radius, zPos + z) != null && TerrainGrid.getCurrentTerrainHeight(xPos - radius, zPos + z) <= WaterTile.HEIGHT) {
-                    hasHitWater = true;
+                //check left side
+                if(TerrainGrid.getTerrainByPosition(xPos - radius, zPos + z) != null && TerrainGrid.getCurrentTerrainHeight(xPos - radius, zPos + z) <= elevation) {
+                    hasHitElevation = true;
                     break;
                 }
             }
