@@ -18,7 +18,6 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-import particles.Particle;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
@@ -70,7 +69,7 @@ public class MainGameLoop {
 
         for(int i = 0; i < TerrainGrid.DIMENSIONS; i++) {
             for(int j = 0; j < TerrainGrid.DIMENSIONS; j++) {
-                if(!(j == 0 && i == 0)){
+                if(!(i == 0 && j == 0)){
                     TerrainGrid.addTerrainSquare(new TerrainSquare(i,j,loader,texturePack,blendMap));
                 }
             }
@@ -99,7 +98,7 @@ public class MainGameLoop {
         //Our player model
         RawModel cubePlayer = OBJLoader.loadObjModel("person",loader);
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("/objectTextures/playerTexture")));
-        Player player = new Player(playerTexture,new Vector2f(245,341),new Vector3f(0,0,0),1);
+        Player player = new Player(playerTexture,TerrainGrid.getPosition(0,0,0.4150f,0.4309f),new Vector3f(0,0,0),1);
 
         /****************************************CAMERA****************************************/
 
@@ -157,18 +156,20 @@ public class MainGameLoop {
         TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp",loader),
                 new ModelTexture(loader.loadTexture("/objectTextures/lamp")));
         lamp.getTexture().setUseFakeLighting(true);
+        //Add lamps
+        Vector2f lampOneLocation = TerrainGrid.getPosition(0,0,0.4482f,0.5322f);
+        Vector2f lampTwoLocation = TerrainGrid.getPosition(0,0,0.3984f,0.5322f);
+        entities.add(new Entity(lamp, lampOneLocation));
+        entities.add(new Entity(lamp, lampTwoLocation));
+
+        float stallPosX = 0.4541f;
+        float stallPozZ = 0.4209f;
+        Vector3f stallRotation = new Vector3f(0,135,0);
+        float stallScale = 3;
+        entities.add(new Entity(stall, TerrainGrid.getPosition(0,0,stallPosX,stallPozZ), stallRotation, stallScale));
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        int lampOneX = 459, lampOneZ = 545;
-        int lampTwoX = 405, lampTwoZ = 546;
-        entities.add(new Entity(lamp, new Vector2f(lampOneX, lampOneZ)));
-        entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoZ)));
-
-        int stallPosX = 465;
-        int stallPozZ = 431;
-        entities.add(new Entity(stall, new Vector2f(stallPosX, stallPozZ), new Vector3f(0,135,0), 3));
-
         for(int i = 0; i < 5000; i++) {
             float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
@@ -195,10 +196,11 @@ public class MainGameLoop {
 
         Light sun = new Light(new Vector2f(100000,-100000),85000, new Vector3f(1f,1f,1f));
         lights.add(sun);
+        //TODO: Add method to entities to set lights on them
         //red lamp
-        lights.add(new Light(new Vector2f(lampOneX,lampOneZ),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
+        lights.add(new Light(lampOneLocation,15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
         //green lamp
-        lights.add(new Light(new Vector2f(lampTwoX,lampTwoZ),15,new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
+        lights.add(new Light(lampTwoLocation,15,new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
         /****************************************GUIS**************************************************/
         List<GuiTexture> guiTextures = new ArrayList<>();
         GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("/guis/backgroundBar"), new Vector2f(-0.6f, 0.9f), new Vector2f(0.25f, 0.05f));
@@ -209,8 +211,7 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
-        float middleOfStarsX = 417f;
-        float middleOfStarsZ = 325f;
+        Vector2f middleOfStars = TerrainGrid.getPosition(0,0,0.4072f,0.3174f);
         float starGUIHeight = HeightsGenerator.AMPLITUDE * 1.1f;
         float radius = 124;
         float frequency = 30;
@@ -222,7 +223,7 @@ public class MainGameLoop {
             player.move();
             float sinComponent = (float)Math.sin(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
             float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
-            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStarsX + (radius*sinComponent), starGUIHeight, middleOfStarsZ + (radius*cosComponent)));
+            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStars.x + (radius*sinComponent), starGUIHeight, middleOfStars.y + (radius*cosComponent)));
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 

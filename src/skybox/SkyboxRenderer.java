@@ -105,7 +105,7 @@ public class SkyboxRenderer {
         int texture1 = nightTexture;
         int texture2 = texture;
         float blendFactor;
-        float time = MainGameLoop.getTimeInSeconds() % MainGameLoop.MIDNIGHT;
+        float time = DisplayManager.getFrameTimeSeconds() % MainGameLoop.MIDNIGHT;
         if(time < MainGameLoop.MIDDAY) {
             if(time == 0) {
                 MasterRenderer.setColor(0,0,0);

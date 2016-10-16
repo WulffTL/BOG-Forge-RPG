@@ -1,5 +1,6 @@
 package terrains;
 
+import org.lwjgl.util.vector.Vector2f;
 import toolbox.Maths;
 
 /**
@@ -31,5 +32,11 @@ public class TerrainGrid {
             return null;
         }
 
+    }
+
+    public static Vector2f getPosition(int gridX, int gridZ, float percentX, float percentZ) {
+        float x = TerrainSquare.TERRAIN_SIZE * (gridX + percentX);
+        float z = TerrainSquare.TERRAIN_SIZE * (gridZ + percentZ);
+        return new Vector2f(x,z);
     }
 }
