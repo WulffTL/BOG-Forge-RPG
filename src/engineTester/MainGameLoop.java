@@ -63,9 +63,10 @@ public class MainGameLoop {
         TerrainTexturePack texturePack = new TerrainTexturePack(loader, "/terrainTextures/snow1", "/terrainTextures/mud", "/terrainTextures/grassy2", "/terrainTextures/brick");
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("/blendMaps/blendMap"));
+        TerrainTexture mountainBlendMap = new TerrainTexture(loader.loadTexture("/blendMaps/mountainBlendMap"));
         //load in texture pack, blend map, and height map to create the texture
 
-        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,blendMap,"mountainHeightMap"));
+        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,mountainBlendMap,"mountainHeightMap"));
 
         for(int i = 0; i < TerrainGrid.DIMENSIONS; i++) {
             for(int j = 0; j < TerrainGrid.DIMENSIONS; j++) {
@@ -118,10 +119,10 @@ public class MainGameLoop {
         ParticleTexture starTextureAdditive = new ParticleTexture(loader.loadTexture("/particleTextures/particleStar"), 1, true);
 
         ParticleMaster.init(loader,renderer.getProjectionMatrix());
-        ParticleSystem starParticleSystemAdditive = new ParticleSystem(starTextureAdditive,150,10,0.1f,10,1.6f);
+        ParticleSystem starParticleSystemAdditive = new ParticleSystem(starTextureAdditive,350,10,0.01f,1,1f);
         starParticleSystemAdditive.setLifeError(0.2f);
         starParticleSystemAdditive.setSpeedError(0.5f);
-        starParticleSystemAdditive.setScaleError(1f);
+        starParticleSystemAdditive.setScaleError(4f);
 
         /****************************************WATER****************************************/
 
@@ -155,12 +156,10 @@ public class MainGameLoop {
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
-        int lampOneX = 360, lampOneY = 435;
-        int lampTwoX = 305, lampTwoY = 431;
-        int lampThreeX = 293, lampThreeY = 305;
-        entities.add(new Entity(lamp, new Vector2f(lampOneX, lampOneY)));
-        entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoY)));
-        entities.add(new Entity(lamp, new Vector2f(lampThreeX, lampThreeY)));
+        int lampOneX = 459, lampOneZ = 545;
+        int lampTwoX = 405, lampTwoZ = 546;
+        entities.add(new Entity(lamp, new Vector2f(lampOneX, lampOneZ)));
+        entities.add(new Entity(lamp, new Vector2f(lampTwoX, lampTwoZ)));
 
         for(int i = 0; i < 5000; i++) {
             float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
@@ -186,15 +185,12 @@ public class MainGameLoop {
 
         List<Light> lights = new ArrayList<>();
 
-        Light sun = new Light(new Vector2f(100000,-100000),15000, new Vector3f(1f,1f,1f));
+        Light sun = new Light(new Vector2f(100000,-100000),85000, new Vector3f(1f,1f,1f));
         lights.add(sun);
         //red lamp
-        lights.add(new Light(new Vector2f(lampOneX,lampOneY),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
+        lights.add(new Light(new Vector2f(lampOneX,lampOneZ),15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
         //green lamp
-        lights.add(new Light(new Vector2f(lampTwoX,lampTwoY),15,new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
-        //yellow lamp
-        lights.add(new Light(new Vector2f(lampThreeX,lampThreeY),15,new Vector3f(2,2,0), new Vector3f(1,0.01f,0.002f)));
-
+        lights.add(new Light(new Vector2f(lampTwoX,lampTwoZ),15,new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
         /****************************************GUIS**************************************************/
         List<GuiTexture> guiTextures = new ArrayList<>();
         GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("/guis/backgroundBar"), new Vector2f(-0.6f, 0.9f), new Vector2f(0.25f, 0.05f));
@@ -205,9 +201,10 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
-        float middleOfTerrain = TerrainSquare.TERRAIN_SIZE/2;
-        float starGUIHeight = HeightsGenerator.AMPLITUDE * 0.4f;
-        float radius = TerrainSquare.TERRAIN_SIZE/3;
+        float middleOfStarsX = 417f;
+        float middleOfStarsZ = 325f;
+        float starGUIHeight = HeightsGenerator.AMPLITUDE * 1.1f;
+        float radius = 124;
         float frequency = 30;
         //Calling right before while loop resets delta to 0 so we start right at midday
         DisplayManager.getFrameTimeSeconds();
@@ -217,7 +214,7 @@ public class MainGameLoop {
             player.move();
             float sinComponent = (float)Math.sin(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
             float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
-            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfTerrain + (radius*sinComponent), starGUIHeight, middleOfTerrain + (radius*cosComponent)));
+            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStarsX + (radius*sinComponent), starGUIHeight, middleOfStarsZ + (radius*cosComponent)));
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
