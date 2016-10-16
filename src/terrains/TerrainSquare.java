@@ -15,6 +15,7 @@ import java.util.Random;
 
 /**
  * Created by Travis on 1/10/2016.
+ *
  */
 public class TerrainSquare {
     public static final float TERRAIN_SIZE = 1024;

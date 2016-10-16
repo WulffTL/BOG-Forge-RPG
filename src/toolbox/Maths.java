@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 public class Maths {
 

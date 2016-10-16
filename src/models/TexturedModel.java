@@ -4,6 +4,7 @@ import textures.ModelTexture;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 public class TexturedModel {
 

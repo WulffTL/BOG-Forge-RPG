@@ -4,6 +4,7 @@ import org.lwjgl.openal.AL10;
 
 /**
  * Created by Travis on 10/12/2016.
+ *
  */
 public class Source {
 

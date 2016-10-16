@@ -6,6 +6,7 @@ import terrains.TerrainSquare;
 
 /**
  * Created by Travis on 10/26/2015.
+ *
  */
 public class Camera {
 
@@ -30,7 +31,6 @@ public class Camera {
     private float roll;
 
     private Player player;
-    private TerrainSquare terrain;
 
     public Camera(Player player){
         this.player = player;
@@ -38,18 +38,13 @@ public class Camera {
 
     public Camera(){}
 
-    /**
-     * This method is to be used for the start menu to create an environment that controls the scope of the camera
-     * only to where the entity is in view
-     */
-
     public void move(){
         calculateZoom();
         calculateAngleAroundPlayer();
         float horizontalDistance = calculateHorizontalDistance();
         float verticalDistance = calculateVerticalDistance();
         calculateCameraPosition(horizontalDistance,verticalDistance);
-        this.yaw = 180 - (player.gethRotY() + angleAroundPlayer);
+        this.yaw = 180 - (player.getRotY() + angleAroundPlayer);
     }
 
     public Vector3f getPosition() {
@@ -73,7 +68,7 @@ public class Camera {
     }
 
     private void calculateCameraPosition(float horizontalDistance, float verticalDistance){
-        float theta = player.gethRotY() + angleAroundPlayer;
+        float theta = player.getRotY() + angleAroundPlayer;
         float offsetX = (float) (horizontalDistance * Math.sin(Math.toRadians(theta)));
         float offsetZ = (float) (horizontalDistance * Math.cos(Math.toRadians(theta)));
         position.x = player.getPosition().x - offsetX;

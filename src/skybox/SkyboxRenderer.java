@@ -16,6 +16,7 @@ import terrains.TerrainSquare;
 
 /**
  * Created by Travis on 1/17/2016.
+ *
  */
 public class SkyboxRenderer {
 

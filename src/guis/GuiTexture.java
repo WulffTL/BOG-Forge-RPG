@@ -4,6 +4,7 @@ import org.lwjgl.util.vector.Vector2f;
 
 /**
  * Created by Travis on 1/13/2016.
+ *
  */
 public class GuiTexture {
 

@@ -2,6 +2,7 @@ package models;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 public class RawModel {
 

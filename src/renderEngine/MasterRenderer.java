@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * Created by Travis on 1/10/2016.
+ *
  */
 public class MasterRenderer {
 

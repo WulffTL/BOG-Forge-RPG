@@ -6,6 +6,7 @@ import org.lwjgl.opengl.*;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 public class DisplayManager {
 

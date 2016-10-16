@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 public class StaticShader extends ShaderProgram {
 
@@ -20,7 +21,7 @@ public class StaticShader extends ShaderProgram {
     private static final String VERTEX_FILE = "./src/shaders/vertexShader";
     private static final String FRAGMENT_FILE = "./src/shaders/fragmentShader";
 
-    private int location_tranformationMatrix;
+    private int location_transformationMatrix;
     private int location_projectionMatrix;
     private int location_viewMatrix;
     private int location_lightPosition[];
@@ -49,7 +50,7 @@ public class StaticShader extends ShaderProgram {
 
     @Override
     protected void getAllUniformLocations(){
-        location_tranformationMatrix = super.getUniformLocation("transformationMatrix");
+        location_transformationMatrix = super.getUniformLocation("transformationMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_shineDamper = super.getUniformLocation("shineDamper");
@@ -99,7 +100,7 @@ public class StaticShader extends ShaderProgram {
     }
 
     public void loadTransformationMatrix(Matrix4f matrix){
-        super.loadMatrix(location_tranformationMatrix, matrix);
+        super.loadMatrix(location_transformationMatrix, matrix);
     }
 
     public void loadLights(List<Light> lights){

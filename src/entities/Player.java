@@ -7,11 +7,10 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import terrains.TerrainGrid;
-import terrains.TerrainSquare;
-import toolbox.Maths;
 
 /**
  * Created by Travis on 1/12/2016.
+ *
  */
 public class Player extends Entity {
 
@@ -89,8 +88,8 @@ public class Player extends Entity {
     private void moveByComponents(int angleOffset) {
         float time = DisplayManager.getFrameTimeSeconds();
         float distance = RUN_SPEED * time;
-        float dx = (float) (distance * Math.sin(Math.toRadians(super.gethRotY() + angleOffset)));
-        float dz = (float) (distance * Math.cos(Math.toRadians(super.gethRotY() + angleOffset)));
+        float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotY() + angleOffset)));
+        float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotY() + angleOffset)));
         if(TerrainGrid.getTerrainByPosition(this.getPosition().x + dx, this.getPosition().z + dz) != null) {
             super.increasePosition(dx,0,dz);
         }

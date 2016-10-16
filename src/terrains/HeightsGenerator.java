@@ -4,6 +4,7 @@ import java.util.Random;
 
 /**
  * Created by Travis on 10/11/2016.
+ *
  */
 public class HeightsGenerator {
 

@@ -42,6 +42,7 @@ import java.util.Random;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 
 public class MainGameLoop {
@@ -286,7 +287,4 @@ public class MainGameLoop {
         DisplayManager.closeDisplay();
     }
 
-    public static float getTimeInSeconds() {
-        return timeInSeconds;
-    }
 }

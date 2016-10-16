@@ -1,16 +1,15 @@
 package entities;
 
-import engineTester.MainGameLoop;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-import terrains.TerrainSquare;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
  * Created by Travis on 2/6/2016.
+ *
  */
 public class NPC extends Entity {
 

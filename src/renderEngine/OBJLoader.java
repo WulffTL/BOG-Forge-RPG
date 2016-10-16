@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by Travis on 10/26/2015.
+ *
  */
 public class OBJLoader {
 
@@ -30,10 +31,10 @@ public class OBJLoader {
         List<Vector2f> textures = new ArrayList<>();
         List<Vector3f> normals = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
-        float[] verticesArray = null;
+        float[] verticesArray;
         float[] normalsArray = null;
         float[] textureArray = null;
-        int[] indicesArray = null;
+        int[] indicesArray;
         try{
 
             while (true){

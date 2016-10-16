@@ -8,6 +8,7 @@ import water.WaterTile;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 public class Entity {
     private TexturedModel model;
@@ -85,15 +86,15 @@ public class Entity {
         this.position.y = height;
     }
 
-    public float gethRotX() {
+    public float getRotX() {
         return hRotX;
     }
 
-    public float gethRotY() {
+    public float getRotY() {
         return hRotY;
     }
 
-    public float gethRotZ() {
+    public float getRotZ() {
         return hRotZ;
     }
 

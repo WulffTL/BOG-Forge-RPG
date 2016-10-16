@@ -6,6 +6,7 @@ import terrains.TerrainGrid;
 
 /**
  * Created by Travis on 10/27/2015.
+ *
  */
 public class Light {
 

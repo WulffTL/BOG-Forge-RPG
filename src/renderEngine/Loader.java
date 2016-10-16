@@ -9,7 +9,6 @@ import org.newdawn.slick.opengl.TextureLoader;
 import textures.TextureData;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -19,6 +18,7 @@ import java.util.List;
 
 /**
  * Created by Travis on 10/25/2015.
+ *
  */
 public class Loader {
 
@@ -93,8 +93,6 @@ public class Loader {
             } else {
                 System.out.println("Anisotropic filtering not supported");
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,15 +102,9 @@ public class Loader {
     }
 
     public void cleanUp(){
-        for(int vao:vaos){
-            GL30.glDeleteVertexArrays(vao);
-        }
-        for(int vbo:vbos){
-            GL15.glDeleteBuffers(vbo);
-        }
-        for(int texture:textures){
-            GL11.glDeleteTextures(texture);
-        }
+        vaos.forEach(GL30::glDeleteVertexArrays);
+        vbos.forEach(GL15::glDeleteBuffers);
+        textures.forEach(GL11::glDeleteTextures);
     }
 
     public int loadCubeMap(String[] textureFiles){

@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * Created by Travis on 10/9/2016.
+ *
  */
 public class TextMaster {
 
