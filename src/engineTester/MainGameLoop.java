@@ -9,15 +9,13 @@ import fontRendering.TextMaster;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.TexturedModel;
-import org.lwjgl.input.Keyboard;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
@@ -175,7 +173,7 @@ public class MainGameLoop {
             float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 3);
             Entity entity = new Entity(fern, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
-            if(Maths.isBetween(entity.getPosition().getY(),0,HeightsGenerator.AMPLITUDE*0.9f)) {
+            if(Maths.isBetween(entity.getPosition().y,0,HeightsGenerator.AMPLITUDE*0.9f)) {
                 entities.add(entity);
             }
         }
@@ -185,7 +183,7 @@ public class MainGameLoop {
             float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float scale = (float) Math.abs(random.nextGaussian() * random.nextInt() % 4);
             Entity entity = new Entity(tree, new Vector2f(xPos,zPos), new Vector3f(0,0,0),scale);
-            if(Maths.isBetween(entity.getPosition().getY(),0,HeightsGenerator.AMPLITUDE*0.9f)) {
+            if(Maths.isBetween(entity.getPosition().y,0,HeightsGenerator.AMPLITUDE*0.9f)) {
                 entities.add(entity);
             }
         }
@@ -225,7 +223,7 @@ public class MainGameLoop {
             float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
             starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStars.x + (radius*sinComponent), starGUIHeight, middleOfStars.y + (radius*cosComponent)));
             ParticleMaster.update(camera);
-            AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
+            AudioMaster.setListenerData(player.getPosition().x,player.getPosition().y,player.getPosition().z);
 
             lakeSource.setVolume(Math.max(0,(1 - (player.getDistanceToWater()/noiseDistanceThreshold))/4));
 
