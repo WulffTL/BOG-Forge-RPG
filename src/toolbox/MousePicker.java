@@ -1,12 +1,9 @@
 package toolbox;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import terrains.TerrainSquare;
 import entities.Camera;
 
@@ -63,7 +60,7 @@ public class MousePicker {
         Matrix4f invertedView = Matrix4f.invert(viewMatrix, null);
         Vector4f rayWorld = Matrix4f.transform(invertedView, eyeCoords, null);
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
-        mouseRay.normalise();
+        mouseRay.normalize();
         return mouseRay;
     }
 
@@ -92,7 +89,7 @@ public class MousePicker {
         float half = start + ((finish - start) / 2f);
         if (count >= RECURSION_COUNT) {
             Vector3f endPoint = getPointOnRay(ray, half);
-            TerrainSquare terrain = getTerrain(endPoint.getX(), endPoint.getZ());
+            TerrainSquare terrain = getTerrain(endPoint.x, endPoint.z);
             if (terrain != null) {
                 return endPoint;
             } else {
@@ -117,10 +114,10 @@ public class MousePicker {
     }
 
     private boolean isUnderGround(Vector3f testPoint) {
-        TerrainSquare terrain = getTerrain(testPoint.getX(), testPoint.getZ());
+        TerrainSquare terrain = getTerrain(testPoint.x, testPoint.z);
         float height = 0;
         if (terrain != null) {
-            height = terrain.getHeightOfTerrain(testPoint.getX(), testPoint.getZ());
+            height = terrain.getHeightOfTerrain(testPoint.x, testPoint.z);
         }
         if (testPoint.y < height) {
             return true;

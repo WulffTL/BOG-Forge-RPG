@@ -1,8 +1,8 @@
 package entities;
 
 import models.TexturedModel;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import terrains.TerrainGrid;
 import water.WaterTile;
 
@@ -107,8 +107,8 @@ public class Entity {
         float noiseThreshold = 150f;
         int checksPerSide = 3;
         int radiusJump = 5;
-        float xPos = this.getPosition().getX();
-        float zPos = this.getPosition().getZ();
+        float xPos = this.getPosition().x;
+        float zPos = this.getPosition().z;
         int radius = 0;
         while(!hasHitWater && radius < noiseThreshold) {
             for(int x = -radius; x <= radius; x += Math.max(1,radius/checksPerSide)) {

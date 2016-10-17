@@ -1,11 +1,9 @@
 package particles;
 
-
 import entities.Camera;
 import entities.Player;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-import renderEngine.DisplayManager;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 public class Particle {
 

@@ -1,8 +1,6 @@
 package entities;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.util.vector.Vector3f;
-import terrains.TerrainSquare;
+import org.joml.Vector3f;
 
 /**
  * Created by Travis on 10/26/2015.

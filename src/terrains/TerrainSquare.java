@@ -1,8 +1,8 @@
 package terrains;
 
 import models.RawModel;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import renderEngine.Loader;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
@@ -204,7 +204,7 @@ public class TerrainSquare {
         float heightD = getHeight(x, z-1, generator);
         float heightU = getHeight(x, z+1, generator);
         Vector3f normal = new Vector3f(heightL-heightR, 2f, heightD - heightU);
-        normal.normalise();
+        normal.normalize();
         return normal;
     }
 

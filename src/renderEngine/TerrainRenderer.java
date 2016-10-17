@@ -1,9 +1,9 @@
 package renderEngine;
 
 import models.RawModel;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 import shaders.TerrainShader;
 import terrains.TerrainSquare;
 import textures.TerrainTexturePack;

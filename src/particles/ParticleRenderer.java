@@ -4,10 +4,10 @@ import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Map;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
 import entities.Camera;
 import models.RawModel;

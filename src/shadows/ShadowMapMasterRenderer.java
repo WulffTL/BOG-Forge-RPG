@@ -3,10 +3,10 @@ package shadows;
 import java.util.List;
 import java.util.Map;
 
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
 import entities.Camera;
 import entities.Entity;
@@ -169,7 +169,7 @@ public class ShadowMapMasterRenderer {
 	 *            - the center of the "view cuboid" in world space.
 	 */
 	private void updateLightViewMatrix(Vector3f direction, Vector3f center) {
-		direction.normalise();
+		direction.normalize();
 		center.negate();
 		lightViewMatrix.setIdentity();
 		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).length());

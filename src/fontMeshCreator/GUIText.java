@@ -1,8 +1,8 @@
 package fontMeshCreator;
 
 import fontRendering.TextMaster;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 /**
  * Represents a piece of text in the game.

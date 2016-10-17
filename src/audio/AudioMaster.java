@@ -4,6 +4,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.util.WaveData;
+import org.newdawn.slick.openal.WaveData;
 
 import java.util.ArrayList;
 import java.util.List;
