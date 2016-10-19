@@ -13,6 +13,7 @@ import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import terrains.TerrainGrid;
 import terrains.TerrainSquare;
+import toolbox.Timer;
 
 /**
  * Created by Travis on 1/17/2016.
@@ -106,7 +107,7 @@ public class SkyboxRenderer {
         int texture1 = nightTexture;
         int texture2 = texture;
         float blendFactor;
-        float time = DisplayManager.getFrameTimeSeconds() % MainGameLoop.MIDNIGHT;
+        float time = Timer.getTime();
         if(time < MainGameLoop.MIDDAY) {
             if(time == 0) {
                 MasterRenderer.setColor(0,0,0);

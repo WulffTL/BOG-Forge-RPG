@@ -30,6 +30,7 @@ import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
 import toolbox.Maths;
+import toolbox.Timer;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
 import water.WaterShader;
@@ -49,11 +50,11 @@ public class MainGameLoop {
 
     public static final int MIDNIGHT = 2400;
     public static final int MIDDAY = MIDNIGHT/2;
-    //Start at midday
-    private static float timeInSeconds = 0;
 
     public static void main(String[] args) {
 
+        Timer.setDaylength(MIDNIGHT);
+        Timer.setTime(1200f);
         DisplayManager.createDisplay();
         Loader loader = new Loader();
         TextMaster.init(loader);
@@ -216,18 +217,19 @@ public class MainGameLoop {
         /****************************************MAIN GAME LOOP****************************************/
 
         Vector2f middleOfStars = TerrainGrid.getPosition(0,0,0.4072f,0.3174f);
-        float starGUIHeight = HeightsGenerator.AMPLITUDE * 1.1f;
+        float starParticleHeight = HeightsGenerator.AMPLITUDE * 1.1f;
         float radius = 124;
         float frequency = 30;
-        //Calling right before while loop resets delta to 0 so we start right at midday
+        //Calling right before while loop resets delta to 0 so we start right at 0
         DisplayManager.getFrameTimeSeconds();
+        float timeInSeconds;
         while(!Display.isCloseRequested()){
-            timeInSeconds += DisplayManager.getFrameTimeSeconds();
-            timeInSeconds %= MIDNIGHT;
+            Timer.update();
+            timeInSeconds = Timer.getTime();
             player.move();
-            float sinComponent = (float)Math.sin(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
-            float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
-            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStars.x + (radius*sinComponent), starGUIHeight, middleOfStars.y + (radius*cosComponent)));
+            float sinComponent = (float)Math.sin(frequency*2*Math.PI*(timeInSeconds /MIDNIGHT));
+            float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds /MIDNIGHT));
+            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStars.x + (radius*sinComponent), starParticleHeight, middleOfStars.y + (radius*cosComponent)));
             starParticleSystemAdditive.setDirection(new Vector3f(-cosComponent,0,sinComponent),0.1f);
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
@@ -238,6 +240,13 @@ public class MainGameLoop {
                 player.printCurrentLocation();
             }
 
+            //Changing time
+            if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+                Timer.setTime(Timer.getTime() + 1f);
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+                Timer.setTime(Timer.getTime() - 1f);
+            }
+
             camera.move();
 
             renderer.renderShadowMap(entities,sun);
@@ -245,10 +254,10 @@ public class MainGameLoop {
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
             //change sun brightness
-            if(timeInSeconds < MIDDAY) {
-                sun.setColor(new Vector3f(timeInSeconds/MIDDAY,timeInSeconds/MIDDAY,timeInSeconds/MIDDAY));
+            if(Timer.getTime() < MIDDAY) {
+                sun.setColor(new Vector3f(2* timeInSeconds /MIDDAY,2* timeInSeconds /MIDDAY,2* timeInSeconds /MIDDAY));
             } else {
-                sun.setColor(new Vector3f((MIDNIGHT-timeInSeconds)/MIDDAY,(MIDNIGHT-timeInSeconds)/MIDDAY,(MIDNIGHT-timeInSeconds)/MIDDAY));
+                sun.setColor(new Vector3f((2*MIDNIGHT- timeInSeconds)/MIDDAY,2*(MIDNIGHT- timeInSeconds)/MIDDAY,2*(MIDNIGHT- timeInSeconds)/MIDDAY));
             }
 
             //RENDER REFLECTION TEXTURE
