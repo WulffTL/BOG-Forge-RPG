@@ -119,10 +119,10 @@ public class MainGameLoop {
         ParticleTexture starTextureAdditive = new ParticleTexture(loader.loadTexture("/particleTextures/particleStar"), 1, true);
 
         ParticleMaster.init(loader,renderer.getProjectionMatrix());
-        ParticleSystem starParticleSystemAdditive = new ParticleSystem(starTextureAdditive,350,10,0.01f,1,1f);
-        starParticleSystemAdditive.setLifeError(0.2f);
+        ParticleSystem starParticleSystemAdditive = new ParticleSystem(starTextureAdditive,150,10,0.01f,10,15f);
+        starParticleSystemAdditive.setLifeError(0.5f);
         starParticleSystemAdditive.setSpeedError(0.5f);
-        starParticleSystemAdditive.setScaleError(4f);
+        starParticleSystemAdditive.setScaleError(10f);
 
         /****************************************WATER****************************************/
 
@@ -228,6 +228,7 @@ public class MainGameLoop {
             float sinComponent = (float)Math.sin(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
             float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds/MIDNIGHT));
             starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStars.x + (radius*sinComponent), starGUIHeight, middleOfStars.y + (radius*cosComponent)));
+            starParticleSystemAdditive.setDirection(new Vector3f(-cosComponent,0,sinComponent),0.1f);
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
