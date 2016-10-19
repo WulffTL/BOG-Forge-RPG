@@ -139,10 +139,6 @@ public class MainGameLoop {
 
         entities.add(player);
 
-        //Stall Model
-        RawModel stallModel = OBJLoader.loadObjModel("stall", loader);
-        TexturedModel stall = new TexturedModel(stallModel, new ModelTexture(loader.loadTexture("/objectTextures/stallTexture")));
-
         //Pine Tree Model
         RawModel model = OBJLoader.loadObjModel("pine", loader);
         TexturedModel tree = new TexturedModel(model, new ModelTexture(loader.loadTexture("/objectTextures/pine")));
@@ -163,11 +159,16 @@ public class MainGameLoop {
         entities.add(new Entity(lamp, lampOneLocation));
         entities.add(new Entity(lamp, lampTwoLocation));
 
+        //Create stall
         float stallPosX = 0.4541f;
         float stallPozZ = 0.4209f;
         Vector3f stallRotation = new Vector3f(0,135,0);
         float stallScale = 3;
-        entities.add(new Entity(stall, TerrainGrid.getPosition(0,0,stallPosX,stallPozZ), stallRotation, stallScale));
+        Entity stall2 = new Entity(loader,"stall","stallTexture");
+        stall2.setPosition(TerrainGrid.get3fPosition(0,0,stallPosX,stallPozZ));
+        stall2.setRotation(stallRotation);
+        stall2.setScale(stallScale);
+        entities.add(stall2);
 
         //Adding all models to the list
         Random random = new Random(); //Some will be in random locations
@@ -202,7 +203,9 @@ public class MainGameLoop {
         lights.add(new Light(lampOneLocation,15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
         //green lamp
         lights.add(new Light(lampTwoLocation,15,new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
+
         /****************************************GUIS**************************************************/
+
         List<GuiTexture> guiTextures = new ArrayList<>();
         GuiTexture backgroundStaminaBar = new GuiTexture(loader.loadTexture("/guis/backgroundBar"), new Vector2f(-0.6f, 0.9f), new Vector2f(0.25f, 0.05f));
         GuiTexture staminaBar = new GuiTexture(loader.loadTexture("/guis/staminaBar"), new Vector2f(-0.6f, 0.9f), new Vector2f(0.25f, 0.05f));

@@ -1,10 +1,14 @@
 package entities;
 
+import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import renderEngine.Loader;
+import renderEngine.OBJLoader;
 import terrains.TerrainGrid;
 import terrains.TerrainSquare;
+import textures.ModelTexture;
 import water.WaterTile;
 
 /**
@@ -14,35 +18,40 @@ import water.WaterTile;
 public class Entity {
     private TexturedModel model;
     private Vector3f position;
-    private float hRotX, hRotY, hRotZ;
+    private Vector3f rotation;
+    //private float hRotX, hRotY, hRotZ;
     private float scale;
     private int textureIndex = 0;
 
-    public Entity (TexturedModel model) {
+    public Entity (Loader loader, String modelPath, String texture) {
+        RawModel rawModel = OBJLoader.loadObjModel(modelPath, loader);
+        ModelTexture modelTexture = new ModelTexture(loader.loadTexture("/objectTextures/" + texture));
+        this.model = new TexturedModel(rawModel, modelTexture);
+        float middleOfMap = TerrainSquare.TERRAIN_SIZE/2;
+        this.position = new Vector3f(middleOfMap,TerrainGrid.getCurrentTerrainHeight(middleOfMap,middleOfMap),middleOfMap);
+        this.rotation = new Vector3f(0,0,0);
+        this.scale = 1;
+    }
+
+    public Entity (TexturedModel model){
         float middleOfMap = TerrainSquare.TERRAIN_SIZE/2;
         this.model = model;
         this.position = new Vector3f(middleOfMap,TerrainGrid.getCurrentTerrainHeight(middleOfMap,middleOfMap),middleOfMap);
-        this.hRotX = 0;
-        this.hRotY = 0;
-        this.hRotZ = 0;
+        this.rotation = new Vector3f(0,0,0);
         this.scale = 1;
     }
 
     public Entity(TexturedModel model, Vector2f position) {
         this.model = model;
         this.position = new Vector3f(position.x, TerrainGrid.getCurrentTerrainHeight(position.x,position.y),position.y);
-        this.hRotX = 0;
-        this.hRotY = 0;
-        this.hRotZ = 0;
+        this.rotation = new Vector3f(0,0,0);
         this.scale = 1;
     }
 
     public Entity(TexturedModel model, Vector2f position, Vector3f rotations, float scale) {
         this.model = model;
         this.position = new Vector3f(position.x, TerrainGrid.getCurrentTerrainHeight(position.x,position.y),position.y);
-        this.hRotX = rotations.x;
-        this.hRotY = rotations.y;
-        this.hRotZ = rotations.z;
+        this.rotation = new Vector3f(0,0,0);
         this.scale = scale;
     }
 
@@ -57,15 +66,11 @@ public class Entity {
     }
 
     public void increasePosition(float dx, float dy, float dz){
-        this.position.x+=dx;
-        this.position.y+=dy;
-        this.position.z+=dz;
+        Vector3f.add(this.position, new Vector3f(dx,dy,dz), this.position);
     }
 
     public void increaseHRotation(float dx, float dy, float dz){
-        this.hRotX += dx;
-        this.hRotY += dy;
-        this.hRotZ += dz;
+        Vector3f.add(this.rotation, new Vector3f(dx,dy,dz), this.rotation);
     }
 
     public TexturedModel getModel() {
@@ -84,20 +89,24 @@ public class Entity {
         this.position = position;
     }
 
+    public void setRotation(Vector3f rotation) { this.rotation = rotation; }
+
     public void setEntityHeight(float height){
         this.position.y = height;
     }
 
+    public void setScale(float scale) { this.scale = scale; }
+
     public float getRotX() {
-        return hRotX;
+        return rotation.x;
     }
 
     public float getRotY() {
-        return hRotY;
+        return rotation.y;
     }
 
     public float getRotZ() {
-        return hRotZ;
+        return rotation.z;
     }
 
     public float getScale() {
