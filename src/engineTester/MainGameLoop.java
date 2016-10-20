@@ -55,7 +55,7 @@ public class MainGameLoop {
     public static void main(String[] args) {
 
         Timer.setDaylength(MIDNIGHT);
-        Timer.setTime(1200f);
+        Timer.setTime(0);
         DisplayManager.createDisplay();
         Loader loader = new Loader();
         TextMaster.init(loader);
@@ -118,8 +118,15 @@ public class MainGameLoop {
         MasterRenderer renderer = new MasterRenderer(loader, camera);
 
         /***************************************PARTICLES*****************************************/
+        //Particle Constants
+        Vector2f middleOfStars = TerrainGrid.getPosition(0,0,0.4072f,0.3174f);
+        float starParticleHeight = HeightsGenerator.AMPLITUDE * 1.1f;
+        float starRadius = 120;
+        float frequency = 30;
+        //Particle Textures
         ParticleTexture starTexture = new ParticleTexture(loader.loadTexture("/particleTextures/particleStar"), 1, true);
         ParticleTexture moonTexture = new ParticleTexture(loader.loadTexture("/particleTextures/cosmic"),4,true);
+        ParticleTexture fireTexture = new ParticleTexture(loader.loadTexture("/particleTextures/fire"),8,true);
 
         ParticleMaster.init(loader,renderer.getProjectionMatrix());
 
@@ -130,6 +137,7 @@ public class MainGameLoop {
 
         ParticleSystem moonParticleSystem = new ParticleSystem(moonTexture,100,0.01f,0f,1f,15f);
 
+        ParticleSystem fireParticleSystem = new ParticleSystem(fireTexture,500,1,0,10f,15f);
         /****************************************WATER****************************************/
 
         WaterFrameBuffers buffers = new WaterFrameBuffers();
@@ -209,6 +217,8 @@ public class MainGameLoop {
         lights.add(new Light(lampOneLocation,15,new Vector3f(2,0,0), new Vector3f(1,0.01f,0.002f)));
         //green lamp
         lights.add(new Light(lampTwoLocation,15,new Vector3f(0,2,2), new Vector3f(1,0.01f,0.002f)));
+        //sun light
+        lights.add(new Light(middleOfStars, 25, new Vector3f(1,1,1), new Vector3f(0.1f,0.001f,0.001f)));
 
         /****************************************GUIS**************************************************/
 
@@ -221,10 +231,7 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
-        Vector2f middleOfStars = TerrainGrid.getPosition(0,0,0.4072f,0.3174f);
-        float starParticleHeight = HeightsGenerator.AMPLITUDE * 1.1f;
-        float starRadius = 120;
-        float frequency = 30;
+
         //Calling right before while loop resets delta to 0 so we start right at 0
         DisplayManager.getFrameTimeSeconds();
         float timeInSeconds;
@@ -283,6 +290,14 @@ public class MainGameLoop {
                             (float) Math.sin(angle + Math.PI/2)
                     ),
                     0.5f
+            );
+
+            fireParticleSystem.generateParticles(
+                    new Vector3f(
+                            middleOfStars.x,
+                            starParticleHeight,
+                            middleOfStars.y
+                    )
             );
 
             ParticleMaster.update(camera);
