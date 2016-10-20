@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
+import particles.Particle;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
@@ -117,13 +118,17 @@ public class MainGameLoop {
         MasterRenderer renderer = new MasterRenderer(loader, camera);
 
         /***************************************PARTICLES*****************************************/
-        ParticleTexture starTextureAdditive = new ParticleTexture(loader.loadTexture("/particleTextures/particleStar"), 1, true);
+        ParticleTexture starTexture = new ParticleTexture(loader.loadTexture("/particleTextures/particleStar"), 1, true);
+        ParticleTexture moonTexture = new ParticleTexture(loader.loadTexture("/particleTextures/cosmic"),4,true);
 
         ParticleMaster.init(loader,renderer.getProjectionMatrix());
-        ParticleSystem starParticleSystemAdditive = new ParticleSystem(starTextureAdditive,150,10,0.01f,10,15f);
-        starParticleSystemAdditive.setLifeError(0.5f);
-        starParticleSystemAdditive.setSpeedError(0.5f);
-        starParticleSystemAdditive.setScaleError(10f);
+
+        ParticleSystem starParticleSystem = new ParticleSystem(starTexture,100,10,0.01f,15f,15f);
+        starParticleSystem.setLifeError(0.5f);
+        starParticleSystem.setSpeedError(0.5f);
+        starParticleSystem.setScaleError(10f);
+
+        ParticleSystem moonParticleSystem = new ParticleSystem(moonTexture,100,0.01f,0f,1f,15f);
 
         /****************************************WATER****************************************/
 
@@ -218,19 +223,68 @@ public class MainGameLoop {
 
         Vector2f middleOfStars = TerrainGrid.getPosition(0,0,0.4072f,0.3174f);
         float starParticleHeight = HeightsGenerator.AMPLITUDE * 1.1f;
-        float radius = 124;
+        float starRadius = 120;
         float frequency = 30;
         //Calling right before while loop resets delta to 0 so we start right at 0
         DisplayManager.getFrameTimeSeconds();
         float timeInSeconds;
+        float angle;
         while(!Display.isCloseRequested()){
             Timer.update();
             timeInSeconds = Timer.getTime();
             player.move();
-            float sinComponent = (float)Math.sin(frequency*2*Math.PI*(timeInSeconds /MIDNIGHT));
-            float cosComponent = (float)Math.cos(frequency*2*Math.PI*(timeInSeconds /MIDNIGHT));
-            starParticleSystemAdditive.generateParticles(new Vector3f(middleOfStars.x + (radius*sinComponent), starParticleHeight, middleOfStars.y + (radius*cosComponent)));
-            starParticleSystemAdditive.setDirection(new Vector3f(-cosComponent,0,sinComponent),0.1f);
+
+            //Planetarium Particles
+            angle = (float) (frequency*2*Math.PI*(timeInSeconds /MIDNIGHT));
+
+
+            //BEGIN STAR PARTICLES
+            float starXComponent = starRadius * (float)Math.sin(angle);
+            float starYComponent = starRadius * (float)Math.cos(angle);
+
+            //Set particle position
+            starParticleSystem.generateParticles(
+                    new Vector3f(
+                            middleOfStars.x + (starXComponent),
+                            starParticleHeight,
+                            middleOfStars.y + (starYComponent)
+                    )
+            );
+
+            //set direction particle will travel
+            starParticleSystem.setDirection(
+                    //must normalize these values to between 1
+                    new Vector3f(
+                            -starYComponent/starRadius,
+                            0,
+                            starXComponent/starRadius
+                    ),
+                    0.1f
+            );
+
+            //BEGIN PLANET PARTICLES
+            float moonRadius = starRadius/20f;
+            float moonXComponent = (float) (((starRadius) * Math.sin(angle)) - ((moonRadius) * Math.sin((starRadius/moonRadius)*angle)));
+            float moonYComponent = (float) (((starRadius) * Math.cos(angle)) - ((moonRadius) * Math.cos((starRadius/moonRadius)*angle)));
+
+            moonParticleSystem.generateParticles(
+                    new Vector3f(
+                            middleOfStars.x + moonXComponent,
+                            (float) (starParticleHeight + (moonRadius * (Math.sin((starRadius/moonRadius)*angle)))),
+                            middleOfStars.y + moonYComponent
+                    )
+            );
+
+            moonParticleSystem.setDirection(
+                    //must normalize these values to between 1
+                    new Vector3f(
+                            -1f * (float) Math.cos(angle + Math.PI/2),
+                            (float) Math.cos((starRadius/moonRadius)*angle),
+                            (float) Math.sin(angle + Math.PI/2)
+                    ),
+                    0.5f
+            );
+
             ParticleMaster.update(camera);
             AudioMaster.setListenerData(player.getPosition().getX(),player.getPosition().getY(),player.getPosition().getZ());
 
