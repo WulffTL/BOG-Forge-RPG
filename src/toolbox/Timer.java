@@ -16,6 +16,9 @@ public class Timer {
     }
 
     public static void setTime(float time) {
+        if(time < 0) {
+            time += daylength;
+        }
         Timer.time = time;
         Timer.time %= daylength;
     }

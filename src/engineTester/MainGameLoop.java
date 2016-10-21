@@ -338,7 +338,7 @@ public class MainGameLoop {
             if(Timer.getTime() < MIDDAY) {
                 sun.setColor(new Vector3f(2* timeInSeconds /MIDDAY,2* timeInSeconds /MIDDAY,2* timeInSeconds /MIDDAY));
             } else {
-                sun.setColor(new Vector3f((2* DAY_LENGTH - timeInSeconds)/MIDDAY,2*(DAY_LENGTH - timeInSeconds)/MIDDAY,2*(DAY_LENGTH - timeInSeconds)/MIDDAY));
+                sun.setColor(new Vector3f((2*(DAY_LENGTH - timeInSeconds))/MIDDAY,2*(DAY_LENGTH - timeInSeconds)/MIDDAY,2*(DAY_LENGTH - timeInSeconds)/MIDDAY));
             }
 
             //RENDER REFLECTION TEXTURE

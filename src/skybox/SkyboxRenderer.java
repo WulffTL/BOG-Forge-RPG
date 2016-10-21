@@ -107,20 +107,12 @@ public class SkyboxRenderer {
         int texture2 = texture;
         float blendFactor;
         float time = Timer.getTime();
+        //set fog color
         if(time < MainGameLoop.MIDDAY) {
-            if(time == 0) {
-                MasterRenderer.setColor(0,0,0);
-            } else {
-                MasterRenderer.setColor(time*dayRed/MainGameLoop.MIDDAY,time*dayBlue/MainGameLoop.MIDDAY,time*dayGreen/MainGameLoop.MIDDAY);
-            }
+            MasterRenderer.setColor(time*dayRed/MainGameLoop.MIDDAY,time*dayGreen/MainGameLoop.MIDDAY,time*dayBlue/MainGameLoop.MIDDAY);
             blendFactor = time/MainGameLoop.MIDDAY;
-
         } else {
-            if(time == MainGameLoop.MIDDAY) {
-                MasterRenderer.setColor(dayRed,dayBlue,dayGreen);
-            } else {
-                MasterRenderer.setColor((MainGameLoop.DAY_LENGTH -time)*dayRed/MainGameLoop.MIDDAY, (MainGameLoop.DAY_LENGTH -time)*dayBlue/MainGameLoop.MIDDAY, (MainGameLoop.DAY_LENGTH -time)*dayGreen/MainGameLoop.MIDDAY);
-            }
+            MasterRenderer.setColor(((MainGameLoop.DAY_LENGTH -time)*dayRed)/MainGameLoop.MIDDAY, (MainGameLoop.DAY_LENGTH -time)*dayGreen/MainGameLoop.MIDDAY, (MainGameLoop.DAY_LENGTH -time)*dayBlue/MainGameLoop.MIDDAY);
             blendFactor = (MainGameLoop.DAY_LENGTH -time)/MainGameLoop.MIDDAY;
         }
 
