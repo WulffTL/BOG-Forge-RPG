@@ -150,7 +150,12 @@ public class TerrainSquare {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int VERTEX_COUNT2 = image.getHeight();
+        int VERTEX_COUNT2;
+        if(image != null) {
+            VERTEX_COUNT2 = image.getHeight();
+        } else {
+            VERTEX_COUNT2 = 0;
+        }
         heights = new float[VERTEX_COUNT2][VERTEX_COUNT2];
         int count = VERTEX_COUNT2 * VERTEX_COUNT2;
         float[] vertices = new float[count * 3];
@@ -167,7 +172,6 @@ public class TerrainSquare {
                 float maxDistance = Math.max(xDistanceFromCenter,zDistanceFromCenter);
                 float percentProcedural = (float) Math.pow(maxDistance/(VERTEX_COUNT2/2),5);
                 percentProcedural = percentProcedural > 0.95 ? 1 : percentProcedural;
-                System.out.println(percentProcedural);
                 height = (height * (1 - percentProcedural)) +  (getHeight(j,i,generator) * (percentProcedural));
                 vertices[vertexPointer * 3 + 1] = height;
                 heights[j][i] = height;
