@@ -7,6 +7,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import terrains.TerrainGrid;
+import water.WaterTile;
 
 /**
  * Created by Travis on 1/12/2016.
@@ -75,8 +76,12 @@ public class Player extends Entity {
             }
         }
 
-        upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
+        if(!isInWater()) {
+            upwardSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
+        }
         super.increasePosition(0, upwardSpeed * DisplayManager.getFrameTimeSeconds(), 0);
+
+        //prevent from falling beneath terrain
         float terrainHeight = TerrainGrid.getCurrentTerrainHeight(this.getPosition().x,this.getPosition().z);
         if(super.getPosition().y < terrainHeight && terrainHeight != 0){
             upwardSpeed = 0;
@@ -106,7 +111,9 @@ public class Player extends Entity {
     private  void jump(){
         if(!isInAir) {
             this.upwardSpeed = JUMP_POWER;
-            isInAir = true;
+            if(!isInWater()) {
+                isInAir = true;
+            }
         }
     }
 
@@ -153,6 +160,9 @@ public class Player extends Entity {
 
         if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
             jump();
+        } else if(isInWater()) {
+            upwardSpeed = 0;
+
         }
     }
 
@@ -168,4 +178,9 @@ public class Player extends Entity {
         } else {
             return currentStamina;
         }
-    }}
+    }
+
+    public boolean isInWater() {
+        return this.getPosition().getY() <= WaterTile.HEIGHT - 8.5f;
+    }
+}

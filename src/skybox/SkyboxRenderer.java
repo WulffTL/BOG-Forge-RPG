@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
-import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import terrains.TerrainGrid;
@@ -120,9 +119,9 @@ public class SkyboxRenderer {
             if(time == MainGameLoop.MIDDAY) {
                 MasterRenderer.setColor(dayRed,dayBlue,dayGreen);
             } else {
-                MasterRenderer.setColor((MainGameLoop.MIDNIGHT-time)*dayRed/MainGameLoop.MIDDAY, (MainGameLoop.MIDNIGHT-time)*dayBlue/MainGameLoop.MIDDAY, (MainGameLoop.MIDNIGHT-time)*dayGreen/MainGameLoop.MIDDAY);
+                MasterRenderer.setColor((MainGameLoop.DAY_LENGTH -time)*dayRed/MainGameLoop.MIDDAY, (MainGameLoop.DAY_LENGTH -time)*dayBlue/MainGameLoop.MIDDAY, (MainGameLoop.DAY_LENGTH -time)*dayGreen/MainGameLoop.MIDDAY);
             }
-            blendFactor = (MainGameLoop.MIDNIGHT-time)/MainGameLoop.MIDDAY;
+            blendFactor = (MainGameLoop.DAY_LENGTH -time)/MainGameLoop.MIDDAY;
         }
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);

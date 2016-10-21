@@ -18,7 +18,6 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
-import particles.Particle;
 import particles.ParticleMaster;
 import particles.ParticleSystem;
 import particles.ParticleTexture;
@@ -49,13 +48,14 @@ import java.util.Random;
 
 public class MainGameLoop {
 
-    public static final int MIDNIGHT = 2400;
-    public static final int MIDDAY = MIDNIGHT/2;
+    public static final int DAY_LENGTH = 2400;
+    public static final int MIDDAY = DAY_LENGTH /2;
 
     public static void main(String[] args) {
 
-        Timer.setDaylength(MIDNIGHT);
+        Timer.setDaylength(DAY_LENGTH);
         Timer.setTime(0);
+
         DisplayManager.createDisplay();
         Loader loader = new Loader();
         TextMaster.init(loader);
@@ -124,20 +124,21 @@ public class MainGameLoop {
         float starRadius = 120;
         float frequency = 30;
         //Particle Textures
-        ParticleTexture starTexture = new ParticleTexture(loader.loadTexture("/particleTextures/particleStar"), 1, true);
+        ParticleTexture planetTexture = new ParticleTexture(loader.loadTexture("/particleTextures/particleStar"), 1, true);
         ParticleTexture moonTexture = new ParticleTexture(loader.loadTexture("/particleTextures/cosmic"),4,true);
-        ParticleTexture fireTexture = new ParticleTexture(loader.loadTexture("/particleTextures/fire"),8,true);
+        ParticleTexture sunTexture = new ParticleTexture(loader.loadTexture("/particleTextures/fire"),8,true);
 
         ParticleMaster.init(loader,renderer.getProjectionMatrix());
 
-        ParticleSystem starParticleSystem = new ParticleSystem(starTexture,100,10,0.01f,15f,15f);
-        starParticleSystem.setLifeError(0.5f);
-        starParticleSystem.setSpeedError(0.5f);
-        starParticleSystem.setScaleError(10f);
+        ParticleSystem planetParticleSystem = new ParticleSystem(planetTexture,100,10,0.01f,15f,15f);
+        planetParticleSystem.setLifeError(0.5f);
+        planetParticleSystem.setSpeedError(0.5f);
+        planetParticleSystem.setScaleError(10f);
 
         ParticleSystem moonParticleSystem = new ParticleSystem(moonTexture,100,0.01f,0f,1f,15f);
 
-        ParticleSystem fireParticleSystem = new ParticleSystem(fireTexture,500,1,0,10f,15f);
+        ParticleSystem outerSunParticleSystem = new ParticleSystem(sunTexture,50,4,0,5f,50f);
+        ParticleSystem innerSunParticleSystem = new ParticleSystem(sunTexture,200,0.75f,0,10f,100f);
         /****************************************WATER****************************************/
 
         WaterFrameBuffers buffers = new WaterFrameBuffers();
@@ -153,23 +154,16 @@ public class MainGameLoop {
 
         entities.add(player);
 
-        //Pine Tree Model
-        RawModel model = OBJLoader.loadObjModel("pine", loader);
-        TexturedModel tree = new TexturedModel(model, new ModelTexture(loader.loadTexture("/objectTextures/pine")));
+        //Lamp models
+        // The locations are important and related to the lights below
+        Vector2f lampOneLocation = TerrainGrid.getPosition(0,0,0.4482f,0.5322f);
+        Vector2f lampTwoLocation = TerrainGrid.getPosition(0,0,0.3984f,0.5322f);
 
-        //Multiple Fern Models (using different textures with same model)
-        ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("/objectTextures/fernAtlas"));
-        fernTextureAtlas.setNumberOfRows(2);
-        TexturedModel fern = new TexturedModel(OBJLoader.loadObjModel("fern",loader), fernTextureAtlas);
-        fern.getTexture().setHasTransparency(true);
-
-        //Lamp models (the locations are important and related to the lights below)
         TexturedModel lamp = new TexturedModel(OBJLoader.loadObjModel("lamp",loader),
                 new ModelTexture(loader.loadTexture("/objectTextures/lamp")));
         lamp.getTexture().setUseFakeLighting(true);
         //Add lamps
-        Vector2f lampOneLocation = TerrainGrid.getPosition(0,0,0.4482f,0.5322f);
-        Vector2f lampTwoLocation = TerrainGrid.getPosition(0,0,0.3984f,0.5322f);
+
         entities.add(new Entity(lamp, lampOneLocation));
         entities.add(new Entity(lamp, lampTwoLocation));
 
@@ -184,7 +178,12 @@ public class MainGameLoop {
         stall2.setScale(stallScale);
         entities.add(stall2);
 
-        //Adding all models to the list
+        //Multiple Fern Models (using different textures with same model)
+        ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("/objectTextures/fernAtlas"));
+        fernTextureAtlas.setNumberOfRows(2);
+        TexturedModel fern = new TexturedModel(OBJLoader.loadObjModel("fern",loader), fernTextureAtlas);
+        fern.getTexture().setHasTransparency(true);
+        //Adding fern models randomly
         Random random = new Random(); //Some will be in random locations
         for(int i = 0; i < 5000; i++) {
             float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
@@ -196,6 +195,10 @@ public class MainGameLoop {
             }
         }
 
+        //Pine Tree Model and texture
+        RawModel model = OBJLoader.loadObjModel("pine", loader);
+        TexturedModel tree = new TexturedModel(model, new ModelTexture(loader.loadTexture("/objectTextures/pine")));
+        //Add trees randomly
         for(int i = 0; i < 500; i++) {
             float xPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
             float zPos = Math.abs(random.nextFloat() * TerrainSquare.TERRAIN_SIZE*TerrainGrid.DIMENSIONS);
@@ -231,68 +234,77 @@ public class MainGameLoop {
 
         /****************************************MAIN GAME LOOP****************************************/
 
-
         //Calling right before while loop resets delta to 0 so we start right at 0
         DisplayManager.getFrameTimeSeconds();
+
         float timeInSeconds;
-        float angle;
+        float anglePlanetAroundSun;
+
         while(!Display.isCloseRequested()){
             Timer.update();
             timeInSeconds = Timer.getTime();
             player.move();
 
             //Planetarium Particles
-            angle = (float) (frequency*2*Math.PI*(timeInSeconds /MIDNIGHT));
 
+            anglePlanetAroundSun = (float) (frequency*2*Math.PI*(timeInSeconds / DAY_LENGTH));
 
-            //BEGIN STAR PARTICLES
-            float starXComponent = starRadius * (float)Math.sin(angle);
-            float starYComponent = starRadius * (float)Math.cos(angle);
+            //BEGIN PLANET PARTICLES
+            float planetXComponent = starRadius * (float)Math.sin(anglePlanetAroundSun);
+            float planetYComponent = starRadius * (float)Math.cos(anglePlanetAroundSun);
 
             //Set particle position
-            starParticleSystem.generateParticles(
+            planetParticleSystem.generateParticles(
                     new Vector3f(
-                            middleOfStars.x + (starXComponent),
+                            middleOfStars.x + (planetXComponent),
                             starParticleHeight,
-                            middleOfStars.y + (starYComponent)
+                            middleOfStars.y + (planetYComponent)
                     )
             );
 
             //set direction particle will travel
-            starParticleSystem.setDirection(
-                    //must normalize these values to between 1
+            planetParticleSystem.setDirection(
+                    //Derivative of position (normalized)
                     new Vector3f(
-                            -starYComponent/starRadius,
+                            -planetYComponent/starRadius,
                             0,
-                            starXComponent/starRadius
+                            planetXComponent/starRadius
                     ),
                     0.1f
             );
 
-            //BEGIN PLANET PARTICLES
+            //BEGIN MOON PARTICLES
             float moonRadius = starRadius/20f;
-            float moonXComponent = (float) (((starRadius) * Math.sin(angle)) - ((moonRadius) * Math.sin((starRadius/moonRadius)*angle)));
-            float moonYComponent = (float) (((starRadius) * Math.cos(angle)) - ((moonRadius) * Math.cos((starRadius/moonRadius)*angle)));
+            float moonXComponent = (float) (((starRadius) * Math.sin(anglePlanetAroundSun)) - ((moonRadius) * Math.sin((starRadius/moonRadius)*anglePlanetAroundSun)));
+            float moonYComponent = (float) (((starRadius) * Math.cos(anglePlanetAroundSun)) - ((moonRadius) * Math.cos((starRadius/moonRadius)*anglePlanetAroundSun)));
 
             moonParticleSystem.generateParticles(
                     new Vector3f(
                             middleOfStars.x + moonXComponent,
-                            (float) (starParticleHeight + (moonRadius * (Math.sin((starRadius/moonRadius)*angle)))),
+                            (float) (starParticleHeight + (moonRadius * (Math.sin((starRadius/moonRadius)*anglePlanetAroundSun)))),
                             middleOfStars.y + moonYComponent
                     )
             );
 
             moonParticleSystem.setDirection(
-                    //must normalize these values to between 1
+                    //Found by guess and check since derivatives weren't working as planned
                     new Vector3f(
-                            -1f * (float) Math.cos(angle + Math.PI/2),
-                            (float) Math.cos((starRadius/moonRadius)*angle),
-                            (float) Math.sin(angle + Math.PI/2)
+                            -1f * (float) Math.cos(anglePlanetAroundSun + Math.PI/2),
+                            (float) Math.cos((starRadius/moonRadius)*anglePlanetAroundSun),
+                            (float) Math.sin(anglePlanetAroundSun + Math.PI/2)
                     ),
                     0.5f
             );
 
-            fireParticleSystem.generateParticles(
+            outerSunParticleSystem.generateParticles(
+                    new Vector3f(
+                            middleOfStars.x,
+                            starParticleHeight,
+                            middleOfStars.y
+                    )
+            );
+
+            innerSunParticleSystem.generateParticles(
                     new Vector3f(
                             middleOfStars.x,
                             starParticleHeight,
@@ -326,7 +338,7 @@ public class MainGameLoop {
             if(Timer.getTime() < MIDDAY) {
                 sun.setColor(new Vector3f(2* timeInSeconds /MIDDAY,2* timeInSeconds /MIDDAY,2* timeInSeconds /MIDDAY));
             } else {
-                sun.setColor(new Vector3f((2*MIDNIGHT- timeInSeconds)/MIDDAY,2*(MIDNIGHT- timeInSeconds)/MIDDAY,2*(MIDNIGHT- timeInSeconds)/MIDDAY));
+                sun.setColor(new Vector3f((2* DAY_LENGTH - timeInSeconds)/MIDDAY,2*(DAY_LENGTH - timeInSeconds)/MIDDAY,2*(DAY_LENGTH - timeInSeconds)/MIDDAY));
             }
 
             //RENDER REFLECTION TEXTURE
