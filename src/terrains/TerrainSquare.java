@@ -18,9 +18,9 @@ import java.util.Random;
  *
  */
 public class TerrainSquare {
-    public static final float TERRAIN_SIZE = 1024;
+    public static final float TERRAIN_SIZE = 2048;
 
-    private static final int VERTEX_COUNT = 256;
+    private static final int VERTEX_COUNT = 32;
     private static final int SEED = new Random().nextInt(1000000000);
 
     private static final float MAX_PIXEL_COLOUR = 256 * 256 * 256;

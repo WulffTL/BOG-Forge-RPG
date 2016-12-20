@@ -39,13 +39,17 @@ public class TextMaster {
             textBatch = new ArrayList<>();
             texts.put(font, textBatch);
         }
-        textBatch.add(text);
+        if(!textBatch.contains(text)) {
+            textBatch.add(text);
+        }
     }
 
     public static void removeText(GUIText text) {
         List<GUIText> textBatch = texts.get(text.getFont());
-        textBatch.remove(text);
-        if(textBatch.isEmpty()) {
+        if(textBatch != null && textBatch.contains(text)) {
+            textBatch.remove(text);
+        }
+        if(textBatch != null && textBatch.isEmpty()) {
             texts.remove(text.getFont());
         }
     }

@@ -8,8 +8,8 @@ import java.util.Random;
  */
 public class HeightsGenerator {
 
-    public static final float AMPLITUDE = 300f;
-    private static final int OCTAVES = 6;
+    public static final float AMPLITUDE = 400f;
+    private static final int OCTAVES = 3;
     private static final float ROUGHNESS = 0.3f;
 
 

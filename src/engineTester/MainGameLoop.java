@@ -2,6 +2,7 @@ package engineTester;
 
 import audio.AudioMaster;
 import audio.Source;
+import dialog.DialogBox;
 import entities.*;
 import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
@@ -54,7 +55,7 @@ public class MainGameLoop {
     public static void main(String[] args) {
 
         Timer.setDaylength(DAY_LENGTH);
-        Timer.setTime(0);
+        Timer.setTime(MIDDAY);
 
         DisplayManager.createDisplay();
         Loader loader = new Loader();
@@ -62,19 +63,17 @@ public class MainGameLoop {
 
         /****************************************TERRAINS****************************************/
         //We place the four textures into a texture pack for the terrain to read
-        TerrainTexturePack texturePack = new TerrainTexturePack(loader, "/terrainTextures/snow1", "/terrainTextures/mud", "/terrainTextures/grassy2", "/terrainTextures/brick");
+        TerrainTexturePack texturePack = new TerrainTexturePack(loader, "/terrainTextures/red", "/terrainTextures/blue", "/terrainTextures/green", "/terrainTextures/black");
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("/blendMaps/blendMap"));
         TerrainTexture mountainBlendMap = new TerrainTexture(loader.loadTexture("/blendMaps/mountainBlendMap"));
         //load in texture pack, blend map, and height map to create the texture
 
-        TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,mountainBlendMap,"mountainHeightMap"));
+        //TerrainGrid.addTerrainSquare(new TerrainSquare(0,0,loader,texturePack,mountainBlendMap,"mountainHeightMap"));
 
         for(int i = 0; i < TerrainGrid.DIMENSIONS; i++) {
             for(int j = 0; j < TerrainGrid.DIMENSIONS; j++) {
-                if(!(i == 0 && j == 0)){
                     TerrainGrid.addTerrainSquare(new TerrainSquare(i,j,loader,texturePack,blendMap));
-                }
             }
         }
 
@@ -108,9 +107,13 @@ public class MainGameLoop {
         Camera camera = new Camera(player);
 
         /****************************************FONT STUFF****************************************/
-        FontType font = new FontType(loader.loadTexture("/fonts/candara"), new File("./res/textures//fonts/candara.fnt"));
+        FontType font = new FontType(loader.loadTexture("./fonts/candara"), new File("./res/textures//fonts/candara.fnt"));
         GUIText text = new GUIText("Stamina", 0.7f, font, new Vector2f(0.18f,0.04f), 1f, false);
         text.setColour(1,1,1);
+
+        /****************************************DIALOG******************************************/
+        DialogBox dialogBoxTest = new DialogBox("test",loader);
+        //GUIText test = new GUIText(dialogBoxTest.getDialog(), 0.7f, dialogBoxTest.getFont(), new Vector2f(0,0.8f), 1f, false);
 
         /****************************************RENDERERS****************************************/
 
@@ -244,6 +247,13 @@ public class MainGameLoop {
             Timer.update();
             timeInSeconds = Timer.getTime();
             player.move();
+
+            //GUI Test
+            if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
+                dialogBoxTest.show(guiTextures);
+            } else if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)) {
+                dialogBoxTest.hide(guiTextures);
+            }
 
             //Planetarium Particles
 
