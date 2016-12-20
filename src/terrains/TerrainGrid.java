@@ -9,7 +9,7 @@ import toolbox.Maths;
  *
  */
 public class TerrainGrid {
-    public static final int DIMENSIONS = 2;
+    public static final int DIMENSIONS = 7;
     private static TerrainSquare[][] terrainSquares = new TerrainSquare[DIMENSIONS][DIMENSIONS];
 
     public static void addTerrainSquare(TerrainSquare terrainSquare) {
