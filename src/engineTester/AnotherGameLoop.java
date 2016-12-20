@@ -1,9 +1,6 @@
 package engineTester;
 
-import entities.Camera;
-import entities.Entity;
-import entities.Light;
-import entities.Player;
+import entities.*;
 import fontRendering.TextMaster;
 import models.RawModel;
 import models.TexturedModel;
@@ -61,6 +58,27 @@ public class AnotherGameLoop {
         TexturedModel playerTexture = new TexturedModel(cubePlayer, new ModelTexture(loader.loadTexture("/objectTextures/playerTexture")));
         Player player = new Player(playerTexture,TerrainGrid.getPosition(TerrainGrid.DIMENSIONS/2,TerrainGrid.DIMENSIONS/2,0.5f,0.5f),new Vector3f(0,0,0),1);
 
+        /***************************************NPCS*******************************************/
+        NPC npc1 = new NPC(playerTexture,new Vector2f(player.getPosition().getX(),player.getPosition().getZ()),new Vector3f(0,0,0),1);
+        NPC npc2 = new NPC(playerTexture,new Vector2f(player.getPosition().getX() + 50,player.getPosition().getZ() + 50),new Vector3f(0,0,0),1);
+        NPC npc3 = new NPC(playerTexture,new Vector2f(player.getPosition().getX() + 90,player.getPosition().getZ() - 80),new Vector3f(0,0,0),1);
+        NPC npc4 = new NPC(playerTexture,new Vector2f(player.getPosition().getX() - 90,player.getPosition().getZ() - 100),new Vector3f(0,0,0),1);
+        //Evade lists
+        //npc1.addEvade(npc2);
+        npc1.addEvade(npc4);
+        //npc2.addEvade(npc3);
+        npc2.addEvade(npc4);
+        //npc3.addEvade(npc4);
+        npc3.addEvade(npc4);
+        //npc4.addEvade(npc1);
+        npc4.addEvade(npc2);
+        //Pursue lists
+        npc1.addPursue(player);
+        npc2.addPursue(player);
+        npc3.addPursue(player);
+        npc4.addPursue(player);
+
+
         /****************************************CAMERA****************************************/
         Camera camera = new Camera(player);
 
@@ -72,6 +90,10 @@ public class AnotherGameLoop {
         List<Entity> entities = new ArrayList<>();
 
         entities.add(player);
+        entities.add(npc1);
+        //entities.add(npc2);
+        //entities.add(npc3);
+        //entities.add(npc4);
 
         /****************************************LIGHTS****************************************/
         List<Light> lights = new ArrayList<>();
@@ -89,7 +111,10 @@ public class AnotherGameLoop {
         while(!Display.isCloseRequested()){
             Timer.update();
             timeInSeconds = Timer.getTime();
-            player.move();
+            //player.move();
+            for(Entity e : entities) {
+                e.move();
+            }
 
             //Changing time
             if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {

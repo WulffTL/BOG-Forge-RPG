@@ -155,4 +155,8 @@ public class Entity {
         }
         return radius;
     }
+
+    public void move() {
+
+    }
 }
