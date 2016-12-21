@@ -87,6 +87,10 @@ public class Maths {
         return (float) Math.sqrt(Math.pow((x1-x2),2) + Math.pow((y1-y2),2) + Math.pow((z1-z2),2));
     }
 
+    public static float findSlope(Vector2f v1, Vector2f v2) {
+        return (v1.x - v2.x)/(v1.y - v2.y);
+    }
+
     public static float distanceBetween(Vector2f v1, Vector2f v2){
         float x1 = v1.x;
         float x2 = v2.x;

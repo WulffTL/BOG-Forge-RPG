@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class NPC extends Entity {
 
-    private static final float NPC_SPEED = 30;
+    private static final float NPC_SPEED = 20;
     private Vector2f evadeVector;
     private Vector2f pursueVector;
     private Vector2f moveVector = new Vector2f(1,0);
@@ -86,7 +86,7 @@ public class NPC extends Entity {
     }
 
     public void move() {
-        moveInCircle(50, new Vector2f(initialPosition.x - 50, initialPosition.y));
+        moveToTarget(new Vector2f(this.initialPosition.getX() + 100,this.initialPosition.getY() + 100));
 //        float time = DisplayManager.getFrameTimeSeconds();
 //        float distance = NPC_SPEED * time;
 //        float dx = (distance * (getPursueVector().getX() + getEvadeVector().getX()));
@@ -95,6 +95,24 @@ public class NPC extends Entity {
 //            super.increasePosition(dx,0,dz);
 //            super.setEntityHeight(TerrainGrid.getCurrentTerrainHeight(this.getPosition().getX(),this.getPosition().getZ()));
 //        }
+    }
+
+    public void moveToTarget(Vector2f targetPosition) {
+        Vector2f currentPosition = new Vector2f(this.getPosition().getX(), this.getPosition().getZ());
+        if(Maths.distanceBetween(currentPosition, targetPosition) > 1) {
+            float distance = NPC_SPEED * DisplayManager.getFrameTimeSeconds();
+            float slope = Maths.findSlope(targetPosition,currentPosition);
+            float dx,dz;
+            if(slope < 1) {
+                dx = slope * distance;
+                dz = distance;
+            } else {
+                dz = distance;
+                dx = distance/slope;
+            }
+            super.increasePosition(dx,0,dz);
+            super.setEntityHeight(TerrainGrid.getCurrentTerrainHeight(this.getPosition().getX(),this.getPosition().getZ()));
+        }
     }
 
     public void moveInCircle(int radius, Vector2f center) {
