@@ -63,7 +63,7 @@ public class MainGameLoop {
 
         /****************************************TERRAINS****************************************/
         //We place the four textures into a texture pack for the terrain to read
-        TerrainTexturePack texturePack = new TerrainTexturePack(loader, "/terrainTextures/red", "/terrainTextures/blue", "/terrainTextures/green", "/terrainTextures/black");
+        TerrainTexturePack texturePack = new TerrainTexturePack(loader, "/terrainTextures/snow1", "/terrainTextures/grass", "/terrainTextures/mud", "/terrainTextures/brick");
         //We load up a blendmap which will tell the terrain which texture to use at what time
         TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("/blendMaps/blendMap"));
         TerrainTexture mountainBlendMap = new TerrainTexture(loader.loadTexture("/blendMaps/mountainBlendMap"));
